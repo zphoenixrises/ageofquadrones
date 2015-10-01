@@ -2,7 +2,7 @@
 #define NEOQUAD_H
 
 #include <ctime>
-
+#include <sys/time.h>
 #include "Quadrotor.h"
 
 using namespace std;
@@ -11,7 +11,7 @@ class NeoQuad:public Quadrotor
 {
 private:
     
-    clock_t startTime;
+    timeval startTime;
     float propAngle;
     unsigned int propSpeed;
     bool animate;
@@ -22,6 +22,7 @@ private:
     void rotateProps();
     
 public:
+    char difftime[6];
     NeoQuad();
     void toggleAnimate();
     void drawQuad();

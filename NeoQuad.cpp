@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include <ctime>
+#include <sys/time.h>
 using namespace std;
 
 #ifndef Pi
@@ -15,19 +16,21 @@ NeoQuad::NeoQuad()
     propAngle = 0.0;
     propSpeed = 2;
     animate = true;
-    startTime = clock();
+    gettimeofday(&startTime,NULL);
 }
 void NeoQuad::drawEllipsoid(unsigned int uiStacks, unsigned int uiSlices, float fA, float fB, float fC)
 {
     float tStep = (Pi) / (float)uiSlices;
     float sStep = (Pi) / (float)uiStacks;
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     for (float t = -Pi / 2; t <= (Pi / 2) + .0001; t += tStep)
     {
         glBegin(GL_TRIANGLE_STRIP);
         for (float s = -Pi; s <= Pi + .0001; s += sStep)
         {
+            glNormal3f(2 * fA * cos(t) * cos(s), 2 * fB * cos(t) * sin(s), 2 * fC * sin(t));
             glVertex3f(fA * cos(t) * cos(s), fB * cos(t) * sin(s), fC * sin(t));
+            glNormal3f(2 * fA * cos(t + tStep) * cos(s), 2 * fB * cos(t + tStep) * sin(s), 2 * fC * sin(t + tStep));
             glVertex3f(fA * cos(t + tStep) * cos(s), fB * cos(t + tStep) * sin(s), fC * sin(t + tStep));
         }
         glEnd();
@@ -85,7 +88,7 @@ void NeoQuad::drawQuad()
     glColor4f(.75f, .75f, .75f, 0.25f);
     
     //draw body
-    drawEllipsoid(15, 15, 15, 5, 5);
+    drawEllipsoid(10, 10, 15, 5, 5);
     glTranslatef(15.0f, 0.0f, 0.0f);
     gluSphere(quadricObj, 5.0f, 20, 20); //draw head
     glTranslatef(-15.0f, 0.0f, 0.0f);
@@ -130,16 +133,23 @@ void NeoQuad::drawQuad()
     glPopMatrix();
 }
 
+
 void NeoQuad::rotateProps()
 {
     if (animate)
     {
-        double timeInSec = (clock()-startTime)/(double) CLOCKS_PER_SEC;
+       // double timeInSec = (clock()-startTime)/(double) CLOCKS_PER_SEC;
+        double elapsedTime;
+        timeval t2;
+        gettimeofday(&t2,NULL);
         
-        propAngle += 400*timeInSec;
-        glutPostRedisplay();
+        elapsedTime = (t2.tv_sec - startTime.tv_sec) * 1000.0;      // sec to ms
+        elapsedTime += (t2.tv_usec - startTime.tv_usec) / 1000.0;   // us to ms
+
+        propAngle += 2*elapsedTime;
+        //glutPostRedisplay();
     }
-    startTime = clock();
+    gettimeofday(&startTime,NULL);
     
 }
 
