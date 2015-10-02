@@ -1,10 +1,9 @@
 #include "NeoQuad.h"
 #include <GL/glut.h>
 #include <cmath>
-
-#include <ctime>
-#include <sys/time.h>
 using namespace std;
+
+//#define SOLID_RENDERING 
 
 #ifndef Pi
 
@@ -17,12 +16,15 @@ NeoQuad::NeoQuad()
     propSpeed = 2;
     animate = true;
     gettimeofday(&startTime,NULL);
+    currentState = NEUTRAL;
 }
 void NeoQuad::drawEllipsoid(unsigned int uiStacks, unsigned int uiSlices, float fA, float fB, float fC)
 {
     float tStep = (Pi) / (float)uiSlices;
     float sStep = (Pi) / (float)uiStacks;
-   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    #ifndef SOLID_RENDERING
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    #endif
     for (float t = -Pi / 2; t <= (Pi / 2) + .0001; t += tStep)
     {
         glBegin(GL_TRIANGLE_STRIP);
@@ -56,7 +58,11 @@ void NeoQuad::drawPropellers(int rotorDirection)
     glColor4f(.75f, .75f, .75f, 0.25f);
     gluCylinder(quadricObj, 0.25f, 0.25f, 3.0f, 10.0f, 10.0f);
     glTranslatef(0.0f, 0.0f, 3.0f);
+    #ifndef SOLID_RENDERING
     glutWireTorus(.5f, 10.0f, 10.0f, 30.0f);
+    #else
+    glutSolidTorus(.5f, 10.0f, 10.0f, 30.0f);    
+    #endif
     
     if (rotorDirection)
         glRotatef(propAngle, 0.0f, 0.0f, 1.0f);
@@ -83,7 +89,7 @@ void NeoQuad::drawQuad()
     
     
     //Draw Axes
-    drawAxes();
+    //drawAxes();
     
     glColor4f(.75f, .75f, .75f, 0.25f);
     
@@ -97,38 +103,61 @@ void NeoQuad::drawQuad()
     glPushMatrix();    
     glTranslatef(20.0f, 5.0f, 20.0f);
     glRotatef(-135.0f, 0.0f, 1.0f, 0.0f);
-    gluCylinder(quadricObj, 0.25f, 0.25f, 40.0f*sqrt(2), 10.0f, 10.0f);
+    gluCylinder(quadricObj, 0.25f, 0.25f, 40.0f*sqrt2, 10.0f, 10.0f);
     
+    
+    glTranslatef(20.0f*sqrt2,0.0, 20.0f*sqrt2);
+    glRotatef(90.0f, 0.0, -1.0f, 0.0f);
+    //drawAxes();
+    gluCylinder(quadricObj, 0.25f, 0.25f, 40.0f*sqrt2, 10.0f, 10.0f);
     //Draw 
+    
     glRotatef(90.0f, -1.0f, 0.0f, 0.0f);
     //drawAxes();
-    drawPropellers(1);
+    for(int i=0;i<4;i++)
+    {
+        drawPropellers(i%2);
+        glTranslatef(20.0f*sqrt2, -20.0f*sqrt2, 0.0f);
+        glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
+    }
     
-    glTranslatef(20.0f*sqrt(2), -20.0f*sqrt(2), 0.0f);
-    glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
-    //drawAxes();
-    drawPropellers(0);
-    
-    
-    glTranslatef(20.0f*sqrt(2), -20.0f*sqrt(2), 0.0f);
-    glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
-    //drawAxes();
-    drawPropellers(1);
-    
-    glTranslatef(20.0f*sqrt(2), -20.0f*sqrt(2), 0.0f);
-    glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
-    //drawAxes();
-    drawPropellers(0);
-    
-    
-    //glRotatef(-135.0f, 1.0f, 0.0f, 0.0f);
     glPopMatrix();
     
-    glPushMatrix();
-    glTranslatef(20.0f, 5.0f, -20.0f);
-    glRotatef(-45.0f, 0.0f, 1.0f, 0.0f);
-    gluCylinder(quadricObj, 0.25f, 0.25f, 40.0f*sqrt(2), 10.0f, 10.0f);
-    glPopMatrix();
+    if(currentState == NEUTRAL)
+    {
+        //drawGuns
+        glPushMatrix();
+        glColor3f(0.5,0.5,0.5);
+        glTranslatef(-7.0f,0.0f,6.0f);
+        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+        
+        gluDisk(quadricObj,0.0f,2.0f,10,3);
+        gluCylinder(quadricObj, 2.0f, 2.0f, 15.0f, 10.0f, 10.0f);
+        glTranslatef(0.0f,0.0f,15.0f);
+        
+        //glScalef(1.0f,1.0f,.5f);
+        gluDisk(quadricObj,1.0f,2.0f,10,3);
+        gluCylinder(quadricObj, 1.0f, 1.0f, 10.0f, 10.0f, 10.0f);
+        glTranslatef(0.0f,0.0f,10.0f);
+        gluDisk(quadricObj,.5f,1.0f,10,3);
+        gluCylinder(quadricObj, .5f, .5f, 10.0f, 10.0f, 10.0f);
+        glPopMatrix();
+        
+        //drawAxes();
+        glColor3f(0.5,0.5,0.5);
+        glTranslatef(-7.0f,0.0f,-6.0f);
+        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+        gluDisk(quadricObj,0.0f,2.0f,10,3);
+        gluCylinder(quadricObj, 2.0f, 2.0f, 15.0f, 10.0f, 10.0f);
+        glTranslatef(0.0f,0.0f,15.0f);
+        gluDisk(quadricObj,1.0f,2.0f,10,3);
+        gluCylinder(quadricObj, 1.0f, 1.0f, 10.0f, 10.0f, 10.0f);
+        glTranslatef(0.0f,0.0f,10.0f);
+        gluDisk(quadricObj,.5f,1.0f,10,3);
+        gluCylinder(quadricObj, .5f, .5f, 10.0f, 10.0f, 10.0f);
+    }
+    
+    
     
     glPopMatrix();
 }
@@ -138,16 +167,14 @@ void NeoQuad::rotateProps()
 {
     if (animate)
     {
-       // double timeInSec = (clock()-startTime)/(double) CLOCKS_PER_SEC;
         double elapsedTime;
         timeval t2;
         gettimeofday(&t2,NULL);
         
         elapsedTime = (t2.tv_sec - startTime.tv_sec) * 1000.0;      // sec to ms
         elapsedTime += (t2.tv_usec - startTime.tv_usec) / 1000.0;   // us to ms
-
-        propAngle += 2*elapsedTime;
-        //glutPostRedisplay();
+        
+        propAngle += propSpeed*elapsedTime;
     }
     gettimeofday(&startTime,NULL);
     
@@ -156,4 +183,10 @@ void NeoQuad::rotateProps()
 void NeoQuad::toggleAnimate()
 {
     animate = !animate;
+}
+
+void NeoQuad::changePropSpeed(float increment)
+{
+    
+    propSpeed+=increment;
 }

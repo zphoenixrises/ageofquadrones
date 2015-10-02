@@ -3,7 +3,7 @@
 #include<GL/gl.h>
 #include<GL/glu.h>
 #include<GL/glut.h>
-#include<glm/glm/glm.hpp>
+//#include<glm/glm/glm.hpp>
 
 using namespace std;
 
@@ -23,9 +23,7 @@ void initializeRendering()
     glEnable(GL_LIGHT0); //Enable light #0
     glEnable(GL_LIGHT1); //Enable light #1
     glEnable(GL_NORMALIZE); //Automatically normalize normals
-    glLoadIdentity();
-    
-    glTranslatef(-0, -0, -50);
+
 }
 
 
@@ -48,7 +46,9 @@ void drawHandler()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
     
+    glTranslatef(-0, -0, -50);
     //Add ambient light
     GLfloat ambientColor[] = {0.2f, 0.2f, 0.2f, 1.0f}; //Color (0.2, 0.2, 0.2)
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
@@ -60,7 +60,7 @@ void drawHandler()
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
     
     //Add directed light
-    GLfloat lightColor1[] = {0.5f, 0.2f, 0.2f, 1.0f}; //Color (0.5, 0.2, 0.2)
+    GLfloat lightColor1[] = {0.5f, 0.5f, 0.5f, 1.0f}; //Color (0.5, 0.2, 0.2)
     //Coming from the direction (-1, 0.5, 0.5)
     GLfloat lightPos1[] = {-1.0f, 0.5f, 0.5f, 0.0f};
     glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
@@ -112,6 +112,12 @@ void keypressHandler(unsigned char key, int x, int y)
         case 'g':
             neoQuad->pitchQuad(-2);
             break;
+        case 'k':
+            neoQuad->changePropSpeed(-0.1);
+            break;
+        case 'l':
+            neoQuad->changePropSpeed(0.1);
+            break;
         case 'm':
             neoQuad->toggleAnimate();
             break;
@@ -127,7 +133,7 @@ void keypressHandler(unsigned char key, int x, int y)
 
 void animatefunc(int value)
 {
-    glutTimerFunc(1, animatefunc, 0);
+    glutTimerFunc(20, animatefunc, 0);
     glutPostRedisplay();
     //neoQuad->rotateProps(0);
 }

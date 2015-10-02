@@ -7,14 +7,19 @@
 
 using namespace std;
 
+#define sqrt2 1.41421356237
+
+enum State{NEUTRAL=1,POWERINGUP,POWEREDUP};
+
 class NeoQuad:public Quadrotor
 {
 private:
     
     timeval startTime;
     float propAngle;
-    unsigned int propSpeed;
+    float propSpeed;
     bool animate;
+    State currentState;
     
     void drawEllipsoid(unsigned int uiStacks, unsigned int uiSlices, float fA, float fB, float fC);
     void drawBlade();
@@ -22,10 +27,13 @@ private:
     void rotateProps();
     
 public:
-    char difftime[6];
+  
     NeoQuad();
     void toggleAnimate();
     void drawQuad();
+    void changePropSpeed(float increment);
+    void powerUp();
+    void powerDown();
 };
 
 #endif
