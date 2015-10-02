@@ -1,3 +1,13 @@
+/******************************************************************
+ * Name   : NeoQuad.cpp
+ * Purpose: NeoQuad member functions defined here
+ * 
+ * Author: Akkas Uddin Haque
+ * Email : akkasuddin@live.com
+ *
+ * Creation Date: 09/19/2015
+ *******************************************************************/
+
 #include "NeoQuad.h"
 #include <GL/glut.h>
 #include <cmath>

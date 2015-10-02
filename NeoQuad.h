@@ -1,3 +1,13 @@
+/******************************************************************
+ * Name   : NeoQuad.h
+ * Purpose: Header File for NeoQuad
+ * 
+ * Author: Akkas Uddin Haque
+ * Email : akkasuddin@live.com
+ *
+ * Creation Date: 09/19/2015
+ *******************************************************************/
+
 #ifndef NEOQUAD_H
 #define NEOQUAD_H
 

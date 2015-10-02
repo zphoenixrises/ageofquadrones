@@ -1,3 +1,13 @@
+/******************************************************************
+ * Name: main.cpp
+ * Purpose: main routines are defined here
+ * 
+ * Author: Akkas Uddin Haque
+ * Email : akkasuddin@live.com
+ *
+ * Creation Date: 09/19/2015
+ *******************************************************************/
+ 
 #include<iostream>
 #include<cmath>
 #include<GL/gl.h>

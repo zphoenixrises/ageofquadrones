@@ -1,3 +1,14 @@
+/******************************************************************
+ * Name   : Quadrotor.cpp
+ * Purpose: Quadrotor member functions defined here
+ * 
+ * Author: Akkas Uddin Haque
+ * Email : akkasuddin@live.com
+ *
+ * Creation Date: 09/19/2015
+ *******************************************************************/
+
+
 #include<GL/gl.h>
 #include<GL/glu.h>
 #include<GL/glut.h>
