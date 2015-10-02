@@ -55,6 +55,18 @@ void NeoQuad::drawBlade()
 void NeoQuad::drawPropellers(int rotorDirection)
 {
     glPushMatrix();
+    static float propScale = 1;
+    
+    if(currentState == POWERINGUP)
+    {
+       propScale +=0.015;
+    }
+    
+    if(currentState == POWERINGDOWN)
+    {
+        propScale -=0.015;
+    }
+    glScalef(propScale,propScale,propScale);
     glColor4f(.75f, .75f, .75f, 0.25f);
     gluCylinder(quadricObj, 0.25f, 0.25f, 3.0f, 10.0f, 10.0f);
     glTranslatef(0.0f, 0.0f, 3.0f);
@@ -78,6 +90,59 @@ void NeoQuad::drawPropellers(int rotorDirection)
     glPopMatrix();
     
 }
+
+void NeoQuad::drawGuns()
+{
+    static float gunScale = 0;
+    
+    if(currentState == POWERINGUP)
+    {
+        gunScale +=0.1;
+        if((int)gunScale == 1)
+            currentState = POWEREDUP;
+    }
+    
+    if(currentState == POWERINGDOWN)
+    {
+        gunScale -=0.1;
+        if((int)(gunScale*10) == 0)
+            currentState = NEUTRAL;
+    }
+    
+    //drawGuns
+    glPushMatrix();
+    glColor3f(0.5,0.5,0.5);
+    glTranslatef(-7.0f,0.0f,6.0f);
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    
+    gluDisk(quadricObj,0.0f,2.0f,10,3);
+    gluCylinder(quadricObj, 2.0f, 2.0f, 15.0f, 10.0f, 10.0f);
+    glTranslatef(0.0f,0.0f,15.0f);
+    
+    glScalef(1.0f,1.0f,gunScale);
+    gluDisk(quadricObj,1.0f,2.0f,10,3);
+    gluCylinder(quadricObj, 1.0f, 1.0f, 10.0f, 10.0f, 10.0f);
+    glTranslatef(0.0f,0.0f,10.0f);
+    gluDisk(quadricObj,.5f,1.0f,10,3);
+    gluCylinder(quadricObj, .5f, .5f, 10.0f, 10.0f, 10.0f);
+    glPopMatrix();
+    
+    //drawAxes();
+    glColor3f(0.5,0.5,0.5);
+    glTranslatef(-7.0f,0.0f,-6.0f);
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    gluDisk(quadricObj,0.0f,2.0f,10,3);
+    gluCylinder(quadricObj, 2.0f, 2.0f, 15.0f, 10.0f, 10.0f);
+    glTranslatef(0.0f,0.0f,15.0f);
+    
+    glScalef(1.0f,1.0f,gunScale);
+    gluDisk(quadricObj,1.0f,2.0f,10,3);
+    gluCylinder(quadricObj, 1.0f, 1.0f, 10.0f, 10.0f, 10.0f);
+    glTranslatef(0.0f,0.0f,10.0f);
+    gluDisk(quadricObj,.5f,1.0f,10,3);
+    gluCylinder(quadricObj, .5f, .5f, 10.0f, 10.0f, 10.0f);
+}
+
 
 void NeoQuad::drawQuad()
 {
@@ -123,38 +188,10 @@ void NeoQuad::drawQuad()
     
     glPopMatrix();
     
-    if(currentState == NEUTRAL)
+    if(currentState != NEUTRAL)
     {
-        //drawGuns
-        glPushMatrix();
-        glColor3f(0.5,0.5,0.5);
-        glTranslatef(-7.0f,0.0f,6.0f);
-        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-        
-        gluDisk(quadricObj,0.0f,2.0f,10,3);
-        gluCylinder(quadricObj, 2.0f, 2.0f, 15.0f, 10.0f, 10.0f);
-        glTranslatef(0.0f,0.0f,15.0f);
-        
-        //glScalef(1.0f,1.0f,.5f);
-        gluDisk(quadricObj,1.0f,2.0f,10,3);
-        gluCylinder(quadricObj, 1.0f, 1.0f, 10.0f, 10.0f, 10.0f);
-        glTranslatef(0.0f,0.0f,10.0f);
-        gluDisk(quadricObj,.5f,1.0f,10,3);
-        gluCylinder(quadricObj, .5f, .5f, 10.0f, 10.0f, 10.0f);
-        glPopMatrix();
-        
-        //drawAxes();
-        glColor3f(0.5,0.5,0.5);
-        glTranslatef(-7.0f,0.0f,-6.0f);
-        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-        gluDisk(quadricObj,0.0f,2.0f,10,3);
-        gluCylinder(quadricObj, 2.0f, 2.0f, 15.0f, 10.0f, 10.0f);
-        glTranslatef(0.0f,0.0f,15.0f);
-        gluDisk(quadricObj,1.0f,2.0f,10,3);
-        gluCylinder(quadricObj, 1.0f, 1.0f, 10.0f, 10.0f, 10.0f);
-        glTranslatef(0.0f,0.0f,10.0f);
-        gluDisk(quadricObj,.5f,1.0f,10,3);
-        gluCylinder(quadricObj, .5f, .5f, 10.0f, 10.0f, 10.0f);
+        drawGuns();
+ 
     }
     
     
@@ -187,6 +224,14 @@ void NeoQuad::toggleAnimate()
 
 void NeoQuad::changePropSpeed(float increment)
 {
-    
     propSpeed+=increment;
+}
+
+
+void NeoQuad::powerToggle()
+{
+    if(currentState == NEUTRAL)
+        currentState = POWERINGUP;
+    else if(currentState == POWEREDUP)
+        currentState = POWERINGDOWN;
 }

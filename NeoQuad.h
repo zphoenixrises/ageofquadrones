@@ -9,7 +9,7 @@ using namespace std;
 
 #define sqrt2 1.41421356237
 
-enum State{NEUTRAL=1,POWERINGUP,POWEREDUP};
+enum State{NEUTRAL=1,POWERINGUP,POWEREDUP,POWERINGDOWN};
 
 class NeoQuad:public Quadrotor
 {
@@ -24,6 +24,7 @@ private:
     void drawEllipsoid(unsigned int uiStacks, unsigned int uiSlices, float fA, float fB, float fC);
     void drawBlade();
     void drawPropellers(int rotorDirection);
+    void drawGuns();
     void rotateProps();
     
 public:
@@ -32,8 +33,7 @@ public:
     void toggleAnimate();
     void drawQuad();
     void changePropSpeed(float increment);
-    void powerUp();
-    void powerDown();
+    void powerToggle();
 };
 
 #endif

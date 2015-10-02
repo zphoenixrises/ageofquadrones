@@ -118,6 +118,9 @@ void keypressHandler(unsigned char key, int x, int y)
         case 'l':
             neoQuad->changePropSpeed(0.1);
             break;
+        case 'p':
+            neoQuad->powerToggle();
+            break;
         case 'm':
             neoQuad->toggleAnimate();
             break;
