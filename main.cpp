@@ -33,6 +33,7 @@ void initializeRendering()
     glEnable(GL_LIGHT0); //Enable light #0
     glEnable(GL_LIGHT1); //Enable light #1
     glEnable(GL_NORMALIZE); //Automatically normalize normals
+    glEnable(GL_CULL_FACE);
 
 }
 
@@ -79,6 +80,8 @@ void drawHandler()
     //glLoadIdentity();
    // glColor3ub(255,0,0);
    // output(20,20,neoQuad->difftime);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
     glutSwapBuffers();
     
 }
