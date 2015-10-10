@@ -25,7 +25,6 @@ NeoQuad::NeoQuad()
     propAngle = 0.0;
     propSpeed = 2;
     animate = true;
-    gettimeofday(&startTime,NULL);
     currentState = NEUTRAL;
 }
 void NeoQuad::drawEllipsoid(unsigned int uiStacks, unsigned int uiSlices, float fA, float fB, float fC)
@@ -221,16 +220,10 @@ void NeoQuad::rotateProps()
 {
     if (animate)
     {
-        double elapsedTime;
-        timeval t2;
-        gettimeofday(&t2,NULL);
         
-        elapsedTime = (t2.tv_sec - startTime.tv_sec) * 1000.0;      // sec to ms
-        elapsedTime += (t2.tv_usec - startTime.tv_usec) / 1000.0;   // us to ms
-        
-        propAngle += propSpeed*elapsedTime;
+        propAngle += propSpeed*time.getTimeDiffSec()*1000;
     }
-    gettimeofday(&startTime,NULL);
+    time.getTimeDiffSec();
     
 }
 

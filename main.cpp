@@ -13,6 +13,7 @@
 #include<GL/gl.h>
 #include<GL/glu.h>
 #include<GL/glut.h>
+#include<QuadTimer.h>
 //#include<glm/glm/glm.hpp>
 
 using namespace std;
@@ -56,6 +57,7 @@ void output(GLfloat x, GLfloat y, char* text)
 void drawHandler()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
@@ -156,6 +158,7 @@ void animatefunc(int value)
 
 void rotateDisplayfunc(int value)
 {
+   
     //      neoQuad->rotateDisplay(0);
     
 }
@@ -177,6 +180,7 @@ int main(int argc, char** argv)
     
     glutTimerFunc(10, animatefunc, 0);
     //glutTimerFunc(rotationSpeed,rotateDisplay,0);
+
     glutMainLoop();
     
     return 0;

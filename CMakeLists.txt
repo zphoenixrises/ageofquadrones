@@ -18,4 +18,5 @@ link_directories(${neoquadrotor_BINARY_DIR})
 
 add_library(NeoQuad NeoQuad.cpp)
 add_library(Quadrotor Quadrotor.cpp)
-target_link_libraries(neoquadrotor ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} NeoQuad Quadrotor)
+add_library(QuadTimer QuadTimer.cpp)
+target_link_libraries(neoquadrotor ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} NeoQuad Quadrotor QuadTimer)

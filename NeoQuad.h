@@ -10,9 +10,7 @@
 
 #ifndef NEOQUAD_H
 #define NEOQUAD_H
-
-#include <ctime>
-#include <sys/time.h>
+#include "QuadTimer.h"
 #include "Quadrotor.h"
 
 using namespace std;
@@ -25,7 +23,7 @@ class NeoQuad:public Quadrotor
 {
 private:
     
-    timeval startTime;
+    QuadTimer time;
     float propAngle;
     float propSpeed;
     bool animate;

@@ -13,6 +13,8 @@
 
 
 # include<GL/glu.h>
+// Virtual Class for use by all quadrotors.
+// Houses common functions that govern motion and orientation of the quadrotors
 class Quadrotor
 {
 protected:
