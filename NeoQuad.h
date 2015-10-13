@@ -12,17 +12,14 @@
 #define NEOQUAD_H
 #include "QuadTimer.h"
 #include "Quadrotor.h"
-
 using namespace std;
 
 #define sqrt2 1.41421356237
-
 enum State{NEUTRAL=1,POWERINGUP,POWEREDUP,POWERINGDOWN};
 
 class NeoQuad:public Quadrotor
 {
 private:
-    
     QuadTimer time;
     float propAngle;
     float propSpeed;

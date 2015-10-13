@@ -4,7 +4,9 @@ project(neoquadrotor)
 
 add_executable(neoquadrotor main.cpp)
 
-#add_subdirectory(glm/)
+
+add_subdirectory(glm/)
+include_directories(glm/)
 
 install(TARGETS neoquadrotor RUNTIME DESTINATION bin)
 find_package(OpenGL REQUIRED)
