@@ -23,6 +23,9 @@ Quadrotor::Quadrotor()
     pitchAngle = 0;
     yawAngle = 0;
     quadricObj = gluNewQuadric();
+    gluQuadricNormals(quadricObj, GLU_SMOOTH);   // Create Smooth Normals ( NEW )
+    gluQuadricTexture(quadricObj, GL_TRUE);      // Create Texture Coords ( NEW )
+    
 }
 void Quadrotor::drawAxes()
 {
