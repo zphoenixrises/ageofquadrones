@@ -17,11 +17,9 @@
 
 Quadrotor::Quadrotor()
 {
+    Model = glm::mat4(1.0f);
     axisLength = 20;
     rotationSpeed = 5;
-    rollAngle = 0;
-    pitchAngle = 0;
-    yawAngle = 0;
     quadricObj = gluNewQuadric();
 }
 void Quadrotor::drawAxes()
@@ -40,35 +38,38 @@ void Quadrotor::drawAxes()
 
 void Quadrotor::rollQuad(float angle)
 {
-    rollAngle += angle;
-    rollAngle += (rollAngle > 360) ? -360 : ((rollAngle < 0)? 360 : 0);
+    
+    float xx = angle * Pi/180;
+    Model = glm::rotate(Model, xx, glm::vec3(0, 0, 1)); 
 }
 
 void Quadrotor::pitchQuad(float angle)
 {
-    pitchAngle += angle;
-    pitchAngle += (pitchAngle > 360) ? -360 : ((pitchAngle < 0)? 360 : 0);
+    
+    float xx = angle * Pi/180;
+    Model = glm::rotate(Model, xx, glm::vec3(1,0, 0)); 
 }
 
 void Quadrotor::yawQuad(float angle)
 {
-    yawAngle += angle;
-    yawAngle += (yawAngle > 360) ? -360 : ((yawAngle < 0)? 360 : 0);
+    
+    float xx = angle * Pi/180;
+    Model = glm::rotate(Model, xx, glm::vec3(0, 1, 0));   
 }
 
 float Quadrotor::getPitch()
 {
-    return pitchAngle;
+    return 0;
 }
 
 float Quadrotor::getRoll()
 {
-   return rollAngle;
+    return 0;
 }
 
 float Quadrotor::getYaw()
 {
-   return yawAngle;
+    return 0;
 }
 
 

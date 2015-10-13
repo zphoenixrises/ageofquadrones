@@ -13,18 +13,23 @@
 
 
 # include<GL/glu.h>
+
+#include <glm/matrix.hpp>
+#include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+
+#ifndef Pi
+
+#define Pi 3.1415926535897932384626433832795
+#endif
 // Virtual Class for use by all quadrotors.
 // Houses common functions that govern motion and orientation of the quadrotors
 class Quadrotor
 {
 protected:
-
+    
+    glm::mat4 Model;
     float axisLength;
     unsigned int rotationSpeed;
-    float rollAngle;
-    float pitchAngle;
-    float yawAngle;
-    
 
     GLUquadric *quadricObj;
     void drawAxes();

@@ -11,17 +11,18 @@
 #include "NeoQuad.h"
 #include <GL/glut.h>
 #include <cmath>
+#include <glm/vec3.hpp> // glm::vec3
+#include <glm/vec4.hpp> // glm::vec4
+#include <glm/mat4x4.hpp> // glm::mat4
+#include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+
+#include <glm/gtc/type_ptr.hpp>
 using namespace std;
 
 #define SOLID_RENDERING 
 
-#ifndef Pi
-
-#define Pi 3.1415926535897932384626433832795
-#endif
 NeoQuad::NeoQuad()
 {
-    
     propAngle = 0.0;
     propSpeed = 2;
     animate = true;
@@ -162,12 +163,13 @@ void NeoQuad::drawGuns()
 
 void NeoQuad::drawQuad()
 {
+    
     rotateProps();
     glPushMatrix();//push current matrix to stack
-    glRotatef(yawAngle, 0.0f, 1.0f, 0.0f);
-    glRotatef(rollAngle, 1.0f, 0.0f, 0.0f);
-    glRotatef(pitchAngle, 0.0f, 0.0f, 1.0f);
-    
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+ 
+    glMultMatrixf(glm::value_ptr(Model)); //load Model matrix
     
     //Draw Axes
     //drawAxes();
