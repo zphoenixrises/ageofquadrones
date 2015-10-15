@@ -33,17 +33,26 @@ protected:
 
     GLUquadric *quadricObj;
     void drawAxes();
+    GLfloat pos_x,pos_y,pos_z;
 
 public:
 
 
+    //Contructor
     Quadrotor();
+    //Applies Roll relative to the current orientation
     void rollQuad(float angle);
+    //Applies Pitch relative to the current orientation
     void pitchQuad(float angle);
+    //Applies Yaw relative to the current orientation
     void yawQuad(float angle);
+    
     float getRoll();
     float getPitch();
     float getYaw();
+    void moveAbs(GLfloat x,GLfloat y,GLfloat z);
+    void moveRel(GLfloat x,GLfloat y,GLfloat z);
+    void draw();
     virtual void drawQuad() = 0;
     ~Quadrotor();
 };

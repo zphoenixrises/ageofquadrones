@@ -23,7 +23,7 @@ Quadrotor::Quadrotor()
     quadricObj = gluNewQuadric();
     gluQuadricNormals(quadricObj, GLU_SMOOTH);   // Create Smooth Normals ( NEW )
     gluQuadricTexture(quadricObj, GL_TRUE);      // Create Texture Coords ( NEW )
-    
+    pos_x = pos_y = pos_z = 0.0f;
 }
 void Quadrotor::drawAxes()
 {
@@ -75,7 +75,30 @@ float Quadrotor::getYaw()
     return 0;
 }
 
+void Quadrotor::moveAbs(GLfloat x, GLfloat y, GLfloat z)
+{
+    pos_x = x;
+    pos_y = y;
+    pos_z = z;
 
+}
+
+void Quadrotor::moveRel(GLfloat x, GLfloat y, GLfloat z)
+{
+    pos_x += x;
+    pos_y += y;
+    pos_z += z;
+}
+
+void Quadrotor::draw()
+{
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix(); //Main push
+    glLoadIdentity();
+    glTranslatef(pos_x, pos_y, pos_z);
+    drawQuad();
+    glPopMatrix();
+}
 
 Quadrotor::~Quadrotor()
 {

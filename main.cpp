@@ -23,6 +23,7 @@ void animatefunc(int value);
 void rotateDisplayfunc(int value);
 
 #include "NeoQuad.h"
+#include "Dronedemort.h"
 
 
 void initializeRendering()
@@ -41,6 +42,8 @@ void initializeRendering()
 
 
 NeoQuad *neoQuad;
+Dronedemort *dronedemort;
+Quadrotor *quadrotor;
 
 void output(GLfloat x, GLfloat y, char* text)
 {
@@ -53,14 +56,14 @@ void output(GLfloat x, GLfloat y, char* text)
     }
     glPopMatrix();
 }
-
+void resizeHandler(int width, int height);
 void drawHandler()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+   // glMatrixMode(GL_MODELVIEW);
     
-
     
-    glTranslatef(-0, -0, -50);
     //Add ambient light
     GLfloat ambientColor[] = {0.2f, 0.2f, 0.2f, 1.0f}; //Color (0.2, 0.2, 0.2)
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
@@ -77,12 +80,25 @@ void drawHandler()
     GLfloat lightPos1[] = {-1.0f, 0.5f, 0.5f, 0.0f};
     glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
     glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
-    neoQuad->drawQuad();
+    //glLoadIdentity();
+
+    neoQuad->moveAbs(10,0,-100);
+    neoQuad->draw();
+    
+    
+    
+    //glMatrixMode(GL_MODELVIEW);
+    dronedemort->moveAbs(-50, 0 , -100);
+    dronedemort->draw();
+    
+    
+
+
     //glLoadIdentity();
    // glColor3ub(255,0,0);
    // output(20,20,neoQuad->difftime);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+   // glCullFace(GL_BACK);
+   // glFrontFace(GL_CCW);
     glutSwapBuffers();
     
 }
@@ -90,6 +106,7 @@ void drawHandler()
 
 void resizeHandler(int w, int h)//Called when the window is resized
 {
+    
     //Tell OpenGL how to convert from coordinates to pixel values
     glViewport(0, 0, w, h);
     
@@ -109,22 +126,22 @@ void keypressHandler(unsigned char key, int x, int y)
     switch (key)
     {
         case 'd':
-            neoQuad->yawQuad(2);
+            quadrotor->yawQuad(2);
             break;
         case 'a':
-            neoQuad->yawQuad(-2);
+            quadrotor->yawQuad(-2);
             break;
         case 's':
-            neoQuad->rollQuad(2);
+            quadrotor->rollQuad(2);
             break;
         case 'w':
-            neoQuad->rollQuad(-2);
+            quadrotor->rollQuad(-2);
             break;
         case 'f':
-            neoQuad->pitchQuad(2);
+            quadrotor->pitchQuad(2);
             break;
         case 'g':
-            neoQuad->pitchQuad(-2);
+            quadrotor->pitchQuad(-2);
             break;
         case 'k':
             neoQuad->changePropSpeed(-0.1);
@@ -137,6 +154,12 @@ void keypressHandler(unsigned char key, int x, int y)
             break;
         case 'm':
             neoQuad->toggleAnimate();
+            break;
+        case ' ':
+            if(quadrotor == neoQuad)
+                quadrotor = dronedemort;
+            else
+                quadrotor = neoQuad;
             break;
         case 13:
             exit(0);
@@ -155,12 +178,6 @@ void animatefunc(int value)
     //neoQuad->rotateProps(0);
 }
 
-void rotateDisplayfunc(int value)
-{
-   
-    //      neoQuad->rotateDisplay(0);
-    
-}
 
 int main(int argc, char** argv)
 {
@@ -175,10 +192,12 @@ int main(int argc, char** argv)
     glutKeyboardFunc(keypressHandler);
     glutReshapeFunc(resizeHandler);
     neoQuad = new NeoQuad();
+    dronedemort = new Dronedemort();
+    quadrotor = dronedemort;
+    
     //glutMouseFunc()
     
     glutTimerFunc(10, animatefunc, 0);
-    //glutTimerFunc(rotationSpeed,rotateDisplay,0);
 
     glutMainLoop();
     

@@ -165,10 +165,7 @@ void NeoQuad::drawQuad()
 {
     
     rotateProps();
-    glPushMatrix();//push current matrix to stack
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
- 
+  
     glMultMatrixf(glm::value_ptr(Model)); //load Model matrix
     
     //Draw Axes
@@ -214,7 +211,6 @@ void NeoQuad::drawQuad()
     
     
     
-    glPopMatrix();
 }
 
 

@@ -19,6 +19,7 @@ include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} ${neoquadrotor
 link_directories(${neoquadrotor_BINARY_DIR})
 
 add_library(NeoQuad NeoQuad.cpp)
+add_library(Dronedemort Dronedemort.cpp)
 add_library(Quadrotor Quadrotor.cpp)
 add_library(QuadTimer QuadTimer.cpp)
-target_link_libraries(neoquadrotor ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} NeoQuad Quadrotor QuadTimer)
+target_link_libraries(neoquadrotor ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} NeoQuad Dronedemort Quadrotor QuadTimer)
