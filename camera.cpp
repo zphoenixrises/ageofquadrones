@@ -141,7 +141,7 @@ void Camera::ChangeHeading(float degrees) {
     }
     //This controls how the heading is changed if the camera is pointed straight up or down
     //The heading delta direction changes
-    if (camera_pitch > 90 && camera_pitch < 270 || (camera_pitch < -90 && camera_pitch > -270)) {
+    if ((camera_pitch > 90 && camera_pitch < 270) || (camera_pitch < -90 && camera_pitch > -270)) {
         camera_heading -= degrees;
     } else {
         camera_heading += degrees;

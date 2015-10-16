@@ -10,20 +10,124 @@
  
 #include<iostream>
 #include<cmath>
-#include<GL/gl.h>
-#include<GL/glu.h>
 #include<GL/glut.h>
 #include<QuadTimer.h>
-//#include<glm/glm/glm.hpp>
-
-using namespace std;
-
-void animatefunc(int value);
-
-void rotateDisplayfunc(int value);
+#include "camera.h"
 
 #include "NeoQuad.h"
 #include "Dronedemort.h"
+
+using namespace std;
+using namespace glm;
+
+//Create the Camera
+Camera camera;
+
+class Window {
+public:
+    Window() {
+        this->interval = 1000 / 60;             //60 FPS
+        this->window_handle = -1;
+    }
+    int window_handle, interval;
+    ivec2 size;
+    float window_aspect;
+} window;
+
+//Invalidate the window handle when window is closed
+void CloseFunc() {
+    window.window_handle = -1;
+}
+//Resize the window and properly update the camera viewport
+void ReshapeFunc(int w, int h) {
+    if (h > 0) {
+        window.size = ivec2(w, h);
+        window.window_aspect = float(w) / float(h);
+    }
+    camera.SetViewport(0, 0, window.size.x, window.size.y);
+}
+
+//Keyboard input for camera, also handles exit case
+void KeyboardFunc(unsigned char c, int x, int y) {
+    switch (c) {
+        case 'i':
+            camera.Move(FORWARD);
+            break;
+        case 'j':
+            camera.Move(LEFT);
+            break;
+        case 'k':
+            camera.Move(BACK);
+            break;
+        case 'l':
+            camera.Move(RIGHT);
+            break;
+        case 'u':
+            camera.Move(DOWN);
+            break;
+        case 'o':
+            camera.Move(UP);
+            break;
+        case 'x':
+        case 27:
+            exit(0);
+            return;
+        default:
+            break;
+    }
+}
+
+void SpecialFunc(int c, int x, int y) {}
+void CallBackPassiveFunc(int x, int y) {}
+//Used when person clicks mouse
+void CallBackMouseFunc(int button, int state, int x, int y) {
+    camera.SetPos(button, state, x, y);
+}
+//Used when person drags mouse around
+void CallBackMotionFunc(int x, int y) {
+    camera.Move2D(x, y);
+}
+//Draw a wire cube! (nothing fancy here)
+void DisplayFunc() {
+    //glEnable(GL_CULL_FACE);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glViewport(0, 0, window.size.x, window.size.y);
+    // glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    //Add ambient light
+    GLfloat ambientColor[] = {0.2f, 0.2f, 0.2f, 1.0f}; //Color (0.2, 0.2, 0.2)
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
+    
+    //Add positioned light
+    GLfloat lightColor0[] = {0.5f, 0.5f, 0.5f, 1.0f}; //Color (0.5, 0.5, 0.5)
+    GLfloat lightPos0[] = {4.0f, 0.0f, 8.0f, 1.0f}; //Positioned at (4, 0, 8)
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
+    
+    //Add directed light
+    GLfloat lightColor1[] = {0.5f, 0.5f, 0.5f, 1.0f}; //Color (0.5, 0.2, 0.2)
+    //Coming from the direction (-1, 0.5, 0.5)
+    GLfloat lightPos1[] = {-1.0f, 0.5f, 0.5f, 0.0f};
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
+    glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
+    glm::mat4 model, view, projection;
+    camera.Update();
+    camera.GetMatricies(projection, view, model);
+    
+    glm::mat4 mvp = projection* view * model;       //Compute the mvp matrix
+    glLoadMatrixf(glm::value_ptr(mvp));
+    glColor3f(1.0f,1.0f,1.0f);
+    glutSolidTeapot(10);
+    glutSwapBuffers();
+}
+//Redraw based on fps set for window
+void TimerFunc(int value) {
+    if (window.window_handle != -1) {
+        glutTimerFunc(window.interval, TimerFunc, value);
+        glutPostRedisplay();
+    }
+}
 
 
 void initializeRendering()
@@ -56,13 +160,16 @@ void output(GLfloat x, GLfloat y, char* text)
     }
     glPopMatrix();
 }
-void resizeHandler(int width, int height);
+
+
+
 void drawHandler()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
    // glMatrixMode(GL_MODELVIEW);
-    
+    glViewport(0, 0, window.size.x, window.size.y);
+   
     
     //Add ambient light
     GLfloat ambientColor[] = {0.2f, 0.2f, 0.2f, 1.0f}; //Color (0.2, 0.2, 0.2)
@@ -81,14 +188,19 @@ void drawHandler()
     glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
     glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
     //glLoadIdentity();
-
-    neoQuad->moveAbs(10,0,-100);
+    glm::mat4 model, view, projection;
+    camera.Update();
+    camera.GetMatricies(projection, view, model);
+    
+    glm::mat4 mvp = projection* view * model;       //Compute the mvp matrix
+    glLoadMatrixf(glm::value_ptr(mvp));
+    neoQuad->moveAbs(10,0,0);
     neoQuad->draw();
     
     
     
     //glMatrixMode(GL_MODELVIEW);
-    dronedemort->moveAbs(-50, 0 , -100);
+    dronedemort->moveAbs(-50, 0 ,0);
     dronedemort->draw();
     
     
@@ -97,27 +209,10 @@ void drawHandler()
     //glLoadIdentity();
    // glColor3ub(255,0,0);
    // output(20,20,neoQuad->difftime);
-   // glCullFace(GL_BACK);
-   // glFrontFace(GL_CCW);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
     glutSwapBuffers();
     
-}
-
-
-void resizeHandler(int w, int h)//Called when the window is resized
-{
-    
-    //Tell OpenGL how to convert from coordinates to pixel values
-    glViewport(0, 0, w, h);
-    
-    glMatrixMode(GL_PROJECTION); //Switch to setting the camera perspective
-    
-    //Set the camera perspective
-    glLoadIdentity(); //Reset the camera
-    gluPerspective(80,                  //The camera angle
-                   (double)w / (double)h, //The width-to-height ratio
-                   1.0,                   //The near z clipping coordinate
-                   200.0);                //The far z clipping coordinate
 }
 
 
@@ -143,10 +238,10 @@ void keypressHandler(unsigned char key, int x, int y)
         case 'g':
             quadrotor->pitchQuad(-2);
             break;
-        case 'k':
+        case ';':
             neoQuad->changePropSpeed(-0.1);
             break;
-        case 'l':
+        case '\'':
             neoQuad->changePropSpeed(0.1);
             break;
         case 'p':
@@ -165,29 +260,21 @@ void keypressHandler(unsigned char key, int x, int y)
             exit(0);
             
     };
+    KeyboardFunc(key,x,y);
     //glutPostRedisplay();
-}
-
-//void mouseHandler()
-
-
-void animatefunc(int value)
-{
-    glutTimerFunc(20, animatefunc, 0);
-    glutPostRedisplay();
-    //neoQuad->rotateProps(0);
 }
 
 
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv); //initialize glut 
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB); //initialize display mode
-    glutInitWindowSize(500, 500); //window size
-    glutCreateWindow("Akkas's 3D QuadCopter Model"); //create window
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA); //initialize display mode
     
-    initializeRendering();
+    glutInitWindowSize(1024, 512);
+    glutInitWindowPosition(0, 0);
+    window.window_handle = glutCreateWindow("Akkas's 3D QuadCopter Model"); //create window
     
+    /*
     glutDisplayFunc(drawHandler);
     glutKeyboardFunc(keypressHandler);
     glutReshapeFunc(resizeHandler);
@@ -198,7 +285,28 @@ int main(int argc, char** argv)
     //glutMouseFunc()
     
     glutTimerFunc(10, animatefunc, 0);
-
+*/
+    //*
+    glutReshapeFunc(ReshapeFunc);
+    glutDisplayFunc(drawHandler);
+    glutKeyboardFunc(keypressHandler);
+    glutSpecialFunc(SpecialFunc);
+    glutMouseFunc(CallBackMouseFunc);
+    glutMotionFunc(CallBackMotionFunc);
+    glutPassiveMotionFunc(CallBackPassiveFunc);
+    glutTimerFunc(window.interval, TimerFunc, 0);
+    
+    neoQuad = new NeoQuad();
+    dronedemort = new Dronedemort();
+    quadrotor = dronedemort;
+    initializeRendering();//Setup camera
+    camera.SetMode(FREE);
+    camera.SetPosition(glm::vec3(0, 150, 20));
+    camera.SetLookAt(glm::vec3(0, 0, 0));
+    camera.SetClipping(.1, 1000);
+    camera.SetFOV(45);
+    //Start the glut loop!
+    //*/
     glutMainLoop();
     
     return 0;

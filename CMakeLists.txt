@@ -1,25 +1,22 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(neoquadrotor)
+project(AgeofQuadrones)
 
-add_executable(neoquadrotor main.cpp)
+add_executable(AgeofQuadrones main.cpp NeoQuad.cpp Dronedemort.cpp Quadrotor.cpp QuadTimer.cpp camera.cpp)
 
 
 add_subdirectory(glm/)
 include_directories(glm/)
 
-install(TARGETS neoquadrotor RUNTIME DESTINATION bin)
+install(TARGETS AgeofQuadrones RUNTIME DESTINATION bin)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 #find_package(GLM REQUIRED)
 
 set(CMAKE_CXX_FLAGS "-g -Wall")
 
-include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} ${neoquadrotor_SOURCE_DIR})
-link_directories(${neoquadrotor_BINARY_DIR})
+include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} ${AgeofQuadrones_SOURCE_DIR})
+link_directories(${AgeofQuadrones_BINARY_DIR})
 
-add_library(NeoQuad NeoQuad.cpp)
-add_library(Dronedemort Dronedemort.cpp)
-add_library(Quadrotor Quadrotor.cpp)
-add_library(QuadTimer QuadTimer.cpp)
-target_link_libraries(neoquadrotor ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} NeoQuad Dronedemort Quadrotor QuadTimer)
+
+target_link_libraries(AgeofQuadrones ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
