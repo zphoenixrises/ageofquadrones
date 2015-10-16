@@ -274,18 +274,7 @@ int main(int argc, char** argv)
     glutInitWindowPosition(0, 0);
     window.window_handle = glutCreateWindow("Akkas's 3D QuadCopter Model"); //create window
     
-    /*
-    glutDisplayFunc(drawHandler);
-    glutKeyboardFunc(keypressHandler);
-    glutReshapeFunc(resizeHandler);
-    neoQuad = new NeoQuad();
-    dronedemort = new Dronedemort();
-    quadrotor = dronedemort;
-    
-    //glutMouseFunc()
-    
-    glutTimerFunc(10, animatefunc, 0);
-*/
+
     //*
     glutReshapeFunc(ReshapeFunc);
     glutDisplayFunc(drawHandler);
@@ -301,7 +290,7 @@ int main(int argc, char** argv)
     quadrotor = dronedemort;
     initializeRendering();//Setup camera
     camera.SetMode(FREE);
-    camera.SetPosition(glm::vec3(0, 150, 20));
+    camera.SetPosition(glm::vec3(0, 0, 100));
     camera.SetLookAt(glm::vec3(0, 0, 0));
     camera.SetClipping(.1, 1000);
     camera.SetFOV(45);
