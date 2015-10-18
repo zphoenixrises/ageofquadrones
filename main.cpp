@@ -17,6 +17,7 @@
 #include "NeoQuad.h"
 #include "Dronedemort.h"
 #include "MamaQuad.h"
+#include "Background.h"
 
 using namespace std;
 using namespace glm;
@@ -97,9 +98,40 @@ void TimerFunc(int value) {
     }
 }
 
+GLfloat LightAmbient[]  = {0.5f, 0.5f, 0.5f, 1.0f}; 
+GLfloat LightDiffuse[]  = {1.0f, 1.0f, 1.0f, 1.0f}; 
+GLfloat LightPosition[] = {0.0f, 0.0f, 2.0f, 1.0f};
 
+
+NeoQuad *neoQuad;
+Dronedemort *dronedemort;
+MamaQuad *mamaQuad;
+Quadrotor *quadrotor;
+Background *background;
 void initializeRendering()
 {
+    background-> LoadGLTextures();                           // load the textures.
+    glEnable(GL_TEXTURE_2D);                    // Enable texture mapping.
+    
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);          // Set the blending function for translucency (note off at init time)
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);       // This Will Clear The Background Color To Black
+    glClearDepth(1.0);                          // Enables Clearing Of The Depth Buffer
+    glDepthFunc(GL_LESS);                       // type of depth test to do.
+   // glEnable(GL_DEPTH_TEST);                    // enables depth testing.
+    glShadeModel(GL_SMOOTH);                    // Enables Smooth Color Shading
+    
+ //   glMatrixMode(GL_PROJECTION);
+  //  glLoadIdentity();                           // Reset The Projection Matrix
+    
+ //   gluPerspective(45.0f,(GLfloat)Width/(GLfloat)Height,0.1f,100.0f);   // Calculate The Aspect Ratio Of The Window
+    
+    glMatrixMode(GL_MODELVIEW);
+    
+    // set up lights.
+    glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);
+    glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
+    glEnable(GL_LIGHT1);
     
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_COLOR_MATERIAL);
@@ -107,16 +139,10 @@ void initializeRendering()
     glEnable(GL_LIGHT0); //Enable light #0
     glEnable(GL_LIGHT1); //Enable light #1
     glEnable(GL_NORMALIZE); //Automatically normalize normals
-    glEnable(GL_CULL_FACE);
+ //   glEnable(GL_CULL_FACE);
 
 }
 
-
-
-NeoQuad *neoQuad;
-Dronedemort *dronedemort;
-MamaQuad *mamaQuad;
-Quadrotor *quadrotor;
 
 void output(GLfloat x, GLfloat y, char* text)
 {
@@ -136,7 +162,9 @@ void drawHandler()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-   // glMatrixMode(GL_MODELVIEW);
+    glClearDepth(1.0);                          // Enables Clearing Of The Depth Buffer
+    
+    // glMatrixMode(GL_MODELVIEW);
     glViewport(0, 0, window.size.x, window.size.y);
    
     
@@ -163,25 +191,28 @@ void drawHandler()
     
     glm::mat4 mvp = projection* view * model;       //Compute the mvp matrix
     glLoadMatrixf(glm::value_ptr(mvp));
-    neoQuad->moveAbs(10,0,0);
+    glColor3f(1.0f,1.0f,1.0f);
+    background->DrawGLScene();
+   //*
+    neoQuad->moveAbs(10,60,0);
     neoQuad->draw();
     
     
     
     //glMatrixMode(GL_MODELVIEW);
-    dronedemort->moveAbs(-50, 0 ,0);
+    dronedemort->moveAbs(-50, 60 ,0);
     dronedemort->draw();
-    mamaQuad-> moveAbs(60,0,0);
+    mamaQuad-> moveAbs(60,60,0);
     mamaQuad->draw();
-    
+    //*/
     
 
 
     //glLoadIdentity();
    // glColor3ub(255,0,0);
    // output(20,20,neoQuad->difftime);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+   // glCullFace(GL_BACK);
+   // glFrontFace(GL_CCW);
     glutSwapBuffers();
     
 }
@@ -262,10 +293,13 @@ int main(int argc, char** argv)
     dronedemort = new Dronedemort();
     mamaQuad = new MamaQuad();
     quadrotor = dronedemort;
+    
+    background = new Background();
+    background->SetupWorld();
     initializeRendering();//Setup camera
     camera.SetMode(FREE);
-    camera.SetPosition(glm::vec3(60, 0, 100));
-    camera.SetLookAt(glm::vec3(60, 0, 0));
+    camera.SetPosition(glm::vec3(0, 60, 100));
+    camera.SetLookAt(glm::vec3(0, 60, 0));
     camera.SetClipping(.1, 1000);
     camera.SetFOV(45);
     //Start the glut loop!
