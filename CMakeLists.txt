@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(AgeofQuadrones)
 
-add_executable(AgeofQuadrones main.cpp NeoQuad.cpp Dronedemort.cpp Quadrotor.cpp QuadTimer.cpp camera.cpp)
+add_executable(AgeofQuadrones main.cpp NeoQuad.cpp Dronedemort.cpp MamaQuad.cpp Quadrotor.cpp QuadTimer.cpp camera.cpp)
 
 
 add_subdirectory(glm/)

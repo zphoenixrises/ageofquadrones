@@ -13,7 +13,6 @@
 
 #include <glm/gtc/type_ptr.hpp>
 using namespace std;
-
 #ifndef Pi
 
 #define Pi 3.1415926535897932384626433832795

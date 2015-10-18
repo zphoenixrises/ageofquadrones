@@ -16,6 +16,7 @@
 
 #include "NeoQuad.h"
 #include "Dronedemort.h"
+#include "MamaQuad.h"
 
 using namespace std;
 using namespace glm;
@@ -87,40 +88,7 @@ void CallBackMouseFunc(int button, int state, int x, int y) {
 void CallBackMotionFunc(int x, int y) {
     camera.Move2D(x, y);
 }
-//Draw a wire cube! (nothing fancy here)
-void DisplayFunc() {
-    //glEnable(GL_CULL_FACE);
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    glViewport(0, 0, window.size.x, window.size.y);
-    // glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    //Add ambient light
-    GLfloat ambientColor[] = {0.2f, 0.2f, 0.2f, 1.0f}; //Color (0.2, 0.2, 0.2)
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
-    
-    //Add positioned light
-    GLfloat lightColor0[] = {0.5f, 0.5f, 0.5f, 1.0f}; //Color (0.5, 0.5, 0.5)
-    GLfloat lightPos0[] = {4.0f, 0.0f, 8.0f, 1.0f}; //Positioned at (4, 0, 8)
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
-    
-    //Add directed light
-    GLfloat lightColor1[] = {0.5f, 0.5f, 0.5f, 1.0f}; //Color (0.5, 0.2, 0.2)
-    //Coming from the direction (-1, 0.5, 0.5)
-    GLfloat lightPos1[] = {-1.0f, 0.5f, 0.5f, 0.0f};
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
-    glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
-    glm::mat4 model, view, projection;
-    camera.Update();
-    camera.GetMatricies(projection, view, model);
-    
-    glm::mat4 mvp = projection* view * model;       //Compute the mvp matrix
-    glLoadMatrixf(glm::value_ptr(mvp));
-    glColor3f(1.0f,1.0f,1.0f);
-    glutSolidTeapot(10);
-    glutSwapBuffers();
-}
+
 //Redraw based on fps set for window
 void TimerFunc(int value) {
     if (window.window_handle != -1) {
@@ -147,6 +115,7 @@ void initializeRendering()
 
 NeoQuad *neoQuad;
 Dronedemort *dronedemort;
+MamaQuad *mamaQuad;
 Quadrotor *quadrotor;
 
 void output(GLfloat x, GLfloat y, char* text)
@@ -202,6 +171,8 @@ void drawHandler()
     //glMatrixMode(GL_MODELVIEW);
     dronedemort->moveAbs(-50, 0 ,0);
     dronedemort->draw();
+    mamaQuad-> moveAbs(60,0,0);
+    mamaQuad->draw();
     
     
 
@@ -253,6 +224,8 @@ void keypressHandler(unsigned char key, int x, int y)
         case ' ':
             if(quadrotor == neoQuad)
                 quadrotor = dronedemort;
+            else if(quadrotor == dronedemort)
+                quadrotor = mamaQuad;
             else
                 quadrotor = neoQuad;
             break;
@@ -287,11 +260,12 @@ int main(int argc, char** argv)
     
     neoQuad = new NeoQuad();
     dronedemort = new Dronedemort();
+    mamaQuad = new MamaQuad();
     quadrotor = dronedemort;
     initializeRendering();//Setup camera
     camera.SetMode(FREE);
-    camera.SetPosition(glm::vec3(0, 0, 100));
-    camera.SetLookAt(glm::vec3(0, 0, 0));
+    camera.SetPosition(glm::vec3(60, 0, 100));
+    camera.SetLookAt(glm::vec3(60, 0, 0));
     camera.SetClipping(.1, 1000);
     camera.SetFOV(45);
     //Start the glut loop!
