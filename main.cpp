@@ -7,7 +7,7 @@
  *
  * Creation Date: 09/19/2015
  *******************************************************************/
- 
+
 #include<iostream>
 #include<cmath>
 #include<GL/glut.h>
@@ -50,7 +50,7 @@ void ReshapeFunc(int w, int h) {
 }
 
 //Keyboard input for camera, also handles exit case
-void KeyboardFunc(unsigned char c, int x, int y) {
+void CameraKeyboardFunc(unsigned char c, int x, int y) {
     switch (c) {
         case 'i':
             camera.Move(FORWARD);
@@ -98,9 +98,6 @@ void TimerFunc(int value) {
     }
 }
 
-GLfloat LightAmbient[]  = {0.5f, 0.5f, 0.5f, 1.0f}; 
-GLfloat LightDiffuse[]  = {1.0f, 1.0f, 1.0f, 1.0f}; 
-GLfloat LightPosition[] = {0.0f, 0.0f, 2.0f, 1.0f};
 
 
 NeoQuad *neoQuad;
@@ -117,15 +114,33 @@ void initializeRendering()
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);       // This Will Clear The Background Color To Black
     glClearDepth(1.0);                          // Enables Clearing Of The Depth Buffer
     glDepthFunc(GL_LESS);                       // type of depth test to do.
-   // glEnable(GL_DEPTH_TEST);                    // enables depth testing.
+    // glEnable(GL_DEPTH_TEST);                    // enables depth testing.
     glShadeModel(GL_SMOOTH);                    // Enables Smooth Color Shading
     
- //   glMatrixMode(GL_PROJECTION);
-  //  glLoadIdentity();                           // Reset The Projection Matrix
+    glEnable(GL_LIGHTING); //Enable lighting
+    //   glMatrixMode(GL_PROJECTION);
+    //  glLoadIdentity();                           // Reset The Projection Matrix
     
- //   gluPerspective(45.0f,(GLfloat)Width/(GLfloat)Height,0.1f,100.0f);   // Calculate The Aspect Ratio Of The Window
+    //   gluPerspective(45.0f,(GLfloat)Width/(GLfloat)Height,0.1f,100.0f);   // Calculate The Aspect Ratio Of The Window
     
     glMatrixMode(GL_MODELVIEW);
+    
+    /*****************************************For Background***********************/ 
+    GLfloat LightAmbient[]  = {0.5f, 0.5f, 0.5f, 1.0f}; 
+    GLfloat LightDiffuse[]  = {1.0f, 1.0f, 1.0f, 1.0f}; 
+    GLfloat LightPosition[] = {0.0f, 0.0f, 2.0f, 1.0f};
+    
+    //For smoke
+    
+    const GLfloat light_ambient[]  = { 0.0f, 0.0f, 0.0f, 1.0f };
+    const GLfloat light_diffuse[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
+    const GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    const GLfloat light_position[] = { 0.0f, 0.0f, 3.0f, 1.0f };
+    //const GLfloat mat_ambient[]    = { 0.7f, 0.7f, 0.7f, 1.0f };
+    //const GLfloat mat_diffuse[]    = { 0.8f, 0.8f, 0.8f, 1.0f };
+    //const GLfloat mat_specular[]   = { 1.0f, 1.0f, 1.0f, 1.0f };
+    //const GLfloat high_shininess[] = { 100.0f };
+    //////////////////////////
     
     // set up lights.
     glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);
@@ -133,14 +148,24 @@ void initializeRendering()
     glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
     glEnable(GL_LIGHT1);
     
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_specular);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glEnable(GL_LIGHT0);
+    
+    
+    /*****************************************For Background***********************/
+    
+    
+    
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_LIGHTING); //Enable lighting
-    glEnable(GL_LIGHT0); //Enable light #0
-    glEnable(GL_LIGHT1); //Enable light #1
+    // glEnable(GL_LIGHT0); //Enable light #0
+    // glEnable(GL_LIGHT1); //Enable light #1
     glEnable(GL_NORMALIZE); //Automatically normalize normals
- //   glEnable(GL_CULL_FACE);
-
+    //   glEnable(GL_CULL_FACE);
+    
 }
 
 
@@ -166,9 +191,9 @@ void drawHandler()
     
     // glMatrixMode(GL_MODELVIEW);
     glViewport(0, 0, window.size.x, window.size.y);
-   
     
-    //Add ambient light
+    
+    //*   //Add ambient light
     GLfloat ambientColor[] = {0.2f, 0.2f, 0.2f, 1.0f}; //Color (0.2, 0.2, 0.2)
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
     
@@ -183,7 +208,7 @@ void drawHandler()
     //Coming from the direction (-1, 0.5, 0.5)
     GLfloat lightPos1[] = {-1.0f, 0.5f, 0.5f, 0.0f};
     glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
-    glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
+    glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);//*/
     //glLoadIdentity();
     glm::mat4 model, view, projection;
     camera.Update();
@@ -193,7 +218,7 @@ void drawHandler()
     glLoadMatrixf(glm::value_ptr(mvp));
     glColor3f(1.0f,1.0f,1.0f);
     background->DrawGLScene();
-   //*
+    //*
     neoQuad->moveAbs(10,60,0);
     neoQuad->draw();
     
@@ -206,13 +231,13 @@ void drawHandler()
     mamaQuad->draw();
     //*/
     
-
-
+    
+    
     //glLoadIdentity();
-   // glColor3ub(255,0,0);
-   // output(20,20,neoQuad->difftime);
-   // glCullFace(GL_BACK);
-   // glFrontFace(GL_CCW);
+    // glColor3ub(255,0,0);
+    // output(20,20,neoQuad->difftime);
+    // glCullFace(GL_BACK);
+    // glFrontFace(GL_CCW);
     glutSwapBuffers();
     
 }
@@ -264,7 +289,7 @@ void keypressHandler(unsigned char key, int x, int y)
             exit(0);
             
     };
-    KeyboardFunc(key,x,y);
+    CameraKeyboardFunc(key,x,y);
     //glutPostRedisplay();
 }
 
@@ -276,9 +301,9 @@ int main(int argc, char** argv)
     
     glutInitWindowSize(1024, 512);
     glutInitWindowPosition(0, 0);
-    window.window_handle = glutCreateWindow("Akkas's 3D QuadCopter Model"); //create window
+    window.window_handle = glutCreateWindow("Age of Quadrones"); //create window
     
-
+    
     //*
     glutReshapeFunc(ReshapeFunc);
     glutDisplayFunc(drawHandler);
@@ -298,9 +323,9 @@ int main(int argc, char** argv)
     background->SetupWorld();
     initializeRendering();//Setup camera
     camera.SetMode(FREE);
-    camera.SetPosition(glm::vec3(0, 60, 100));
+    camera.SetPosition(glm::vec3(0, 60, 1000));
     camera.SetLookAt(glm::vec3(0, 60, 0));
-    camera.SetClipping(.1, 1000);
+    camera.SetClipping(.1, 80000);
     camera.SetFOV(45);
     //Start the glut loop!
     //*/

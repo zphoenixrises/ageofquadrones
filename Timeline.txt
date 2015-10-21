@@ -1,0 +1,11 @@
+#Timeline file for Quadworld defined here
+#tim <time_in_sec>
+#cam <x_position>,<y_position>,<z_position>,<roll>,<pitch>,<yaw>, 
+#<quadcopter> <x_position>,<y_position>,<z_position>,<roll>,<pitch>,<yaw>
+
+tim 10.00
+cam 
+neo 
+dro
+mam
+

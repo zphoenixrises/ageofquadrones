@@ -1,6 +1,7 @@
 #include "Background.h"
 
 
+#include <stdio.h>      // Header file for standard file i/o.
 /*
  * getint and getshort are help functions to load the bitmap byte by byte on 
  * SPARC platform (actually, just makes the thing work on platforms of either
@@ -36,11 +37,22 @@ static unsigned int getshort(FILE *fp)
 Background::Background()
 {
     filter = 0; 
-
+    limits = .8;
+    X=0, Y=0;
+    currentParticle = 1;
 }
 
 // loads the world from a text file.
 void Background::SetupWorld()
+{
+    SetupItem((const char*)"Data/world.txt",sector1);//world
+    SetupItem((const char*)"Data/grass.txt",sector2);//grass
+    SetupItem((const char*)"Data/floor.txt",sector3);//floor
+    
+    
+}
+
+void Background::SetupItem(char* path,SECTOR &sector)
 {
     float x, y, z, u, v;
     int vert;
@@ -48,23 +60,29 @@ void Background::SetupWorld()
     FILE *filein;        // file to load the world from
     char oneline[255];
     
-    filein = fopen("Data/world.txt", "rt");
+    filein = fopen(path, "rt");
+    if (filein==NULL)
+    {
+        printf("file not found");
+        fclose (filein);
+    }
+    printf("Successfully read:%s\n",path);
     
     readstr(filein, oneline);
     sscanf(oneline, "NUMPOLLIES %d\n", &numtriangles);
     
-    sector1.numtriangles = numtriangles;
-    sector1.triangle = (TRIANGLE *) malloc(sizeof(TRIANGLE)*numtriangles);
+    sector.numtriangles = numtriangles;
+    sector.triangle = (TRIANGLE *) malloc(sizeof(TRIANGLE)*numtriangles);
     
     for (loop = 0; loop < numtriangles; loop++) {
         for (vert = 0; vert < 3; vert++) {
             readstr(filein,oneline);
             sscanf(oneline, "%f %f %f %f %f", &x, &y, &z, &u, &v);
-            sector1.triangle[loop].vertex[vert].x = x;
-            sector1.triangle[loop].vertex[vert].y = y;
-            sector1.triangle[loop].vertex[vert].z = z;
-            sector1.triangle[loop].vertex[vert].u = u;
-            sector1.triangle[loop].vertex[vert].v = v;
+            sector.triangle[loop].vertex[vert].x = x;
+            sector.triangle[loop].vertex[vert].y = y;
+            sector.triangle[loop].vertex[vert].z = z;
+            sector.triangle[loop].vertex[vert].u = u;
+            sector.triangle[loop].vertex[vert].v = v;
         }
     }
     
@@ -76,6 +94,7 @@ void Background::SetupWorld()
 // is found ("/" at the start indicating a comment); assumes lines < 255 characters long.
 void Background::readstr(FILE *f, char *string)
 {
+    
     do {
         fgets(string, 255, f); // read the line
     } while ((string[0] == '/') || (string[0] == '\n'));
@@ -160,7 +179,8 @@ int Background::ImageLoad(char *filename, Image *image)
 GLvoid Background::LoadGLTextures() 
 {       
     // Load Texture
-    Image *image1;
+    Image *image1 , *image2 , *image3, *image4, *image5, *image6, *image7, *image8, *image9;
+    
     
     // allocate space for texture
     image1 = (Image *) malloc(sizeof(Image));
@@ -169,18 +189,101 @@ GLvoid Background::LoadGLTextures()
         exit(0);
     }
     
-    if (!ImageLoad((char*)"Data/mud.bmp", image1)) {
+    if (!ImageLoad("Data/download.bmp", image1)) {
         exit(1);
-    }        
+        
+    }
+    
+    image2 = (Image *) malloc(sizeof(Image));
+    if (image2 == NULL) {
+        printf("Error allocating space for image");
+        exit(0);
+    }
+    
+    if (!ImageLoad("Data/floor.bmp", image2)) {
+        exit(1);
+    }    
+    
+    image3 = (Image *) malloc(sizeof(Image));
+    if (image3 == NULL) {
+        printf("Error allocating space for image");
+        exit(0);
+    }
+    
+    if (!ImageLoad("Data/grass.bmp", image3)) {
+        exit(1);  
+    }
+    
+    image4 = (Image *) malloc(sizeof(Image));
+    if (image4 == NULL) {
+        printf("Error allocating space for image");
+        exit(0);
+    }
+    
+    if (!ImageLoad("Data/sky.bmp", image4)) {
+        exit(1);  
+    }
+    
+    image5 = (Image *) malloc(sizeof(Image));
+    if (image5 == NULL) {
+        printf("Error allocating space for image");
+        exit(0);
+    }
+    
+    if (!ImageLoad("Data/images.bmp", image5)) {
+        exit(1);  
+    }
+    
+    image6 = (Image *) malloc(sizeof(Image));
+    if (image6 == NULL) {
+        printf("Error allocating space for image");
+        exit(0);
+    }
+    
+    if (!ImageLoad("Data/security.bmp", image6)) {
+        exit(1);  
+    }
+    
+    image7 = (Image *) malloc(sizeof(Image));
+    if (image7 == NULL) {
+        printf("Error allocating space for image");
+        exit(0);
+    }
+    
+    if (!ImageLoad("Data/comm.bmp", image7)) {
+        exit(1);  
+    }
+    
+    image8 = (Image *) malloc(sizeof(Image));
+    if (image8 == NULL) {
+        printf("Error allocating space for image");
+        exit(0);
+    }
+    
+    if (!ImageLoad("Data/laser_gun.bmp", image8)) {
+        exit(1);  
+    }
+    
+    image9 = (Image *) malloc(sizeof(Image));
+    if (image9 == NULL) {
+        printf("Error allocating space for image");
+        exit(0);
+    }
+    
+    if (!ImageLoad("Data/tower.bmp", image9)) {
+        exit(1);  
+    }
     
     // Create Textures  
-    glGenTextures(3, &texture[0]);
+    glGenTextures(8, &texture[0]);
     
     // nearest filtered texture
     glBindTexture(GL_TEXTURE_2D, texture[0]);   // 2d texture (x and y size)
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST); // scale cheaply when image bigger than texture
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST); // scale cheaply when image smalled than texture
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, image1->sizeX, image1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, image1->data);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, image3->sizeX, image3->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, image3->data);
+    
+    free(image3);
     
     // linear filtered texture
     glBindTexture(GL_TEXTURE_2D, texture[1]);   // 2d texture (x and y size)
@@ -188,11 +291,63 @@ GLvoid Background::LoadGLTextures()
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); // scale linearly when image smalled than texture
     glTexImage2D(GL_TEXTURE_2D, 0, 3, image1->sizeX, image1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, image1->data);
     
+    free(image1);
+    
     // mipmapped texture
     glBindTexture(GL_TEXTURE_2D, texture[2]);   // 2d texture (x and y size)
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image1->sizeX, image1->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image1->data);
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image2->sizeX, image2->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image2->data);
+    
+    free(image2); 
+    
+    // mipmapped texture
+    glBindTexture(GL_TEXTURE_2D, texture[3]);   // 2d texture (x and y size)
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image4->sizeX, image4->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image4->data);
+    
+    free(image4); 
+    
+    // mipmapped texture
+    glBindTexture(GL_TEXTURE_2D, texture[4]);   // 2d texture (x and y size)
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image5->sizeX, image5->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image5->data);
+    
+    free(image5); 
+    
+    // mipmapped texture
+    glBindTexture(GL_TEXTURE_2D, texture[5]);   // 2d texture (x and y size)
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image6->sizeX, image6->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image6->data);
+    
+    free(image6); 
+    
+    // mipmapped texture
+    glBindTexture(GL_TEXTURE_2D, texture[6]);   // 2d texture (x and y size)
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image7->sizeX, image7->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image7->data);
+    
+    free(image7); 
+    
+    // mipmapped texture
+    glBindTexture(GL_TEXTURE_2D, texture[7]);   // 2d texture (x and y size)
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image8->sizeX, image8->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image8->data);
+    
+    free(image8); 
+    
+    // mipmapped texture
+    glBindTexture(GL_TEXTURE_2D, texture[8]);   // 2d texture (x and y size)
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image9->sizeX, image9->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image9->data);
+    
+    free(image9); 
 };
 
 
@@ -206,19 +361,19 @@ GLvoid Background::DrawGLScene()
     glPushMatrix(); //Main push
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);         // Clear The Screen And The Depth Buffer
     //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);   // This Will Clear The Background Color To Black
-   // glClearDepth(1.0);                          // Enables Clearing Of The Depth Buffer
+    // glClearDepth(1.0);                          // Enables Clearing Of The Depth Buffer
     //glColor3f(1.0)
     glLoadIdentity();
     glScalef(200.0f,200.0f,200.0f);
     //glTranslatef(pos_x, pos_y, pos_z);
- //   glMultMatrixf(glm::value_ptr(Model)); //load Model matrix
+    //   glMultMatrixf(glm::value_ptr(Model)); //load Model matrix
     
     GLfloat x_m, y_m, z_m, u_m, v_m;
-    GLfloat xtrans, ztrans, ytrans;
-    GLfloat sceneroty;
+    //GLfloat sceneroty;
     int numtriangles;
-
-    glBindTexture(GL_TEXTURE_2D, texture[filter]);    // pick the texture.
+    
+    glBindTexture(GL_TEXTURE_2D, texture[1]); // pick the texture.
+    
     
     numtriangles = sector1.numtriangles;
     
@@ -251,10 +406,361 @@ GLvoid Background::DrawGLScene()
         glVertex3f(x_m,y_m,z_m);        
         
         glEnd();        
+        
     }
+    glBindTexture(GL_TEXTURE_2D, texture[2]);
+    
+    numtriangles = sector2.numtriangles;
+    
+    for (loop=0; loop<numtriangles; loop++) {        // loop through all the triangles
+        glBegin(GL_TRIANGLES);          
+        glNormal3f( 0.0f, 0.0f, 1.0f);
+        
+        x_m = sector2.triangle[loop].vertex[0].x;
+        y_m = sector2.triangle[loop].vertex[0].y;
+        z_m = sector2.triangle[loop].vertex[0].z;
+        u_m = sector2.triangle[loop].vertex[0].u;
+        v_m = sector2.triangle[loop].vertex[0].v;
+        glTexCoord2f(u_m,v_m); 
+        glVertex3f(x_m,y_m,z_m);
+        
+        x_m = sector2.triangle[loop].vertex[1].x;
+        y_m = sector2.triangle[loop].vertex[1].y;
+        z_m = sector2.triangle[loop].vertex[1].z;
+        u_m = sector2.triangle[loop].vertex[1].u;
+        v_m = sector2.triangle[loop].vertex[1].v;
+        glTexCoord2f(u_m,v_m); 
+        glVertex3f(x_m,y_m,z_m);
+        
+        x_m = sector2.triangle[loop].vertex[2].x;
+        y_m = sector2.triangle[loop].vertex[2].y;
+        z_m = sector2.triangle[loop].vertex[2].z;
+        u_m = sector2.triangle[loop].vertex[2].u;
+        v_m = sector2.triangle[loop].vertex[2].v;
+        glTexCoord2f(u_m,v_m); 
+        glVertex3f(x_m,y_m,z_m);        
+        
+        glEnd();        
+    }
+    
+    
+    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    numtriangles = sector3.numtriangles;
+    
+    for (loop=0; loop<numtriangles; loop++) {        // loop through all the triangles
+        glBegin(GL_TRIANGLES);          
+        glNormal3f( 0.0f, 0.0f, 1.0f);
+        
+        x_m = sector3.triangle[loop].vertex[0].x;
+        y_m = sector3.triangle[loop].vertex[0].y;
+        z_m = sector3.triangle[loop].vertex[0].z;
+        u_m = sector3.triangle[loop].vertex[0].u;
+        v_m = sector3.triangle[loop].vertex[0].v;
+        glTexCoord2f(u_m,v_m); 
+        glVertex3f(x_m,y_m,z_m);
+        
+        x_m = sector3.triangle[loop].vertex[1].x;
+        y_m = sector3.triangle[loop].vertex[1].y;
+        z_m = sector3.triangle[loop].vertex[1].z;
+        u_m = sector3.triangle[loop].vertex[1].u;
+        v_m = sector3.triangle[loop].vertex[1].v;
+        glTexCoord2f(u_m,v_m); 
+        glVertex3f(x_m,y_m,z_m);
+        
+        x_m = sector3.triangle[loop].vertex[2].x;
+        y_m = sector3.triangle[loop].vertex[2].y;
+        z_m = sector3.triangle[loop].vertex[2].z;
+        u_m = sector3.triangle[loop].vertex[2].u;
+        v_m = sector3.triangle[loop].vertex[2].v;
+        glTexCoord2f(u_m,v_m); 
+        glVertex3f(x_m,y_m,z_m);        
+        
+        glEnd();
+        
+        
+    }
+    //*
+    sky();
+    power();
+    security();
+    Draw_smoke();
+    //*/
     glDisable(GL_TEXTURE_2D);                    // Enable texture mapping.
     
     glPopMatrix();
     // since this is double buffered, swap the buffers to display what just got drawn.
-   // glutSwapBuffers();
+    // glutSwapBuffers();
+}
+
+
+
+void Background::sky(){
+    
+    
+    GLUquadric *sky = gluNewQuadric(); 
+    
+    gluQuadricTexture(sky,GL_TRUE); 
+    
+    
+    glBindTexture(GL_TEXTURE_2D,texture[3]);
+    
+    glPushMatrix();
+    glTranslatef(0.0,0.0,0.0);
+    gluSphere(sky,40.0,100,100);
+    glPopMatrix();
+    
+    gluDeleteQuadric(sky);      
+    
+}
+
+
+
+void Background::power(){
+    
+    
+    GLUquadric *power = gluNewQuadric(); 
+    
+    gluQuadricTexture(power,GL_TRUE); 
+    
+    
+    glBindTexture(GL_TEXTURE_2D,texture[4]);
+    
+    glPushMatrix();
+    glTranslatef(-20.0,1.2,3.75);
+    gluSphere(power,0.2,100,100);
+    glPopMatrix();
+    
+    gluDeleteQuadric(power);
+    
+    
+    GLUquadric *power_tower = gluNewQuadric(); 
+    
+    gluQuadricTexture(power_tower,GL_TRUE); 
+    
+    
+    glBindTexture(GL_TEXTURE_2D,texture[8]);
+    
+    glPushMatrix();
+    
+    glTranslatef(-20.0,0.0,3.75);
+    glRotatef(-90,1,0,0);
+    gluCylinder(    power_tower,
+                    0.08,
+                    0.08,
+                    1.0,
+                    100,
+                    100);
+    
+    glPopMatrix();
+    
+    gluDeleteQuadric(power_tower); 
+    
+    
+    GLUquadric *power_outlet = gluNewQuadric(); 
+    
+    gluQuadricTexture(power_outlet,GL_TRUE); 
+    
+    
+    glBindTexture(GL_TEXTURE_2D,texture[8]);
+    
+    glPushMatrix();
+    
+    glTranslatef(-20.0,2.0,3.75);
+    glRotatef(-90,1,0,0);
+    gluCylinder(    power_outlet,
+                    0.2,
+                    0.2,
+                    3.5,
+                    100,
+                    100);
+    
+    glPopMatrix();
+    
+    gluDeleteQuadric(power_outlet); 
+    
+    
+    GLUquadric *chip_tower = gluNewQuadric(); 
+    
+    gluQuadricTexture(chip_tower,GL_TRUE); 
+    
+    glBindTexture(GL_TEXTURE_2D,texture[8]);
+    
+    glPushMatrix();
+    
+    glTranslatef(-20.0,0.0,3.0);
+    glRotatef(-90,1,0,0);
+    gluCylinder(    chip_tower,
+                    0.08,
+                    0.08,
+                    0.7,
+                    100,
+                    100);
+    
+    glPopMatrix();
+    
+    gluDeleteQuadric(chip_tower); 
+    
+    
+    glBindTexture(GL_TEXTURE_2D,texture[6]);
+    
+    glPushMatrix();
+    
+    //glTranslatef(-20.0,0.0,3.0);
+    //glRotatef(-90,1,0,0);
+    glBegin(GL_QUADS);
+    //glNormal3f( 0.0f, 0.0f, 1.0f);
+    glTexCoord2f(1.0,0.0);
+    glVertex3f(-20.0,0.7,2.975);
+    glTexCoord2f(0.0,0.0);
+    glVertex3f(-20.0,0.8,2.975);
+    glTexCoord2f(0.0,1.0);
+    glVertex3f(-20.0,0.8,3.025);
+    glTexCoord2f(0.0,0.0);
+    glVertex3f(-20.0,0.7,3.025);
+    glEnd();
+    
+    glPopMatrix();
+    
+    
+}
+
+
+
+void Background::security() {
+    
+    GLUquadric *security = gluNewQuadric(); 
+    
+    gluQuadricTexture(security,GL_TRUE); 
+    
+    
+    glBindTexture(GL_TEXTURE_2D,texture[5]);
+    
+    glPushMatrix();
+    
+    glTranslatef(0.0,0.0,2.0);
+    glRotatef(-90,1,0,0);
+    gluCylinder(    security,
+                    0.05,
+                    0.05,
+                    0.5,
+                    50,
+                    50);
+    
+    glPopMatrix();
+    
+    gluDeleteQuadric(security); 
+    
+    glBindTexture(GL_TEXTURE_2D,texture[6]);
+    glPushMatrix();
+    glBegin(GL_QUADS);
+    glNormal3f( 0.0f, 0.0f, 1.0f);
+    glTexCoord2f(1.0,0.0);
+    glVertex3f(0.12,0.4,2.1);
+    glTexCoord2f(0.0,0.0);
+    glVertex3f(0.12,0.3,2.1);
+    glTexCoord2f(0.0,1.0);
+    glVertex3f(-0.12,0.3,2.1);
+    glTexCoord2f(0.0,0.0);
+    glVertex3f(-0.12,0.4,2.1);
+    glEnd();
+    glPopMatrix();  
+    
+    
+    GLUquadric *laser_gun = gluNewQuadric(); 
+    
+    gluQuadricTexture(laser_gun,GL_TRUE); 
+    
+    glBindTexture(GL_TEXTURE_2D,texture[7]);
+    
+    glPushMatrix();
+    glTranslatef(0.0,0.6,2.0);
+    gluSphere(laser_gun,0.08,100,100);
+    glPopMatrix();
+    
+    gluDeleteQuadric(laser_gun);
+    
+}
+
+
+GLvoid Background:: Draw_smoke(void) {
+    
+    int thingy = 1;
+    bool check = false;
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glPushMatrix();
+    glTranslatef(-20.0,5.5,5.75);
+    
+    /*
+     *       
+     *       glColor3d(.3, .1, 0);
+     *       
+     *       glutSolidCube(.3);
+     *       glPopMatrix();
+     */
+    if (check == false) {
+        float R, G, B;
+        glPushMatrix();
+        glBegin(GL_TRIANGLES);
+        for (int i = 0; i < MAX_PARTICLES; i++) {
+            //R = rand() % 100 + 1;
+            //G = rand() % 100 + 1;
+            //B = rand() % 100 + 1;
+            //glColor3d(R*.01, G*.01, B*.01);
+            glColor3f(1.0, 1.0, 1.0);
+            //glColor3d(10, 10, 0);
+            //glColor3d(0, 0+posY[i], 0);
+            glVertex3f(X-.01, Y, -2);
+            glVertex3f(X+.01, Y, -2);
+            glVertex3f(X, Y+.02, -2);
+            X = posX[i];
+            Y = posY[i];
+        }
+        glEnd();
+        glPopMatrix();
+        check = true;
+    }
+    switch(thingy){
+        case 1:
+            //Sleep(1);
+            moveParticles(currentParticle);
+            if (currentParticle != MAX_PARTICLES) {
+                currentParticle++;
+            }
+            
+            //  glutPostRedisplay();
+            break;
+            
+            
+            
+    }
+    
+    //glutSwapBuffers();
+}
+
+
+void Background::moveParticles(int amount_of_particles) {
+    srand (time (NULL) );
+    float myX, myY;
+    
+    for (int i = 0; i < amount_of_particles; i++) {         
+        myX = rand() % 3 + 1;
+        if(myX==1 && posX[i]<=limits ){
+            int mytemp = rand() % 100 + 1;
+            int temp = rand() % 5 + 1;
+            posX[i]+=temp*.001;
+            posY[i]+=mytemp*.0004;
+        }
+        if(myX==2){posX[i]+=.00;posY[i]+=.01;}
+        if(myX==3 && posX[i]>=-limits){
+            int temp = rand() % 5 + 1;
+            int mytemp = rand() % 100 + 1;
+            posX[i]-=temp*.001;
+            posY[i]+=mytemp*.0004;
+        }
+        ///////////////////////////////////////////
+        if(posY[i]>=limits){    
+            posY[i]=0;
+            posX[i]=0;
+        }
+    }
 }
