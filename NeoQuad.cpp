@@ -17,6 +17,7 @@
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 
 #include <glm/gtc/type_ptr.hpp>
+#include <cstdio>
 using namespace std;
 
 #define SOLID_RENDERING 
@@ -27,6 +28,9 @@ NeoQuad::NeoQuad()
     propSpeed = 2;
     animate = true;
     currentState = NEUTRAL;
+    isInMotion = false;
+    timeline = new Timeline("NEO");
+    //timeline->displayLines();
 }
 void NeoQuad::drawEllipsoid(unsigned int uiStacks, unsigned int uiSlices, float fA, float fB, float fC)
 {
@@ -165,6 +169,7 @@ void NeoQuad::drawQuad()
 {
     
     rotateProps();
+    move();
   
     glMultMatrixf(glm::value_ptr(Model)); //load Model matrix
     
@@ -219,9 +224,9 @@ void NeoQuad::rotateProps()
     if (animate)
     {
         
-        propAngle += propSpeed*time.getTimeDiffSec()*1000;
+        propAngle += propSpeed*propTime.getTimeDiffSec()*1000;
     }
-    time.getTimeDiffSec();
+    propTime.getTimeDiffSec();
     
 }
 
@@ -243,3 +248,43 @@ void NeoQuad::powerToggle()
     else if(currentState == POWEREDUP)
         currentState = POWERINGDOWN;
 }
+
+void NeoQuad::move()
+{
+ //*
+    static bool turnoff = false;
+    if(!turnoff)
+    {
+        double current_time = QuadTimer::GetProcessTime();
+        static double com_time;
+        static double com_posx,com_posy,com_posz;
+        
+        if(!isInMotion)
+        {
+            
+            if(sscanf(timeline->readNextCommand(),"%lf %lf %lf %lf",&com_time,&com_posx,&com_posy,&com_posz)==EOF)
+            {turnoff = true; return;}
+            isInMotion = true;
+            quadTime.getTimeDiffSec();
+            
+         //   printf("\nGot command:%f %f %f %f",com_time,com_posx,com_posy,com_posz);
+        }
+        else if(current_time<=com_time)
+        {
+            glm::vec3 distance = glm::vec3(com_posx-pos_x,com_posy-pos_y,com_posz-pos_z);
+            double delta_time = com_time-current_time;
+            glm::vec3 dist2 = distance *(float) (quadTime.getTimeDiffSec()/ delta_time);
+            moveRel(dist2.x,dist2.y,dist2.z);
+       //     printf("\ndelta pos:%f %f %f",dist2.x,dist2.y,dist2.z);
+            
+        }
+        else
+            isInMotion = false;
+        
+        
+        
+     //   printf("\ncurrent pos:%f %f %f",pos_x, pos_y,pos_z);
+    }
+//*/
+}
+

@@ -12,6 +12,7 @@
 #define NEOQUAD_H
 #include "QuadTimer.h"
 #include "Quadrotor.h"
+#include "Timeline.h"
 using namespace std;
 
 #define sqrt2 1.41421356237
@@ -20,7 +21,9 @@ enum State{NEUTRAL=1,POWERINGUP,POWEREDUP,POWERINGDOWN};
 class NeoQuad:public Quadrotor
 {
 private:
-    QuadTimer time;
+    Timeline *timeline;
+    QuadTimer propTime,quadTime;
+    bool isInMotion;
     float propAngle;
     float propSpeed;
     bool animate;
@@ -39,6 +42,7 @@ public:
     void drawQuad();
     void changePropSpeed(float increment);
     void powerToggle();
+    void move();
 };
 
 #endif

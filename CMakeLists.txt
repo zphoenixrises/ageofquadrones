@@ -2,17 +2,26 @@ cmake_minimum_required(VERSION 2.8)
 
 project(AgeofQuadrones)
 
-add_executable(AgeofQuadrones main.cpp NeoQuad.cpp Dronedemort.cpp MamaQuad.cpp Quadrotor.cpp Background.cpp QuadTimer.cpp camera.cpp)
+add_executable(AgeofQuadrones main.cpp NeoQuad.cpp Dronedemort.cpp MamaQuad.cpp Quadrotor.cpp Background.cpp QuadTimer.cpp camera.cpp Timeline.cpp)
 
 
 add_subdirectory(glm/)
 include_directories(glm/)
 
-add_subdirectory(Data/)
-install(TARGETS AgeofQuadrones RUNTIME DESTINATION bin)
+#copy all files form Data/ to build/Data
+file(COPY Data/ DESTINATION Data/)
+#install(TARGETS AgeofQuadrones RUNTIME DESTINATION bin)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
-#find_package(GLM REQUIRED)
+
+#INCLUDE(FindFreeGLUT.cmake)
+
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
+#FIND_PACKAGE(FreeGLUT REQUIRED)
+
+#ADD_DEFINITIONS(-DFREEGLUT_STATIC=1)
+#INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include ${FREEGLUT_INCLUDE_DIRS})
+#SET(GLUT_LIB ${FREEGLUT_LIBRARIES})
 
 set(CMAKE_CXX_FLAGS "-g -Wall")
 

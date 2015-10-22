@@ -164,7 +164,7 @@ void initializeRendering()
     // glEnable(GL_LIGHT0); //Enable light #0
     // glEnable(GL_LIGHT1); //Enable light #1
     glEnable(GL_NORMALIZE); //Automatically normalize normals
-    //   glEnable(GL_CULL_FACE);
+       glEnable(GL_CULL_FACE);
     
 }
 
@@ -217,9 +217,10 @@ void drawHandler()
     glm::mat4 mvp = projection* view * model;       //Compute the mvp matrix
     glLoadMatrixf(glm::value_ptr(mvp));
     glColor3f(1.0f,1.0f,1.0f);
+    glDisable(GL_CULL_FACE); //had to disable culling as it is not done in background
     background->DrawGLScene();
+    glEnable(GL_CULL_FACE);
     //*
-    neoQuad->moveAbs(10,60,0);
     neoQuad->draw();
     
     
@@ -236,8 +237,8 @@ void drawHandler()
     //glLoadIdentity();
     // glColor3ub(255,0,0);
     // output(20,20,neoQuad->difftime);
-    // glCullFace(GL_BACK);
-    // glFrontFace(GL_CCW);
+     glCullFace(GL_BACK);
+     glFrontFace(GL_CCW);
     glutSwapBuffers();
     
 }
@@ -318,12 +319,13 @@ int main(int argc, char** argv)
     dronedemort = new Dronedemort();
     mamaQuad = new MamaQuad();
     quadrotor = dronedemort;
+    neoQuad->moveAbs(10,60,0);
     
     background = new Background();
     background->SetupWorld();
     initializeRendering();//Setup camera
     camera.SetMode(FREE);
-    camera.SetPosition(glm::vec3(0, 60, 1000));
+    camera.SetPosition(glm::vec3(0, 200, 2000));
     camera.SetLookAt(glm::vec3(0, 60, 0));
     camera.SetClipping(.1, 80000);
     camera.SetFOV(45);

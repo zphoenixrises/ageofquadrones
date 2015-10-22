@@ -180,7 +180,15 @@ GLvoid Background::LoadGLTextures()
 {       
     // Load Texture
     Image *image1 , *image2 , *image3, *image4, *image5, *image6, *image7, *image8, *image9;
+/*  
+   Image image[9];
+    char imagePaths[][40]={"Data/download.bmp","Data/floor.bmp","Data/grass.bmp","Data/sky.bmp",
+        "Data/images.bmp","Data/security.bmp","Data/comm.bmp","Data/laser_gun.bmp","Data/tower.bmp"};
     
+    for(int i=0;i<9;i++)
+        if (!ImageLoad(imagePaths, image[i])) 
+            exit(1);
+     //*/   
     
     // allocate space for texture
     image1 = (Image *) malloc(sizeof(Image));
@@ -727,7 +735,7 @@ GLvoid Background:: Draw_smoke(void) {
                 currentParticle++;
             }
             
-            //  glutPostRedisplay();
+             // glutPostRedisplay();
             break;
             
             

@@ -3,9 +3,21 @@
 #cam <x_position>,<y_position>,<z_position>,<roll>,<pitch>,<yaw>, 
 #<quadcopter> <x_position>,<y_position>,<z_position>,<roll>,<pitch>,<yaw>
 
-tim 10.00
-cam 
-neo 
-dro
-mam
+TIM 10.00
+CAM 
+NEO 0 0 1000 
+DRO
+MAM
 
+TIM 20.00
+CAM 
+NEO 0 1000 0
+DRO
+MAM
+
+
+TIM 40.00
+CAM 
+NEO 1000 0 0
+DRO
+MAM

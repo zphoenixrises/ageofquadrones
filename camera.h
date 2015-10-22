@@ -6,7 +6,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <GL/freeglut.h>
+#include <GL/glut.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
