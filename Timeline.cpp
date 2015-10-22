@@ -24,19 +24,17 @@ Timeline::Timeline(char* tag)
     while(!feof(fin))
     {
         fgets(templine,255,fin);
-        if(!flag)
-        {
+       
             if(strstr(templine,"TIM")!=NULL && templine[0]!='#')
                 {
                     sscanf(templine,"TIM %lf",&time);
-                    flag = true;
+                   
                 }
-        }
-        else if(strstr(templine,tag)!=NULL && templine[0]!='#')
+        if(strstr(templine,tag)!=NULL && templine[0]!='#')
          {
              sprintf(commands[numCommands++],"%lf %s",time,templine+4);
              
-             flag = false;
+            
          }
     }
     fclose(fin);

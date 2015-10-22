@@ -24,6 +24,8 @@ Dronedemort::Dronedemort()
 	    propAngle = 0.0;
 	    propSpeed = 2;
 	    animate = true;
+            
+            timeline = new Timeline("DRO");
 	}
 
 void Dronedemort::drawEllipsoid(unsigned int uiStacks, unsigned int uiSlices, float fA, float fB, float fC)

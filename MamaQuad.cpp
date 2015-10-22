@@ -384,6 +384,8 @@
      quad = gluNewQuadric();
      gluQuadricDrawStyle(quad,GLU_FILL);
      gluQuadricNormals(quad,GLU_SMOOTH);
+     
+     timeline = new Timeline("MAM");
  }
  
  MamaQuad::~MamaQuad() {

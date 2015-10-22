@@ -226,9 +226,7 @@ void drawHandler()
     
     
     //glMatrixMode(GL_MODELVIEW);
-    dronedemort->moveAbs(-50, 60 ,0);
     dronedemort->draw();
-    mamaQuad-> moveAbs(60,60,0);
     mamaQuad->draw();
     //*/
     
@@ -320,6 +318,9 @@ int main(int argc, char** argv)
     mamaQuad = new MamaQuad();
     quadrotor = dronedemort;
     neoQuad->moveAbs(10,60,0);
+    dronedemort->moveAbs(-50, 60 ,0);
+    
+    mamaQuad-> moveAbs(60,60,0);
     
     background = new Background();
     background->SetupWorld();

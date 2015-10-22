@@ -21,9 +21,8 @@ enum State{NEUTRAL=1,POWERINGUP,POWEREDUP,POWERINGDOWN};
 class NeoQuad:public Quadrotor
 {
 private:
-    Timeline *timeline;
-    QuadTimer propTime,quadTime;
-    bool isInMotion;
+    QuadTimer propTime;
+
     float propAngle;
     float propSpeed;
     bool animate;
@@ -42,7 +41,7 @@ public:
     void drawQuad();
     void changePropSpeed(float increment);
     void powerToggle();
-    void move();
+    
 };
 
 #endif
