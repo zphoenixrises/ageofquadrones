@@ -182,7 +182,32 @@ void output(GLfloat x, GLfloat y, char* text)
 }
 
 
-
+void drawGrid()
+{
+    glPushMatrix();
+    glTranslatef(0.0f,50.0f,0.0f);
+    glBegin(GL_LINES);
+    int gridsize  = 7000;
+    for(int i =-gridsize;i<=gridsize;i+=100)
+    {
+        if(i==0)
+            glColor3f(0.0f,1.0f,0.0f);
+        else if(i%1000==0)
+            glColor3f(1.0f,0.0f,0.0f);
+        else
+            glColor3f(1.0f,1.0f,1.0f);
+        glVertex3d(-gridsize,0.0f,i);
+        glVertex3d(gridsize,0.0f,i);
+        
+        glVertex3d(i,0.0f,-gridsize);
+        glVertex3d(i,0.0f,gridsize);
+        
+    }
+    glEnd();
+    glColor3f(1.0f,1.0f,1.0f);
+    glPopMatrix();
+}
+bool gridEnabled = true; 
 void drawHandler()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -218,23 +243,17 @@ void drawHandler()
     glLoadMatrixf(glm::value_ptr(mvp));
     glColor3f(1.0f,1.0f,1.0f);
     glDisable(GL_CULL_FACE); //had to disable culling as it is not done in background
+    //
+    if(gridEnabled)
+        drawGrid();
     background->DrawGLScene();
+ 
     glEnable(GL_CULL_FACE);
-    //*
+
     neoQuad->draw();
-    
-    
-    
-    //glMatrixMode(GL_MODELVIEW);
     dronedemort->draw();
     mamaQuad->draw();
-    //*/
-    
-    
-    
-    //glLoadIdentity();
-    // glColor3ub(255,0,0);
-    // output(20,20,neoQuad->difftime);
+
      glCullFace(GL_BACK);
      glFrontFace(GL_CCW);
     glutSwapBuffers();
@@ -258,10 +277,10 @@ void keypressHandler(unsigned char key, int x, int y)
         case 'w':
             quadrotor->rollQuad(-2);
             break;
-        case 'f':
+        case 'q':
             quadrotor->pitchQuad(2);
             break;
-        case 'g':
+        case 'e':
             quadrotor->pitchQuad(-2);
             break;
         case ';':
@@ -283,6 +302,9 @@ void keypressHandler(unsigned char key, int x, int y)
                 quadrotor = mamaQuad;
             else
                 quadrotor = neoQuad;
+            break;
+        case 'g':
+            gridEnabled = !gridEnabled;
             break;
         case 13:
             exit(0);
@@ -326,8 +348,8 @@ int main(int argc, char** argv)
     background->SetupWorld();
     initializeRendering();//Setup camera
     camera.SetMode(FREE);
-    camera.SetPosition(glm::vec3(0, 200, 2000));
-    camera.SetLookAt(glm::vec3(0, 60, 0));
+    camera.SetPosition(glm::vec3(0, 8000, 2502));
+    camera.SetLookAt(glm::vec3(0, 60, 2500));
     camera.SetClipping(.1, 80000);
     camera.SetFOV(45);
     //Start the glut loop!
