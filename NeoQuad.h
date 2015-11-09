@@ -31,6 +31,7 @@ private:
     void drawEllipsoid(unsigned int uiStacks, unsigned int uiSlices, float fA, float fB, float fC);
     void drawBlade();
     void drawPropellers(int rotorDirection);
+    void drawGun(float gunScale);
     void drawGuns();
     void rotateProps();
     

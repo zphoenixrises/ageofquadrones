@@ -81,13 +81,16 @@ void CameraKeyboardFunc(unsigned char c, int x, int y) {
             camera.Move(UP);
             break;
         case 'c':    
-            camera.SetCameraModeFollowUpright(*neoQuad,-glm::vec3 (-100.0f,10.0f,0));
+            camera.SetCameraModeFollow(*neoQuad,-glm::vec3 (-100.0f,10.0f,0));
             break;
         case 'v':    
             camera.SetCameraModeFollow(*mamaQuad,-glm::vec3 (-100.0f,10.0f,0));
             break;
         case 'b':    
             camera.SetCameraModeFollow(*dronedemort,-glm::vec3 (-100.0f,10.0f,0));
+            break;
+        case 'n':
+            camera.SetCameraModeWorld();
             break;
         case 'x':
         case 27:
@@ -279,23 +282,24 @@ void keypressHandler(unsigned char key, int x, int y)
 {
     switch (key)
     {
+        
         case 'd':
-            quadrotor->yawQuad(2);
-            break;
-        case 'a':
             quadrotor->yawQuad(-2);
             break;
+        case 'a':
+            quadrotor->yawQuad(2);
+            break;
         case 's':
-            quadrotor->rollQuad(2);
-            break;
-        case 'w':
-            quadrotor->rollQuad(-2);
-            break;
-        case 'q':
             quadrotor->pitchQuad(2);
             break;
-        case 'e':
+        case 'w':
             quadrotor->pitchQuad(-2);
+            break;
+        case 'q':
+            quadrotor->rollQuad(2);
+            break;
+        case 'e':
+            quadrotor->rollQuad(-2);
             break;
         case ';':
             neoQuad->changePropSpeed(-0.1);
@@ -353,10 +357,10 @@ int main(int argc, char** argv)
     dronedemort = new Dronedemort();
     mamaQuad = new MamaQuad();
     quadrotor = dronedemort;
-    neoQuad->moveAbs(10,60,0);
-    dronedemort->moveAbs(-50, 60 ,0);
+  //  neoQuad->moveAbs(10,60,0);
+  //  dronedemort->moveAbs(-50, 60 ,0);
     
-    mamaQuad-> moveAbs(60,60,0);
+  //  mamaQuad-> moveAbs(60,60,0);
     
     background = new Background();
     background->SetupWorld();
@@ -368,7 +372,7 @@ int main(int argc, char** argv)
     camera.SetFOV(45);
    // camera.SetToFollow(*neoQuad,-glm::vec3 (100.0f,10.0f,0));
     
-    
+    camera.SetCameraModePoint(vec3(0,60,0),vec3(0,60,300));
     
     //tempcode
     z = 2500;

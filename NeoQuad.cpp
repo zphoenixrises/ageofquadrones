@@ -43,6 +43,7 @@ void NeoQuad::drawEllipsoid(unsigned int uiStacks, unsigned int uiSlices, float 
 
 void NeoQuad::drawBlade()
 {
+    glDisable(GL_CULL_FACE);
     //Draw blade
     glBegin(GL_TRIANGLE_FAN);
     glVertex3f(0.0f, 0.0f, 0.0f);
@@ -54,15 +55,8 @@ void NeoQuad::drawBlade()
     glEnd();
     //Draw blade
     
-    glBegin(GL_TRIANGLE_FAN);
-    
-    glVertex3f(0.5f, 0.0f, 0.0f);
-    glVertex3f(0.5f, 10.0f, 0.0f);
-    glVertex3f(0.0f, 10.0f, 0.0f);
-    glVertex3f(-0.5f, 10.0f, 0.0f);
-    glVertex3f(-0.5f, 0.0f, 0.0f);
-    glVertex3f(0.0f, 0.0f, 0.0f);
-    glEnd();
+    glEnable(GL_CULL_FACE);
+
 }
 
 void NeoQuad::drawPropellers(int rotorDirection)
@@ -104,6 +98,28 @@ void NeoQuad::drawPropellers(int rotorDirection)
     
 }
 
+void NeoQuad::drawGun(float gunScale)
+{
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    //drawAxes();
+    glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+    gluDisk(quadricObj,0.0f,2.0f,10,3);
+    glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+    
+    gluCylinder(quadricObj, 2.0f, 2.0f, 15.0f, 10.0f, 10.0f);
+    glTranslatef(0.0f,0.0f,15.0f);
+    
+    glScalef(1.0f,1.0f,gunScale);
+    gluDisk(quadricObj,1.0f,2.0f,10,3);
+    gluCylinder(quadricObj, 1.0f, 1.0f, 10.0f, 10.0f, 10.0f);
+    glTranslatef(0.0f,0.0f,10.0f);
+    gluDisk(quadricObj,.5f,1.0f,10,3);
+    gluCylinder(quadricObj, .5f, .5f, 10.0f, 10.0f, 10.0f);
+    
+
+}
+
+
 void NeoQuad::drawGuns()
 {
     static float gunScale = 0;
@@ -122,45 +138,18 @@ void NeoQuad::drawGuns()
             currentState = NEUTRAL;
     }
     
+    
     //drawGuns
     glPushMatrix();
-    glColor3f(0.5,0.5,0.5);
     glTranslatef(-7.0f,0.0f,6.0f);
-    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-    //drawAxes();
-    glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
-    gluDisk(quadricObj,0.0f,2.0f,10,3);
-    glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
-    
-    gluCylinder(quadricObj, 2.0f, 2.0f, 15.0f, 10.0f, 10.0f);
-    glTranslatef(0.0f,0.0f,15.0f);
-    
-    glScalef(1.0f,1.0f,gunScale);
-    gluDisk(quadricObj,1.0f,2.0f,10,3);
-    gluCylinder(quadricObj, 1.0f, 1.0f, 10.0f, 10.0f, 10.0f);
-    glTranslatef(0.0f,0.0f,10.0f);
-    gluDisk(quadricObj,.5f,1.0f,10,3);
-    gluCylinder(quadricObj, .5f, .5f, 10.0f, 10.0f, 10.0f);
+    drawGun(gunScale);
     glPopMatrix();
     
-    //drawAxes();
-    glColor3f(0.5,0.5,0.5);
+    glPushMatrix();
     glTranslatef(-7.0f,0.0f,-6.0f);
-    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    drawGun(gunScale);
+    glPopMatrix();
     
-    glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
-    gluDisk(quadricObj,0.0f,2.0f,10,3);
-    glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
-    
-    gluCylinder(quadricObj, 2.0f, 2.0f, 15.0f, 10.0f, 10.0f);
-    glTranslatef(0.0f,0.0f,15.0f);
-    
-    glScalef(1.0f,1.0f,gunScale);
-    gluDisk(quadricObj,1.0f,2.0f,10,3);
-    gluCylinder(quadricObj, 1.0f, 1.0f, 10.0f, 10.0f, 10.0f);
-    glTranslatef(0.0f,0.0f,10.0f);
-    gluDisk(quadricObj,.5f,1.0f,10,3);
-    gluCylinder(quadricObj, .5f, .5f, 10.0f, 10.0f, 10.0f);
 }
 
 

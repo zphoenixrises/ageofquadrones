@@ -12,7 +12,7 @@ Camera::Camera() {
     max_pitch_rate = 5;
     max_heading_rate = 5;
     move_camera = false;
-    cameraMode = CameraModes::FREEMODE;
+    cameraMode = CameraModes::WORLD;
 }
 Camera::~Camera() {
 }
@@ -50,7 +50,7 @@ void Camera::Update() {
     
     camera_direction = glm::normalize(camera_look_at - camera_position);
     //need to set the matrix state. this is only important because lighting doesn't work if this isn't done
-    glMatrixMode(GL_PROJECTION);
+    glMatrixMode(GL_PROJECTION); 
     glLoadIdentity();
     glViewport(viewport_x, viewport_y, window_width, window_height);
     
@@ -114,15 +114,15 @@ void Camera::SetCameraModeFollowUpright(Quadrotor& quad, glm::vec3 distance)
 void Camera::SetCameraModeWorld()
 {
     
-    SetPosition(glm::vec3(0, 7000, 2502));
-    SetLookAt(glm::vec3(0, 60, 2500));
+    SetPosition(glm::vec3(0, 3000, 1002));
+    SetLookAt(glm::vec3(0, 60, 1000));
     cameraMode = CameraModes::WORLD;
 
 }
 
 void Camera::SetCameraModePoint(glm::vec3 point, glm::vec3 position)
 {
-    SetLookAt(glm::vec3(0, 60, 2500));
+    SetLookAt(point);
     if(position.y != -1000.0f)
         SetPosition(position);
     

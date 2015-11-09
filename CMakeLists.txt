@@ -9,7 +9,10 @@ add_subdirectory(glm/)
 include_directories(glm/)
 
 #copy all files form Data/ to build/Data
-file(COPY Data/ DESTINATION Data/)
+#file(COPY Data/ DESTINATION Data/)
+add_custom_command(TARGET AgeofQuadrones PRE_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_SOURCE_DIR}/Data $<TARGET_FILE_DIR:AgeofQuadrones>/Data)
 #install(TARGETS AgeofQuadrones RUNTIME DESTINATION bin)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
