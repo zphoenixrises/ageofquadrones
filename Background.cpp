@@ -488,7 +488,7 @@ GLvoid Background::DrawGLScene()
         
     }
     //*
-    //sky();
+    sky();
     power();
     security();
     Draw_smoke();

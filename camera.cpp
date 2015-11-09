@@ -3,7 +3,7 @@
 using namespace std;
 
 Camera::Camera() {
-    camera_mode = FREE;
+    camera_type = CameraType:: ORTHO;
     camera_up = glm::vec3(0, 1, 0);
     field_of_view = 45;
     rotation_quaternion = glm::quat(1, 0, 0, 0);
@@ -12,6 +12,7 @@ Camera::Camera() {
     max_pitch_rate = 5;
     max_heading_rate = 5;
     move_camera = false;
+    cameraMode = CameraModes::FREEMODE;
 }
 Camera::~Camera() {
 }
@@ -21,18 +22,44 @@ void Camera::Reset() {
 }
 
 void Camera::Update() {
+    if(cameraMode == CameraModes::FOLLOW_QUAD)
+    {
+        SetLookAt(quadrotor->getQuadPosition());
+        glm::vec3 axisVector,upVector;
+        quadrotor->getOrientation(axisVector,upVector,distance);
+        SetPosition(quadrotor->getQuadPosition()-axisVector);
+        camera_up = upVector;
+    }
+    else if(cameraMode == CameraModes::FOLLOW_QUAD_UPRIGHT)
+    {
+        SetLookAt(quadrotor->getQuadPosition());
+        glm::vec3 axisVector,upVector;
+        quadrotor->getOrientation(axisVector,upVector,distance);
+        SetPosition(quadrotor->getQuadPosition()-axisVector);
+        camera_up = glm::vec3(0.0f,1.0f,0.0f);
+    }
+    else if(cameraMode == CameraModes::WORLD)
+    {
+        
+        
+    }
+    else if(cameraMode == CameraModes::POINT)
+    {
+        
+    }
+    
     camera_direction = glm::normalize(camera_look_at - camera_position);
     //need to set the matrix state. this is only important because lighting doesn't work if this isn't done
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glViewport(viewport_x, viewport_y, window_width, window_height);
     
-    if (camera_mode == ORTHO) {
+    if (camera_type == CameraType::ORTHO) {
         //our projection matrix will be an orthogonal one in this case
         //if the values are not floating point, this command does not work properly
         //need to multiply by aspect!!! (otherise will not scale properly)
         projection = glm::ortho(-1.5f * float(aspect), 1.5f * float(aspect), -1.5f, 1.5f, -10.0f, 10.f);
-    } else if (camera_mode == FREE) {
+    } else if (camera_type == CameraType::FREE) {
         projection = glm::perspective(field_of_view, aspect, near_clip, far_clip);
         //detmine axis for pitch rotation
         glm::vec3 axis = glm::cross(camera_direction, camera_up);
@@ -62,11 +89,46 @@ void Camera::Update() {
 }
 
 //Setting Functions
-void Camera::SetMode(CameraType cam_mode) {
-    camera_mode = cam_mode;
+void Camera::SetCameraType(CameraType::Enum cam_mode) {
+    camera_type = cam_mode;
     camera_up = glm::vec3(0, 1, 0);
     rotation_quaternion = glm::quat(1, 0, 0, 0);
 }
+
+void Camera::SetCameraModeFollow(Quadrotor& quad, glm::vec3 distance)
+{
+    this->quadrotor = &quad;
+    this->distance = distance;
+    cameraMode = CameraModes::FOLLOW_QUAD;
+
+}
+
+void Camera::SetCameraModeFollowUpright(Quadrotor& quad, glm::vec3 distance)
+{
+    this->quadrotor = &quad;
+    this->distance = distance;
+    cameraMode = CameraModes::FOLLOW_QUAD_UPRIGHT;
+    
+}
+
+void Camera::SetCameraModeWorld()
+{
+    
+    SetPosition(glm::vec3(0, 7000, 2502));
+    SetLookAt(glm::vec3(0, 60, 2500));
+    cameraMode = CameraModes::WORLD;
+
+}
+
+void Camera::SetCameraModePoint(glm::vec3 point, glm::vec3 position)
+{
+    SetLookAt(glm::vec3(0, 60, 2500));
+    if(position.y != -1000.0f)
+        SetPosition(position);
+    
+
+}
+
 
 void Camera::SetPosition(glm::vec3 pos) {
     camera_position = pos;
@@ -93,7 +155,7 @@ void Camera::SetClipping(double near_clip_distance, double far_clip_distance) {
 }
 
 void Camera::Move(CameraDirection dir) {
-    if (camera_mode == FREE) {
+    if (camera_type == CameraType::FREE) {
         switch (dir) {
             case UP:
                 camera_position_delta += camera_up * camera_scale;
@@ -177,8 +239,8 @@ void Camera::SetPos(int button, int state, int x, int y) {
     mouse_position = glm::vec3(x, y, 0);
 }
 
-CameraType Camera::GetMode() {
-    return camera_mode;
+CameraType::Enum Camera::GetMode() {
+    return camera_type;
 }
 
 void Camera::GetViewport(int &loc_x, int &loc_y, int &width, int &height) {

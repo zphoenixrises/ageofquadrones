@@ -1,8 +1,12 @@
-/*******************************************************************************************
- * camera.h
- * OpenGL Camera Code
- * Capable of 2 modes, orthogonal, and free
- *******************************************************************************************/
+/******************************************************************
+ * Name   : Camera.cpp
+ * Purpose: Camera controls defined here
+ * 
+ * Author: Akkas Uddin Haque
+ * Email : akkasuddin@live.com
+ *
+ * Creation Date: 10/15/2015
+ *******************************************************************/
 #ifndef CAMERA_H
 #define CAMERA_H
 
@@ -15,59 +19,28 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-enum CameraType {
-    ORTHO, FREE
-};
-enum CameraDirection {
-    UP, DOWN, LEFT, RIGHT, FORWARD, BACK
-};
+#include "Quadrotor.h"
 
+namespace CameraType {
+    enum Enum{ORTHO, FREE};
+}
+    enum CameraDirection {
+        UP, DOWN, LEFT, RIGHT, FORWARD, BACK
+    };
+namespace CameraModes
+{
+    enum Enum{
+        FOLLOW_QUAD_UPRIGHT,FOLLOW_QUAD, FREEMODE, WORLD,POINT
+    };
+}
 class Camera {
-public:
-    Camera();
-    ~Camera();
+private:
+    //FOLLOW mode variables
+    Quadrotor *quadrotor; 
+    glm::vec3 distance;
+    CameraModes::Enum cameraMode;
     
-    void Reset();
-    //This function updates the camera
-    //Depending on the current camera mode, the projection and viewport matricies are computed
-    //Then the position and location of the camera is updated
-    void Update();
-    
-    //Given a specific moving direction, the camera will be moved in the appropriate direction
-    //For a spherical camera this will be around the look_at point
-    //For a free camera a delta will be computed for the direction of movement.
-    void Move(CameraDirection dir);
-    //Change the pitch (up, down) for the free camera
-    void ChangePitch(float degrees);
-    //Change heading (left, right) for the free camera
-    void ChangeHeading(float degrees);
-    
-    //Change the heading and pitch of the camera based on the 2d movement of the mouse
-    void Move2D(int x, int y);
-    
-    //Setting Functions
-    //Changes the camera mode, only three valid modes, Ortho, Free, and Spherical
-    void SetMode(CameraType cam_mode);
-    //Set the position of the camera
-    void SetPosition(glm::vec3 pos);
-    //Set's the look at point for the camera
-    void SetLookAt(glm::vec3 pos);
-    //Changes the Field of View (FOV) for the camera
-    void SetFOV(double fov);
-    //Change the viewport location and size
-    void SetViewport(int loc_x, int loc_y, int width, int height);
-    //Change the clipping distance for the camera
-    void SetClipping(double near_clip_distance, double far_clip_distance);
-    
-    void SetDistance(double cam_dist);
-    void SetPos(int button, int state, int x, int y);
-    
-    //Getting Functions
-    CameraType GetMode();
-    void GetViewport(int &loc_x, int &loc_y, int &width, int &height);
-    void GetMatricies(glm::mat4 &P, glm::mat4 &V, glm::mat4 &M);
-    
-    CameraType camera_mode;
+    CameraType::Enum camera_type;
     
     int viewport_x;
     int viewport_y;
@@ -101,6 +74,63 @@ public:
     glm::mat4 view;
     glm::mat4 model;
     glm::mat4 MVP;
+    
+public:
+    Camera();
+    ~Camera();
+    
+    void Reset();
+    //This function updates the camera
+    //Depending on the current camera mode, the projection and viewport matricies are computed
+    //Then the position and location of the camera is updated
+    void Update();
+    
+    //Given a specific moving direction, the camera will be moved in the appropriate direction
+    //For a spherical camera this will be around the look_at point
+    //For a free camera a delta will be computed for the direction of movement.
+    void Move(CameraDirection dir);
+    //Change the pitch (up, down) for the free camera
+    void ChangePitch(float degrees);
+    //Change heading (left, right) for the free camera
+    void ChangeHeading(float degrees);
+    
+    //Change the heading and pitch of the camera based on the 2d movement of the mouse
+    void Move2D(int x, int y);
+    
+    //Setting Functions
+    //Changes the camera mode, only three valid modes, Ortho, Free, and Spherical
+    void SetCameraType(CameraType::Enum cam_mode);
+    
+    //Set camera modes
+    //
+    void SetCameraModeFollow(Quadrotor& quad, glm::vec3 distance);
+    //Follow a Quadcopter with the upvector aligned with the world y 
+    void SetCameraModeFollowUpright(Quadrotor& quad, glm::vec3 distance);
+    //Set Camera mode to World 
+    void SetCameraModeWorld();
+    void SetCameraModePoint(glm::vec3 point, glm::vec3 position = glm::vec3(0.0f,-1000.0f,0.0f));
+    
+    
+    //Set the position of the camera
+    void SetPosition(glm::vec3 pos);
+    //Set's the look at point for the camera
+    void SetLookAt(glm::vec3 pos);
+    //Changes the Field of View (FOV) for the camera
+    void SetFOV(double fov);
+    //Change the viewport location and size
+    void SetViewport(int loc_x, int loc_y, int width, int height);
+    //Change the clipping distance for the camera
+    void SetClipping(double near_clip_distance, double far_clip_distance);
+    
+ //   void SetDistance(double cam_dist);
+    void SetPos(int button, int state, int x, int y);
+    
+    //Getting Functions
+    CameraType::Enum GetMode();
+    void GetViewport(int &loc_x, int &loc_y, int &width, int &height);
+    void GetMatricies(glm::mat4 &P, glm::mat4 &V, glm::mat4 &M);
+    
+
     
 };
 #endif

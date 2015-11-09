@@ -25,6 +25,12 @@ using namespace glm;
 //Create the Camera
 Camera camera;
 
+NeoQuad *neoQuad;
+Dronedemort *dronedemort;
+MamaQuad *mamaQuad;
+Quadrotor *quadrotor;
+Background *background;
+
 class Window {
 public:
     Window() {
@@ -48,7 +54,7 @@ void ReshapeFunc(int w, int h) {
     }
     camera.SetViewport(0, 0, window.size.x, window.size.y);
 }
-
+int z;
 //Keyboard input for camera, also handles exit case
 void CameraKeyboardFunc(unsigned char c, int x, int y) {
     switch (c) {
@@ -68,7 +74,20 @@ void CameraKeyboardFunc(unsigned char c, int x, int y) {
             camera.Move(DOWN);
             break;
         case 'o':
+            /*
+            z+=20;
+            camera.SetPosition(glm::vec3(0, 8000, z+2));
+            camera.SetLookAt(glm::vec3(0, 60, z));//*/
             camera.Move(UP);
+            break;
+        case 'c':    
+            camera.SetCameraModeFollowUpright(*neoQuad,-glm::vec3 (-100.0f,10.0f,0));
+            break;
+        case 'v':    
+            camera.SetCameraModeFollow(*mamaQuad,-glm::vec3 (-100.0f,10.0f,0));
+            break;
+        case 'b':    
+            camera.SetCameraModeFollow(*dronedemort,-glm::vec3 (-100.0f,10.0f,0));
             break;
         case 'x':
         case 27:
@@ -100,11 +119,6 @@ void TimerFunc(int value) {
 
 
 
-NeoQuad *neoQuad;
-Dronedemort *dronedemort;
-MamaQuad *mamaQuad;
-Quadrotor *quadrotor;
-Background *background;
 void initializeRendering()
 {
     background-> LoadGLTextures();                           // load the textures.
@@ -207,7 +221,7 @@ void drawGrid()
     glColor3f(1.0f,1.0f,1.0f);
     glPopMatrix();
 }
-bool gridEnabled = true; 
+bool gridEnabled = false; 
 void drawHandler()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -347,11 +361,21 @@ int main(int argc, char** argv)
     background = new Background();
     background->SetupWorld();
     initializeRendering();//Setup camera
-    camera.SetMode(FREE);
-    camera.SetPosition(glm::vec3(0, 8000, 2502));
+    camera.SetCameraType(CameraType::FREE);
+    camera.SetPosition(glm::vec3(0, 7000, 2502));
     camera.SetLookAt(glm::vec3(0, 60, 2500));
     camera.SetClipping(.1, 80000);
     camera.SetFOV(45);
+   // camera.SetToFollow(*neoQuad,-glm::vec3 (100.0f,10.0f,0));
+    
+    
+    
+    //tempcode
+    z = 2500;
+   // neoQuad->yawQuad(90);
+    //quadrotor->rollQuad(20);
+//    quadrotor->pitchQuad(20);
+    
     //Start the glut loop!
     //*/
     glutMainLoop();

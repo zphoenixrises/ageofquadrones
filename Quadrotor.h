@@ -60,6 +60,9 @@ public:
     float getYaw();
     void moveAbs(GLfloat x,GLfloat y,GLfloat z);
     void moveRel(GLfloat x,GLfloat y,GLfloat z);
+    glm::vec3 getQuadPosition();
+    void getOrientation(glm::vec3  &axisVector, glm::vec3  &upVector,glm::vec3  distanceVector);
+    
     void draw();
     void move();
     virtual void drawQuad() = 0;
