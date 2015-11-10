@@ -203,7 +203,7 @@ void Quadrotor::move()
              
             double timediff =   quadTime.getTimeDiffSec();
             float angle_axis = glm::angle(current_axis,comDirection);
-            printf("\nX: %f",angle_axis);
+        //    printf("\nX: %f",angle_axis);
             if(angle_axis>Pi)
             {
                 printf("\n%f",angle_axis);

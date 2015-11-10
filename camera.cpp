@@ -1,5 +1,7 @@
 //camera.cpp
+#include <string.h>
 #include "camera.h"
+
 using namespace std;
 
 Camera::Camera() {
@@ -13,6 +15,9 @@ Camera::Camera() {
     max_heading_rate = 5;
     move_camera = false;
     cameraMode = CameraModes::WORLD;
+    timeline = new Timeline("CAM");
+    readTimeline = true;
+    isExecuting = false;
 }
 Camera::~Camera() {
 }
@@ -22,6 +27,7 @@ void Camera::Reset() {
 }
 
 void Camera::Update() {
+    executeTimelineCommands();
     if(cameraMode == CameraModes::FOLLOW_QUAD)
     {
         SetLookAt(quadrotor->getQuadPosition());
@@ -33,7 +39,7 @@ void Camera::Update() {
     else if(cameraMode == CameraModes::FOLLOW_QUAD_UPRIGHT)
     {
         SetLookAt(quadrotor->getQuadPosition());
-        glm::vec3 axisVector,upVector;
+        glm::vec3 axisVector,upVector; 
         quadrotor->getOrientation(axisVector,upVector,distance);
         SetPosition(quadrotor->getQuadPosition()-axisVector);
         camera_up = glm::vec3(0.0f,1.0f,0.0f);
@@ -43,7 +49,7 @@ void Camera::Update() {
         
         
     }
-    else if(cameraMode == CameraModes::POINT)
+    else if(cameraMode == CameraModes::CIRCLEMOTION)
     {
         
     }
@@ -114,13 +120,13 @@ void Camera::SetCameraModeFollowUpright(Quadrotor& quad, glm::vec3 distance)
 void Camera::SetCameraModeWorld()
 {
     
-    SetPosition(glm::vec3(0, 3000, 1002));
+    SetPosition(glm::vec3(0, 3000, 1100));
     SetLookAt(glm::vec3(0, 60, 1000));
     cameraMode = CameraModes::WORLD;
 
 }
 
-void Camera::SetCameraModePoint(glm::vec3 point, glm::vec3 position)
+void Camera::SetCameraModeCircleMotion(glm::vec3 point, glm::vec3 position)
 {
     SetLookAt(point);
     if(position.y != -1000.0f)
@@ -255,3 +261,103 @@ void Camera::GetMatricies(glm::mat4 &P, glm::mat4 &V, glm::mat4 &M) {
     V = view;
     M = model;
 }
+
+
+void Camera::executeTimelineCommands()
+{
+    if(readTimeline)
+    {
+        double current_time = QuadTimer::GetProcessTime();
+
+        if(!isExecuting)
+        {
+            char command[250];
+            char* commandstr;
+            commandstr = timeline->readNextCommand();
+            if(sscanf(commandstr,"%lf %s",&comTime,command)==EOF)
+            {readTimeline = false; return;}
+            strcpy(delayedCommand,commandstr);
+            //printf("\n%s",command);
+            //printf("\n%s",commandstr);
+            
+             
+            isExecuting = true;
+        }
+        
+        else if(current_time>=comTime)
+        {
+            //do something
+            char command[100];
+            sscanf(delayedCommand,"%lf %s",&comTime,command);
+            printf("\n%s",command);
+            printf("\n%s",delayedCommand);
+            if(!strcmp(command,"FOLLOW"))
+            {
+                char whichQuad[10];
+                glm::vec3 position;
+                sscanf(delayedCommand,"%lf %s %s %f %f %f",&comTime,command, whichQuad, &position.x, &position.y, &position.z);
+                if(!strcmp(whichQuad,"NEO"))
+                    SetCameraModeFollow(*neoQuad,-position);
+                if(!strcmp(whichQuad,"DRO"))
+                    SetCameraModeFollow(*dronedemort,-position);
+                if(!strcmp(whichQuad,"MAM"))
+                    SetCameraModeFollow(*mamaQuad,-position);
+                
+                 
+            }
+            else if(!strcmp(command,"FOLLOWVERTICAL"))
+            {
+                char whichQuad[10];
+                glm::vec3 position;
+                sscanf(delayedCommand,"%lf %s %s %f %f %f",&comTime,command, whichQuad, &position.x, &position.y, &position.z);
+                if(!strcmp(whichQuad,"NEO"))
+                    SetCameraModeFollowUpright(*neoQuad,-position);
+                if(!strcmp(whichQuad,"DRO"))
+                    SetCameraModeFollowUpright(*dronedemort,-position);
+                if(!strcmp(whichQuad,"MAM"))
+                    SetCameraModeFollowUpright(*mamaQuad,-position);
+                
+            }
+            else if(!strcmp(command,"WORLD"))
+            {
+                SetCameraModeWorld();  
+            } 
+            else if(!strcmp(command,"CIRCLEMOTION"))
+            {
+                glm::vec3 center;
+                sscanf(delayedCommand,"%lf %s %f %f %f %lf",&comTime,command, &center.x, &center.y, &center.z,&comAngle);
+                SetCameraModeCircleMotion(center,camera_position);
+                
+            }
+            else if(!strcmp(command,"LOOKAT"))
+            {
+                glm::vec3 center;
+                sscanf(delayedCommand,"%lf %s %f %f %f",&comTime,command, &center.x, &center.y, &center.z);
+                SetLookAt(center);
+                
+            }
+            else if(!strcmp(command,"POS"))
+            {
+                glm::vec3 center;
+                sscanf(delayedCommand,"%lf %s %f %f %f",&comTime,command, &center.x, &center.y, &center.z);
+                SetPosition(center);
+                
+                
+                
+            }
+            isExecuting = false;
+        }
+       // else
+        //   isExecuting = false;
+    }
+
+}
+
+void Camera::loadQuadrotors(NeoQuad* neoQuad, Dronedemort* dronedemort, MamaQuad* mamaQuad)
+{
+    this->neoQuad = neoQuad;
+    this->dronedemort = dronedemort;
+    this->mamaQuad = mamaQuad;
+
+}
+

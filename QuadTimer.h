@@ -33,6 +33,8 @@ public:
     
     // Gets the current system time in seconds since epoch
     static double GetCurrentSystemTime();
+    
+    static void initializeTimer();
 };
 
 #endif

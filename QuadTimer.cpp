@@ -36,3 +36,8 @@ double QuadTimer::GetCurrentSystemTime()
     return (double)time.tv_sec + (double)time.tv_usec * .000001;
 }
 
+void QuadTimer::initializeTimer()
+{
+    StartTime = GetCurrentSystemTime();
+
+}

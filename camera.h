@@ -20,6 +20,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Quadrotor.h"
+#include "Timeline.h"
+#include "NeoQuad.h"
+#include "MamaQuad.h"
+#include "Dronedemort.h"
 
 namespace CameraType {
     enum Enum{ORTHO, FREE};
@@ -30,13 +34,17 @@ namespace CameraType {
 namespace CameraModes
 {
     enum Enum{
-        FOLLOW_QUAD_UPRIGHT,FOLLOW_QUAD, FREEMODE, WORLD,POINT
+        FOLLOW_QUAD_UPRIGHT,FOLLOW_QUAD, FREEMODE, WORLD, CIRCLEMOTION
     };
 }
 class Camera {
 private:
     //FOLLOW mode variables
     Quadrotor *quadrotor; 
+    NeoQuad *neoQuad;
+    Dronedemort *dronedemort;
+    MamaQuad *mamaQuad;
+    
     glm::vec3 distance;
     CameraModes::Enum cameraMode;
     
@@ -75,7 +83,25 @@ private:
     glm::mat4 model;
     glm::mat4 MVP;
     
+    
+    //Timeline variables
+    
+    Timeline* timeline;
+    bool readTimeline;
+    bool isExecuting;
+    double comTime;
+    double comAngle;
+    char delayedCommand[250];
+    
+    //Executes the timeline commads
+    void executeTimelineCommands();
+    
 public:
+    
+    void loadQuadrotors(NeoQuad *neoQuad, Dronedemort *dronedemort, MamaQuad *mamaQuad);
+    
+    
+    
     Camera();
     ~Camera();
     
@@ -108,7 +134,7 @@ public:
     void SetCameraModeFollowUpright(Quadrotor& quad, glm::vec3 distance);
     //Set Camera mode to World 
     void SetCameraModeWorld();
-    void SetCameraModePoint(glm::vec3 point, glm::vec3 position = glm::vec3(0.0f,-1000.0f,0.0f));
+    void SetCameraModeCircleMotion(glm::vec3 point, glm::vec3 position = glm::vec3(0.0f,-1000.0f,0.0f));
     
     
     //Set the position of the camera

@@ -1,37 +1,54 @@
-# Timeline file for Quadworld defined here
-# tim <time_in_sec>
-# cam <x_position>,<y_position>,<z_position>,<roll>,<pitch>,<yaw>, 
-# <quadcopter> <x_position>,<y_position>,<z_position>,<roll>,<pitch>,<yaw>
+/**********************************************************************
+ Timeline file for Quadworld defined here
+ 
+ Quadrotor commands 
+================================
+ MOV <rotationtime> <destination position x> <destination position y> <destination position z> 
+ ROT <>
+ POS <position>
+ MOVECIRCLE <center> <angle>
+ PAUSE->pause the quad
+ LOOKAT <Quadrotor>
+ 
 
-# Quadrotor commands 
-# MOV <rotationtime> <destination position> 
-# ROT <>
-# POS <position>
-# MOVECIRCLE <center> <angle>
-# PAUSE->pause the quad
-# LOOKAT <Quadcopter>
+ Camera Commands
+================================
+ FOLLOW <Quadrotor>
+ FOLLOWVERTICAL <Quadrotor>
+ WORLD
+ CIRCLEMOTION <center> <angle> 
+ MOV <rotationtime> <destination position x> <destination position y> <destination position z> 
+ LOOKAT <point>
+ POS <point>
+
+*************************************************************************/
 
 
+//Initial positioning
 TIM 0.00
+CAM FOLLOW NEO -100 10 0
 NEO POS 100 60 0 
 DRO POS -50 60 0
 MAM POS 60 60 0
 
+TIM 2.00
+CAM FOLLOWVERTICAL DRO -100 10 0
+
+TIM 3.00
+CAM FOLLOWVERTICAL NEO -100 10 0
 
 TIM 5.00
-#CAM FOLLOW NEO
 NEO MOV 1 0 60 1000 
-#DRO MOV 0 60 800
-#MAM MOV 300 60 800
-
-#TIM 10.00
-#CAM FOLLOWVERTICAL NEO
-#NEO MOV 1 -1000 60 1000
-#DRO 0 600 0
+//DRO MOV 0 60 800
+//MAM MOV 300 60 800
 
 
 TIM 10.00
-#CAM 
+CAM WORLD
+NEO MOV 1 -1000 60 1000
+//DRO 0 600 0
+
+TIM 15.00
 NEO MOV 1 1000 500 0
-#DRO 1100 500 0
-#MAM 1200 500 0
+DRO MOV 1 1100 500 0
+MAM MOV 1 1200 500 0

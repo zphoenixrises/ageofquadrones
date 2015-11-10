@@ -316,7 +316,7 @@ void keypressHandler(unsigned char key, int x, int y)
         case ' ':
             if(quadrotor == neoQuad)
                 quadrotor = dronedemort;
-            else if(quadrotor == dronedemort)
+        else if(quadrotor == dronedemort)
                 quadrotor = mamaQuad;
             else
                 quadrotor = neoQuad;
@@ -365,14 +365,16 @@ int main(int argc, char** argv)
     background = new Background();
     background->SetupWorld();
     initializeRendering();//Setup camera
+    
+    camera.loadQuadrotors(neoQuad,dronedemort,mamaQuad);
     camera.SetCameraType(CameraType::FREE);
     camera.SetPosition(glm::vec3(0, 7000, 2502));
     camera.SetLookAt(glm::vec3(0, 60, 2500));
-    camera.SetClipping(.1, 80000);
+    camera.SetClipping(.1, 10000);
     camera.SetFOV(45);
    // camera.SetToFollow(*neoQuad,-glm::vec3 (100.0f,10.0f,0));
     
-    camera.SetCameraModePoint(vec3(0,60,0),vec3(0,60,300));
+    camera.SetCameraModeCircleMotion(vec3(0,60,0),vec3(0,60,300));
     
     //tempcode
     z = 2500;
@@ -382,6 +384,7 @@ int main(int argc, char** argv)
     
     //Start the glut loop!
     //*/
+    QuadTimer::initializeTimer();
     glutMainLoop();
     
     return 0;
