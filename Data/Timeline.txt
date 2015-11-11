@@ -3,12 +3,12 @@
  
  Quadrotor commands 
 ================================
- MOV <rotationtime> <destination position x> <destination position y> <destination position z> 
- ROT <>
- POS <position>
- MOVECIRCLE <center> <angle>
- PAUSE->pause the quad
- LOOKAT <Quadrotor>
+ MOV <rotationtime> <destination position> 
+ ROT <> TODO
+ POS <position> 
+ MOVECIRCLE <center> <angle> TODO
+ PAUSE->pause the quad TODO
+ LOOKAT <Quadrotor> TODO
  
 
  Camera Commands
@@ -16,8 +16,8 @@
  FOLLOW <Quadrotor>
  FOLLOWVERTICAL <Quadrotor>
  WORLD
- CIRCLEMOTION <center> <angle> 
- MOV <rotationtime> <destination position x> <destination position y> <destination position z> 
+ CIRCLEMOTION <centerXYZ> <angle> 
+ MOV <rotationtime> <destination positionXYZ> 
  LOOKAT <point>
  POS <point>
 
@@ -31,24 +31,32 @@ NEO POS 100 60 0
 DRO POS -50 60 0
 MAM POS 60 60 0
 
-TIM 2.00
-CAM FOLLOWVERTICAL DRO -100 10 0
+//TIM 2.00
+//CAM FOLLOWVERTICAL DRO -100 10 0
 
-TIM 3.00
-CAM FOLLOWVERTICAL NEO -100 10 0
+//TIM 3.00
+//CAM FOLLOWVERTICAL NEO -100 10 0
 
 TIM 5.00
+//NEO POS 100 60 0 
 NEO MOV 1 0 60 1000 
 //DRO MOV 0 60 800
 //MAM MOV 300 60 800
 
 
 TIM 10.00
-CAM WORLD
+//CAM WORLD
 NEO MOV 1 -1000 60 1000
 //DRO 0 600 0
 
+//*
 TIM 15.00
-NEO MOV 1 1000 500 0
+NEO MOV 3 1000 500 0
 DRO MOV 1 1100 500 0
 MAM MOV 1 1200 500 0
+
+TIM 20.0
+NEO POS 1000 500 0
+DRO POS 1100 500 0
+MAM POS 1200 500 0
+//*/

@@ -273,7 +273,8 @@ void Camera::executeTimelineCommands()
         {
             char command[250];
             char* commandstr;
-            commandstr = timeline->readNextCommand();
+            double peektime = -1;
+            commandstr = timeline->readNextCommand(peektime);
             if(sscanf(commandstr,"%lf %s",&comTime,command)==EOF)
             {readTimeline = false; return;}
             strcpy(delayedCommand,commandstr);
@@ -289,8 +290,8 @@ void Camera::executeTimelineCommands()
             //do something
             char command[100];
             sscanf(delayedCommand,"%lf %s",&comTime,command);
-            printf("\n%s",command);
-            printf("\n%s",delayedCommand);
+           // printf("\n%s",command);
+            //printf("\n%s",delayedCommand);
             if(!strcmp(command,"FOLLOW"))
             {
                 char whichQuad[10];
@@ -298,9 +299,9 @@ void Camera::executeTimelineCommands()
                 sscanf(delayedCommand,"%lf %s %s %f %f %f",&comTime,command, whichQuad, &position.x, &position.y, &position.z);
                 if(!strcmp(whichQuad,"NEO"))
                     SetCameraModeFollow(*neoQuad,-position);
-                if(!strcmp(whichQuad,"DRO"))
+                else if(!strcmp(whichQuad,"DRO"))
                     SetCameraModeFollow(*dronedemort,-position);
-                if(!strcmp(whichQuad,"MAM"))
+                else if(!strcmp(whichQuad,"MAM"))
                     SetCameraModeFollow(*mamaQuad,-position);
                 
                  
@@ -312,9 +313,9 @@ void Camera::executeTimelineCommands()
                 sscanf(delayedCommand,"%lf %s %s %f %f %f",&comTime,command, whichQuad, &position.x, &position.y, &position.z);
                 if(!strcmp(whichQuad,"NEO"))
                     SetCameraModeFollowUpright(*neoQuad,-position);
-                if(!strcmp(whichQuad,"DRO"))
+                else if(!strcmp(whichQuad,"DRO"))
                     SetCameraModeFollowUpright(*dronedemort,-position);
-                if(!strcmp(whichQuad,"MAM"))
+                else if(!strcmp(whichQuad,"MAM"))
                     SetCameraModeFollowUpright(*mamaQuad,-position);
                 
             }

@@ -36,11 +36,17 @@ protected:
     QuadOrientationMode::Enum orientationMode;
     QuadTimer quadTime;
     Timeline *timeline;
-    bool isInMotion;
-    bool turnoff;
+    
+    
+    bool isExecuting;
+    bool isMoving;
+    bool readTimeline;
     double comTime;
+    double nextTime;
     double comOrientationTime;
     double comAngle;
+    char delayedCommand[250];
+    
     //double com_posx,com_posy,com_posz;
     glm::vec3 comVect;
     glm::vec3 comDirection;
@@ -76,7 +82,7 @@ public:
     void getOrientation(glm::vec3  &axisVector, glm::vec3  &upVector,glm::vec3  distanceVector);
     
     void draw();
-    void move();
+    void executeTimeLineCommand();
     virtual void drawQuad() = 0;
     ~Quadrotor();
 };

@@ -26,7 +26,7 @@ class Timeline
         int currentCommand;
         int numCommands;
         Timeline(char* tag);
-        char* readNextCommand();
+        char* readNextCommand(double &peektime);
         void displayLines();
         ~Timeline();
     

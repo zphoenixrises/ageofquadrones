@@ -66,7 +66,7 @@ void Background::SetupItem(char* path,SECTOR &sector)
         printf("file not found");
         fclose (filein);
     }
-    printf("Successfully read:%s\n",path);
+    //printf("Successfully read:%s\n",path);
     
     readstr(filein, oneline);
     sscanf(oneline, "NUMPOLLIES %d\n", &numtriangles);
@@ -127,11 +127,11 @@ int Background::ImageLoad(char *filename, Image *image)
     
     // read the width
     image->sizeX = getint (file);
-    printf("Width of %s: %lu\n", filename, image->sizeX);
+    //printf("Width of %s: %lu\n", filename, image->sizeX);
     
     // read the height 
     image->sizeY = getint (file);
-    printf("Height of %s: %lu\n", filename, image->sizeY);
+    //printf("Height of %s: %lu\n", filename, image->sizeY);
     
     // calculate the size (assuming 24 bits or 3 bytes per pixel).
     size = image->sizeX * image->sizeY * 3;

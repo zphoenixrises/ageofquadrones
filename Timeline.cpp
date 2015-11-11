@@ -21,11 +21,13 @@ Timeline::Timeline(char* tag)
     
     char templine[256];
     
+ //   printf("Executing %s:\n",tag);
     while(!feof(fin))
     {
         fgets(templine,255,fin);
-        
-        if(strstr(templine,"/*"))
+        if(templine[0]=='/'&&templine[1]=='/')
+            continue;
+        if(templine[0]=='/'&&templine[1]=='*')
         {
             while(!feof(fin))
             {
@@ -34,33 +36,39 @@ Timeline::Timeline(char* tag)
                     break;
                     
             }
-            
+              
             if(feof(fin))
                 break;
             continue;
         }
-        if(templine[0]=='/'&&templine[1]=='/')
-            continue;
-        if(strstr(templine,"TIM")!=NULL)
+        //printf(templine);
+        if(strstr(templine,"TIM")==templine)
         {
+       //     printf(templine);
             sscanf(templine,"TIM %lf",&time);
             
         }
-        if(strstr(templine,tag)!=NULL)
+        if(strstr(templine,tag)==templine)
         {
             sprintf(commands[numCommands++],"%lf %s",time,templine+4);
-            
+          //  printf(commands[numCommands-1]);
             
         }
     }
     fclose(fin);
+    printf("Displaying %s:\n",tag);
+    displayLines();
 }
 
 
-char* Timeline::readNextCommand()
+char* Timeline::readNextCommand(double &peektime)
 {
     if(currentCommand==numCommands)
         return " ";
+    if(currentCommand<numCommands-1)
+        sscanf(commands[currentCommand+1],"%lf",&peektime);
+    else
+        peektime = 240;
     return commands[currentCommand++];
     
 
@@ -69,7 +77,7 @@ char* Timeline::readNextCommand()
 void Timeline::displayLines()
 {
     for(int i=0; i<numCommands; i++)
-    { printf((const char*)commands);}
+    { printf(commands[i]);}
     
 }
 
