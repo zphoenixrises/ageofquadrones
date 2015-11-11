@@ -1,0 +1,11 @@
+Added delayed mode command execution to Quadrotor + bug fixes
+
+-Added delayed mode command execution to Quadrotor
+-Fixed commenting bug in Timeline.cpp
+-Displayed list of commands for each component in Timeline.cpp
+-Added peektime in Timeline::readNextCommand to provide the time of the next command
+-Fixed Timeline::displayLines() function
+
+
+
+
