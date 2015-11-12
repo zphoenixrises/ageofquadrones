@@ -135,7 +135,7 @@ void Quadrotor::executeTimeLineCommand()
     {
         double current_time = QuadTimer::GetProcessTime();
         
-
+ 
         
         if(!isExecuting)
         {
@@ -156,8 +156,8 @@ void Quadrotor::executeTimeLineCommand()
             //command to set quad position
             char command[100];
             sscanf(delayedCommand,"%lf %lf %s",&nextTime,&comTime,command);
-            printf("\n%s",command);
-            printf("\n%s",delayedCommand);
+            //printf("\n%s",command);
+            //printf("\n%s",delayedCommand);
             comOrientationTime = 0;
             if(!strcmp(command,"POS"))
             {

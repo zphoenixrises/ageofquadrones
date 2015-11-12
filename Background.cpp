@@ -451,7 +451,7 @@ GLvoid Background::DrawGLScene()
         glEnd();        
     }
     
-    
+    /*
     glBindTexture(GL_TEXTURE_2D, texture[0]);
     numtriangles = sector3.numtriangles;
     
@@ -487,6 +487,8 @@ GLvoid Background::DrawGLScene()
         
         
     }
+  
+  */
     //*
     sky();
     power();

@@ -1,5 +1,5 @@
 /******************************************************************
- * Name   : Camera.cpp
+ * Name   : Camera.h
  * Purpose: Camera controls defined here
  * 
  * Author: Akkas Uddin Haque
@@ -18,6 +18,8 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/vector_angle.hpp>
+
 
 #include "Quadrotor.h"
 #include "Timeline.h"
@@ -89,9 +91,19 @@ private:
     Timeline* timeline;
     bool readTimeline;
     bool isExecuting;
+    bool isMoving;
     double comTime;
     double comAngle;
+    double comOrientationTime;
+    double nextTime;
+    glm::vec3 comVect;
+    glm::vec3 comDirection;
+    glm::vec3 comRotationAxis;
+    char command[100];
+    
     char delayedCommand[250];
+    QuadTimer cameraTime;
+    
     
     //Executes the timeline commads
     void executeTimelineCommands();

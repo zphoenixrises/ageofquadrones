@@ -52,12 +52,13 @@ Timeline::Timeline(char* tag)
         {
             sprintf(commands[numCommands++],"%lf %s",time,templine+4);
           //  printf(commands[numCommands-1]);
-            
+             
         }
     }
     fclose(fin);
     printf("Displaying %s:\n",tag);
     displayLines();
+    printf("\n");
 }
 
 
