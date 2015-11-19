@@ -41,6 +41,8 @@ private:
     void lowLeftPropeller();
     void lowRightPropeller();
     void arm();
+    void propeller();
+    void newBody();
     
 public:
     MamaQuad();

@@ -123,7 +123,7 @@ void NeoQuad::drawGun(float gunScale)
 void NeoQuad::drawGuns()
 {
     static float gunScale = 0;
-    
+    ;
     if(currentState == POWERINGUP)
     {
         gunScale +=0.1;
@@ -162,7 +162,7 @@ void NeoQuad::drawQuad()
     
     //Draw Axes
     //drawAxes();
-    
+    glScalef(.5f,.5f,.5f);
     glColor4f(.75f, .75f, .75f, 0.25f);
     
     //draw body
@@ -200,7 +200,7 @@ void NeoQuad::drawQuad()
         drawGuns();
  
     }
-    
+    glPopMatrix();
     
     
 }
