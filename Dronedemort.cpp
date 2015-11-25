@@ -3,7 +3,7 @@
   /*                                                */
   /* Creates and Draws Dronedemort                  */
   /*                                                */
-  /* CSci 446 / fall 2013                           */
+  /* CSci 446 / fall 2015                          */
   /**************************************************/
 #include "Settings.h"
 #include "Dronedemort.h"
@@ -233,7 +233,7 @@ void Dronedemort::drawQuad()
 // 	drawButton(40,-60,50,-55);
 // 	glEnable(GL_LIGHTING);
 // 	
-	glMultMatrixf(glm::value_ptr(Model)); //load Model glLoadMatrixd
+	glMultMatrixf(glm::value_ptr(Model)); //load Model glLoadMatrixd	
 	//drawAxes();
 // 	gluQuadricDrawStyle(quadricObj,GLU_FILL);
 // 	
@@ -272,14 +272,14 @@ void Dronedemort::drawQuad()
  	glTranslatef(0.0f,-6.4f,23.5f);
 	glRotatef(270,1.0f,0.0f,0.0);
         
-//         glEnable(GL_TEXTURE_2D);
-//         glBindTexture(GL_TEXTURE_2D, eye);
-//         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
-//         #if RAYGL == 1
-//         rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
-//         rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
-//         rayglTextureType(1);                       // Set texture type for PovRAY.
-//         #endif
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, eye);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
+        #if RAYGL == 1
+        rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+        rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+        rayglTextureType(1);                       // Set texture type for PovRAY.
+        #endif
         
  	drawEllipsoid(20.0f,20.0f,10.0f,3.0f,3.0f);
 // 	gluQuadricNormals(quadricObj, GLU_SMOOTH);

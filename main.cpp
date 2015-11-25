@@ -45,7 +45,7 @@ void blahblah()
 class Wind {
 public:
     Wind() {
-        this->interval = 1000 / 60;             //60 FPS
+        this->interval = 1000 / 22;             //60 FPS
         this->window_handle = -1;
     }
     int window_handle, interval;
@@ -395,7 +395,7 @@ int main(int argc, char** argv)
     camera.SetFOV(45);
    // camera.SetToFollow(*neoQuad,-glm::vec3 (100.0f,10.0f,0));
     
-    camera.SetCameraModeCircleMotion(vec3(0,60,0),vec3(0,60,300));
+    //camera.SetCameraModeCircleMotion(vec3(0,60,0),vec3(0,60,300));
     
     //tempcode
     z = 2500;
@@ -405,7 +405,7 @@ int main(int argc, char** argv)
     
     //Start the glut loop!
     //*/
-    QuadTimer::initializeTimer();
+    QuadTimer::initializeTimer(0);
     glutMainLoop();
     
     return 0;

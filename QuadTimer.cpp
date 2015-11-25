@@ -3,7 +3,7 @@
 
 
 double QuadTimer::StartTime = GetCurrentSystemTime();
-int QuadTimer::fps = 25;
+int QuadTimer::fps = 22;
 double QuadTimer::ProcessTime = 0;
 
 
