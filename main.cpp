@@ -404,7 +404,7 @@ int main(int argc, char** argv)
     
     //Start the glut loop!
     //*/
-    QuadTimer::initializeTimer(130);
+    QuadTimer::initializeTimer(0);
     glutMainLoop();
     
     return 0;

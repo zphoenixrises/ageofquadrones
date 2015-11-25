@@ -140,6 +140,9 @@ void Camera::SetCameraModeWorld()
     
 }
 
+
+
+
 void Camera::SetCameraModeCircleMotion(glm::vec3 point, glm::vec3 position)
 {
     SetLookAt(point);
@@ -317,7 +320,7 @@ void Camera::executeTimelineCommands()
                     SetCameraModeFollow(*dronedemort,-position);
                 else if(!strcmp(whichQuad,"MAM"))
                     SetCameraModeFollow(*mamaQuad,-position);
-                
+                 
                 
             }
             else if(!strcmp(command,"FOLLOWVERTICAL"))
@@ -337,6 +340,11 @@ void Camera::executeTimelineCommands()
             {
                 SetCameraModeWorld();  
             } 
+            else if(!strcmp(command,"FREE"))
+            {
+                cameraMode = CameraModes::WORLD;  
+            } 
+            
             else if(!strcmp(command,"CIRCLEMOTION"))
             {
                 glm::vec3 center;
