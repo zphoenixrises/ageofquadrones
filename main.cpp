@@ -7,17 +7,22 @@
  *
  * Creation Date: 09/19/2015
  *******************************************************************/
-
+#include "Settings.h"
 #include<iostream>
 #include<cmath>
 #include<GL/glut.h>
 #include<QuadTimer.h>
 #include "camera.h"
+//#include "./pgmIO.h"
 
 #include "NeoQuad.h"
 #include "Dronedemort.h"
 #include "MamaQuad.h"
 #include "Background.h"
+#include <pthread.h>
+
+#include "raygl/raygl.h"
+#include "raygl/raygldefs.h"
 
 using namespace std;
 using namespace glm;
@@ -31,10 +36,16 @@ MamaQuad *mamaQuad;
 Quadrotor *quadrotor;
 Background *background;
 
-class Window {
+void blahblah()
+{
+    int i = pthread_getconcurrency();
+}
+
+
+class Wind {
 public:
-    Window() {
-        this->interval = 1000 / 60;             //60 FPS
+    Wind() {
+        this->interval = 1000 / 22;             //60 FPS
         this->window_handle = -1;
     }
     int window_handle, interval;
@@ -227,6 +238,12 @@ void drawGrid()
 bool gridEnabled = false; 
 void drawHandler()
 {
+    QuadTimer::updateProcessTime();
+    #if RAYGL == 1
+    rayglFrameBegin("frames/frame");
+    setFadeDistance(1000.0);
+    setFadePower(2.0);
+    #endif  
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClearDepth(1.0);                          // Enables Clearing Of The Depth Buffer
@@ -235,7 +252,7 @@ void drawHandler()
     glViewport(0, 0, window.size.x, window.size.y);
     
     
-    //*   //Add ambient light
+    /*   //Add ambient light
     GLfloat ambientColor[] = {0.2f, 0.2f, 0.2f, 1.0f}; //Color (0.2, 0.2, 0.2)
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
     
@@ -252,12 +269,12 @@ void drawHandler()
     glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
     glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);//*/
     //glLoadIdentity();
-    glm::mat4 model, view, projection;
+   // glm::mat4 model, view, projection;
     camera.Update();
-    camera.GetMatricies(projection, view, model);
+  //  camera.GetMatricies(projection, view, model);
     
-    glm::mat4 mvp = projection* view * model;       //Compute the mvp matrix
-    glLoadMatrixf(glm::value_ptr(mvp));
+  //  glm::mat4 mvp = projection* view * model;       //Compute the mvp matrix
+  //  glLoadMatrixf(glm::value_ptr(mvp));
     glColor3f(1.0f,1.0f,1.0f);
     glDisable(GL_CULL_FACE); //had to disable culling as it is not done in background
     //
@@ -273,6 +290,9 @@ void drawHandler()
 
      glCullFace(GL_BACK);
      glFrontFace(GL_CCW);
+     #if RAYGL == 1
+     rayglFrameEnd();
+     #endif
     glutSwapBuffers();
     
 }
@@ -374,7 +394,7 @@ int main(int argc, char** argv)
     camera.SetFOV(45);
    // camera.SetToFollow(*neoQuad,-glm::vec3 (100.0f,10.0f,0));
     
-    camera.SetCameraModeCircleMotion(vec3(0,60,0),vec3(0,60,300));
+    //camera.SetCameraModeCircleMotion(vec3(0,60,0),vec3(0,60,300));
     
     //tempcode
     z = 2500;
@@ -384,7 +404,7 @@ int main(int argc, char** argv)
     
     //Start the glut loop!
     //*/
-    QuadTimer::initializeTimer();
+    QuadTimer::initializeTimer(130);
     glutMainLoop();
     
     return 0;
