@@ -29,12 +29,12 @@ double QuadTimer::getTimeDiffSec()
     //time = time2;
     //return diffTime;
     //time+=60.0/framesPerSec;
-    return 60.0/fps;
+    return 1.0/fps;
 }
 
 void QuadTimer::updateProcessTime()
 {
-    ProcessTime+=60.0/fps;
+    ProcessTime+=1.0/fps;
 }
 
 double QuadTimer::GetCurrentSystemTime()

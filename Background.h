@@ -1,4 +1,14 @@
-
+/**************************************************************
+ * Name   : Background.h
+ * Purpose: Header File for Background
+ * 
+ * Author: Ahmad Hasan
+ * Email : jarjishasan@gmail.com
+ * 
+ * CSci 446 / fall 2015
+ *
+ * Creation Date: 09/16/2015
+ * ***********************************************************/
 #ifndef Background_H
 #define Background_H
 
@@ -6,6 +16,7 @@
 
 #include <stdio.h>      // Header file for standard file i/o.
 #include <stdlib.h>     // Header file for malloc/free.
+#include "QuadTimer.h"  // Header file for the timer
 
 typedef struct {         // vertex coordinates - 3d and texture
     GLfloat x, y, z;     // 3d coords.
@@ -50,7 +61,8 @@ private:
     int currentParticle;
     float posX[MAX_PARTICLES], posY[MAX_PARTICLES];
     
-    ////////for smoke
+    ////////for power release
+    float radius= 0.2;
     
     
 public:

@@ -1,3 +1,16 @@
+/**************************************************************
+ * Name   : Background.cpp
+ * Purpose: Background functions are defined here
+ * 
+ * Author: Ahmad Hasan
+ * Email : jarjishasan@gmail.com
+ * 
+ * CSci 446 / fall 2015
+ *
+ * Creation Date: 09/16/2015
+ * ***********************************************************/
+
+
 #include "Settings.h"
 
 #include "Background.h"
@@ -138,8 +151,9 @@ GLvoid Background::LoadGLTextures()
     
     
     
-    char image_paths[][50]={"Data/download.ppm",
+    char image_paths[][50]={
         "Data/floor.ppm",
+        "Data/download.ppm",
         "Data/grass.ppm",
         "Data/sky.ppm",
         "Data/images.ppm",
@@ -179,14 +193,13 @@ GLvoid Background::LoadGLTextures()
 GLvoid Background::DrawGLScene()
 {
     glEnable(GL_TEXTURE_2D);                    // Enable texture mapping.
-    
-    glMatrixMode(GL_MODELVIEW);
+
     glPushMatrix(); //Main push
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);         // Clear The Screen And The Depth Buffer
     //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);   // This Will Clear The Background Color To Black
     // glClearDepth(1.0);                          // Enables Clearing Of The Depth Buffer
     //glColor3f(1.0)
-   // glLoadIdentity();
+
     glScalef(200.0f,200.0f,200.0f);
     //glTranslatef(pos_x, pos_y, pos_z);
     //   glMultMatrixf(glm::value_ptr(Model)); //load Model matrix
@@ -352,7 +365,9 @@ void Background::power(){
     
     glPushMatrix();
     glTranslatef(-20.0,1.2,3.75);
-    gluSphere(power,0.2,100,100);
+  
+     if(QuadTimer::GetProcessTime() >= 230){radius+=0.2;};
+    gluSphere(power,radius,100,100);
     glPopMatrix();
     
     gluDeleteQuadric(power);
@@ -499,6 +514,7 @@ void Background::security() {
     
     glPushMatrix();
     glTranslatef(0.0,0.6,2.0);
+   
     gluSphere(laser_gun,0.08,100,100);
     glPopMatrix();
     
