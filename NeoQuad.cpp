@@ -7,7 +7,7 @@
  *
  * Creation Date: 09/19/2015
  *******************************************************************/
-
+#include "Settings.h"
 #include "NeoQuad.h"
 #include <GL/glut.h>
 #include <cmath>
@@ -21,6 +21,8 @@
 using namespace std;
 
 #define SOLID_RENDERING 
+#include "raygl/raygl.h"
+#include "raygl/raygldefs.h"
 
 NeoQuad::NeoQuad()
 {

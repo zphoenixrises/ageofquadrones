@@ -8,13 +8,14 @@
  * Creation Date: 09/19/2015
  *******************************************************************/
 
+#include "Settings.h"
 
-#include<GL/gl.h>
-#include<GL/glu.h>
 #include<GL/glut.h>
 #include"Quadrotor.h"
 #include <glm/gtx/vector_angle.hpp>
 
+#include "raygl/raygl.h"
+#include "raygl/raygldefs.h"
 
 Quadrotor::Quadrotor()
 {

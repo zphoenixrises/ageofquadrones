@@ -2,12 +2,16 @@ cmake_minimum_required(VERSION 2.8)
 
 project(AgeofQuadrones)
 
-add_executable(AgeofQuadrones main.cpp NeoQuad.cpp Dronedemort.cpp MamaQuad.cpp Quadrotor.cpp Background.cpp QuadTimer.cpp camera.cpp Timeline.cpp)
+add_executable(AgeofQuadrones main.cpp NeoQuad.cpp Dronedemort.cpp MamaQuad.cpp Quadrotor.cpp Background.cpp QuadTimer.cpp camera.cpp Timeline.cpp raygl/raygl.cpp)
+#add_executable(AgeofQuadrones main.cpp NeoQuad.cpp Dronedemort.cpp MamaQuad.cpp Quadrotor.cpp Background.cpp QuadTimer.cpp camera.cpp Timeline.cpp pgmIO.cpp)
 
 
 add_subdirectory(glm/)
 include_directories(glm/)
 
+add_custom_target(build-time-make-directory ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory "frames")
+    
 #copy all files form Data/ to build/Data
 #file(COPY Data/ DESTINATION Data/)
 add_custom_command(TARGET AgeofQuadrones PRE_BUILD
@@ -17,6 +21,7 @@ add_custom_command(TARGET AgeofQuadrones PRE_BUILD
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 
+find_package(Threads REQUIRED)
 #INCLUDE(FindFreeGLUT.cmake)
 
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
@@ -32,4 +37,4 @@ include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} ${AgeofQuadron
 link_directories(${AgeofQuadrones_BINARY_DIR})
 
 
-target_link_libraries(AgeofQuadrones ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
+target_link_libraries(AgeofQuadrones ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} )
