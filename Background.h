@@ -1,15 +1,22 @@
-
+/**************************************************************
+ * Name   : Background.h
+ * Purpose: Header File for Background
+ * 
+ * Author: Ahmad Hasan
+ * Email : jarjishasan@gmail.com
+ * 
+ * CSci 446 / fall 2015
+ *
+ * Creation Date: 09/16/2015
+ * ***********************************************************/
 #ifndef Background_H
 #define Background_H
 
 #include <GL/glut.h>    // Header File For The GLUT Library 
-#include <GL/gl.h>      // Header File For The OpenGL32 Library
-#include <GL/glu.h>     // Header File For The GLu32 Library
-#include <unistd.h>     // Header file for sleeping.
+
 #include <stdio.h>      // Header file for standard file i/o.
 #include <stdlib.h>     // Header file for malloc/free.
-#include <math.h>       // Header file for trigonometric functions.
-#include <time.h>
+#include "QuadTimer.h"  // Header file for the timer
 
 typedef struct {         // vertex coordinates - 3d and texture
     GLfloat x, y, z;     // 3d coords.
@@ -19,7 +26,7 @@ typedef struct {         // vertex coordinates - 3d and texture
 typedef struct {         // triangle
     VERTEX vertex[3];    // 3 vertices array
 } TRIANGLE;
-
+ 
 typedef struct {         // sector of a 3d environment
     int numtriangles;    // number of triangles in the sector
     TRIANGLE* triangle;  // pointer to array of triangles.
@@ -29,21 +36,23 @@ typedef struct {         // sector of a 3d environment
 typedef struct {
     int sizeX;
     int sizeY;
-    char *data;
-} Image;
+    unsigned char *data;
+} MyImage;
 
 const  int MAX_PARTICLES = 1000;
 const  int MIN_PARTICLES = 10;
+#define  noTextures 9
 
 class Background
 {
 private:
+    
+    GLuint texture[noTextures];
     SECTOR sector1;
     SECTOR sector2;
     SECTOR sector3;
     
     GLuint loop;             // general loop variable
-    GLuint texture[3];       // storage for 3 textures;
     GLuint filter;       // texture filtering method to use (nearest, linear, linear + mipmaps)
     
     ////////for smoke
@@ -52,7 +61,8 @@ private:
     int currentParticle;
     float posX[MAX_PARTICLES], posY[MAX_PARTICLES];
     
-    ////////for smoke
+    ////////for power release
+    float radius= 0.2;
     
     
 public:
@@ -66,7 +76,7 @@ public:
     
     // quick and dirty bitmap loader...for 24 bit bitmaps with 1 plane only.  
     // See http://www.dcs.ed.ac.uk/~mxr/gfx/2d/BMP.txt for more info.
-    int ImageLoad(char *filename, Image *image);
+    //int ImageLoad(char *filename, Image *image);
     // Load Bitmaps And Convert To Textures
     GLvoid LoadGLTextures();
     void sky();

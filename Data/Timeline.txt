@@ -1,8 +1,8 @@
 /**********************************************************************
- Timeline file for Quadworld defined here
+ T im*eline file for Quadworld defined here
  
  Quadrotor commands 
-================================
+ ================================
  MOV <rotationtime> <destination position> 
  ROT <> TODO
  POS <position> 
@@ -10,64 +10,102 @@
  PAUSE->pause the quad TODO
  LOOKAT <Quadrotor> TODO
  
-
+ 
  Camera Commands
-================================
+ ================================
  FOLLOW <Quadrotor>
- FOLLOWVERTICAL <Quadrotor>
+ FOLLOWVERTICAL <Quadrotor> <distance from quad>
  WORLD
  CIRCLEMOTION <centerXYZ> <angle> 
  MOV <rotationtime> <destination positionXYZ> 
  LOOKAT <point>
  POS <point>
-
-*************************************************************************/
+ 
+ *************************************************************************/
 
 
 //Initial positioning
 TIM 0.00
-CAM WORLD
-//*
-CAM POS -100 60 0
-CAM LOOKAT 100 60 0
-NEO POS 100 60 0 
-DRO POS -50 60 0
-MAM POS 60 60 0
-
-TIM 1.00
-CAM MOV 1 0 60 350
-//CAM FOLLOWVERTICAL DRO -100 10 0
-
-//TIM 3.00
-//CAM FOLLOWVERTICAL NEO -100 10 0
-
-TIM 3.00
-//NEO POS 100 60 0 
-NEO MOV 1 0 60 1000
-CAM MOV 1 -1650 60 350
-//DRO MOV 0 60 800
-//MAM MOV 300 60 800
-
-
-TIM 9.00
-CAM MOV 1 -1650 60 750
-NEO MOV 1 -1000 60 1000
-
-//DRO 0 600 0
 
 //*
-TIM 12.00
-CAM MOV 1 -2450 60 750
-NEO MOV 3 1000 500 0
-DRO MOV 1 1100 500 0
-MAM MOV 1 1200 500 0
+//CAM POS -100 60 0
+//CAM LOOKAT 100 60 0
+NEO POS -100 30 6300 
+DRO POS -2700 60 750
+MAM POS 100 60 6000
+CAM FOLLOW MAM -100 20 0
+
+TIM 15
+
+MAM MOV 2 350 60 5600
+
+TIM 20
+CAM FREE
+MAM MOV 2 1 60 500
+
+TIM 40
+MAM PAUSE
+
+TIM 70.00
+DRO POS -2700 60 250
+DRO MOV .5 -2700 60 1250
+
+TIM 90.00
+DRO MOV 0.5 -3200 60 750
+
+TIM 95.00
+DRO PAUSE
+
+TIM 110.00
+NEO MOV 0 -100 60 6300
+
+TIM 111.00
+NEO PAUSE
+
+TIM 119.00
+DRO POS 0 60 -100
+
+TIM 120.00
+DRO MOV 0.5 0 60 350
 
 
-TIM 15.00
-CAM MOV 1 -2450 800 3750
-TIM 20.0
-CAM POS -2450 800 3750
-NEO POS 1000 500 0
-DRO POS 1100 500 0
-MAM POS 1200 500 0
+TIM 125.00
+DRO PAUSE
+
+TIM 135.00
+DRO POS -3150 60 750
+NEO MOV 0 0 60 6300
+
+TIM 136.00
+NEO PAUSE
+
+TIM 138.00
+NEO MOV 0.5 300 60 5700
+
+TIM 139.99
+NEO PAUSE
+
+TIM 140.00
+DRO MOV 0.5 -3100 60 750
+NEO POS 0 60 1200
+NEO MOV 1 0 60 500
+
+TIM 142.00
+NEO PAUSE
+
+TIM 143.00
+NEO MOV 0.5 -400 60 350
+
+TIM 146.00
+NEO MOV 0.5 -1650 60 350
+
+TIM 150.00
+NEO MOV 0.5 -1650 60 750
+
+TIM 153.00
+NEO MOV 0.5 -2750 60 750
+
+TIM 155.00
+DRO PAUSE
+NEO PAUSE
 //*/

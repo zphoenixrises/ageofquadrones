@@ -1,7 +1,26 @@
+/**************************************************************
+ * Name   : Background.cpp
+ * Purpose: Background functions are defined here
+ * 
+ * Author: Ahmad Hasan
+ * Email : jarjishasan@gmail.com
+ * 
+ * CSci 446 / fall 2015
+ *
+ * Creation Date: 09/16/2015
+ * ***********************************************************/
+
+
+#include "Settings.h"
+
 #include "Background.h"
 
 
 #include <stdio.h>      // Header file for standard file i/o.
+
+#include "raygl/raygl.h"
+#include "raygl/raygldefs.h"
+
 /*
  * getint and getshort are help functions to load the bitmap byte by byte on 
  * SPARC platform (actually, just makes the thing work on platforms of either
@@ -40,6 +59,7 @@ Background::Background()
     limits = .8;
     X=0, Y=0;
     currentParticle = 1;
+ 
 }
 
 // loads the world from a text file.
@@ -103,275 +123,83 @@ void Background::readstr(FILE *f, char *string)
 
 
 
-// quick and dirty bitmap loader...for 24 bit bitmaps with 1 plane only.  
-// See http://www.dcs.ed.ac.uk/~mxr/gfx/2d/BMP.txt for more info.
-int Background::ImageLoad(char *filename, Image *image) 
+GLvoid Background::LoadGLTextures()
 {
-    FILE *file;
-    unsigned long size;                 // size of the image in bytes.
-    unsigned long i;                    // standard counter.
-    unsigned short int planes;          // number of planes in image (must be 1) 
-    unsigned short int bpp;             // number of bits per pixel (must be 24)
-    char temp;                          // used to convert bgr to rgb color.
     
-    // make sure the file is there.
-    if ((file = fopen(filename, "rb"))==NULL) {
-        printf("File Not Found : %s\n",filename);
-        return 0;
-    }
+    int w[noTextures], h[noTextures], c;
+    unsigned char *data[noTextures];
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     
-    // seek through the bmp header, up to the width/height:
-    fseek(file, 18, SEEK_CUR);
-    
-    // No 100% errorchecking anymore!!!
-    
-    // read the width
-    image->sizeX = getint (file);
-    //printf("Width of %s: %lu\n", filename, image->sizeX);
-    
-    // read the height 
-    image->sizeY = getint (file);
-    //printf("Height of %s: %lu\n", filename, image->sizeY);
-    
-    // calculate the size (assuming 24 bits or 3 bytes per pixel).
-    size = image->sizeX * image->sizeY * 3;
-    
-    // read the planes
-    planes = getshort(file);
-    if (planes != 1) {
-        printf("Planes from %s is not 1: %u\n", filename, planes);
-        return 0;
-    }
-    
-    // read the bpp
-    bpp = getshort(file);
-    if (bpp != 24) {
-        printf("Bpp from %s is not 24: %u\n", filename, bpp);
-        return 0;
-    }
-    
-    // seek past the rest of the bitmap header.
-    fseek(file, 24, SEEK_CUR);
-    
-    // read the data. 
-    image->data = (char *) malloc(size);
-    if (image->data == NULL) {
-        printf("Error allocating memory for color-corrected image data");
-        return 0;       
-    }
-    
-    if ((i = fread(image->data, size, 1, file)) != 1) {
-        printf("Error reading image data from %s.\n", filename);
-        return 0;
-    }
-    
-    for (i=0;i<size;i+=3) { // reverse all of the colors. (bgr -> rgb)
-        temp = image->data[i];
-        image->data[i] = image->data[i+2];
-        image->data[i+2] = temp;
-    }
-    
-    // we're done.
-    return 1;
-}
-
-// Load Bitmaps And Convert To Textures
-GLvoid Background::LoadGLTextures() 
-{       
-    // Load Texture
-    Image *image1 , *image2 , *image3, *image4, *image5, *image6, *image7, *image8, *image9;
-/*  
-   Image image[9];
-    char imagePaths[][40]={"Data/download.bmp","Data/floor.bmp","Data/grass.bmp","Data/sky.bmp",
-        "Data/images.bmp","Data/security.bmp","Data/comm.bmp","Data/laser_gun.bmp","Data/tower.bmp"};
-    
-    for(int i=0;i<9;i++)
-        if (!ImageLoad(imagePaths, image[i])) 
-            exit(1);
-     //*/   
-    
-    // allocate space for texture
-    image1 = (Image *) malloc(sizeof(Image));
-    if (image1 == NULL) {
-        printf("Error allocating space for image");
-        exit(0);
-    }
-    
-    if (!ImageLoad("Data/download.bmp", image1)) {
-        exit(1);
+    // Allocate space for RayGL textures.
+    #ifdef RAYGL_ENABLE
+    Image *image[noTextures];
+    #else
+    MyImage *image[noTextures];
+    #endif
+    for (c = 0; c < noTextures; c++) {
         
+        image[c] = 
+        #ifdef RAYGL_ENABLE
+        (Image *) malloc(sizeof(Image));
+        #else
+        (MyImage *) malloc(sizeof(MyImage));
+        
+        #endif
+        if (image[c] == NULL) exit(0);
     }
     
-    image2 = (Image *) malloc(sizeof(Image));
-    if (image2 == NULL) {
-        printf("Error allocating space for image");
-        exit(0);
-    }
     
-    if (!ImageLoad("Data/floor.bmp", image2)) {
-        exit(1);
-    }    
     
-    image3 = (Image *) malloc(sizeof(Image));
-    if (image3 == NULL) {
-        printf("Error allocating space for image");
-        exit(0);
-    }
     
-    if (!ImageLoad("Data/grass.bmp", image3)) {
-        exit(1);  
-    }
-    
-    image4 = (Image *) malloc(sizeof(Image));
-    if (image4 == NULL) {
-        printf("Error allocating space for image");
-        exit(0);
-    }
-    
-    if (!ImageLoad("Data/sky.bmp", image4)) {
-        exit(1);  
-    }
-    
-    image5 = (Image *) malloc(sizeof(Image));
-    if (image5 == NULL) {
-        printf("Error allocating space for image");
-        exit(0);
-    }
-    
-    if (!ImageLoad("Data/images.bmp", image5)) {
-        exit(1);  
-    }
-    
-    image6 = (Image *) malloc(sizeof(Image));
-    if (image6 == NULL) {
-        printf("Error allocating space for image");
-        exit(0);
-    }
-    
-    if (!ImageLoad("Data/security.bmp", image6)) {
-        exit(1);  
-    }
-    
-    image7 = (Image *) malloc(sizeof(Image));
-    if (image7 == NULL) {
-        printf("Error allocating space for image");
-        exit(0);
-    }
-    
-    if (!ImageLoad("Data/comm.bmp", image7)) {
-        exit(1);  
-    }
-    
-    image8 = (Image *) malloc(sizeof(Image));
-    if (image8 == NULL) {
-        printf("Error allocating space for image");
-        exit(0);
-    }
-    
-    if (!ImageLoad("Data/laser_gun.bmp", image8)) {
-        exit(1);  
-    }
-    
-    image9 = (Image *) malloc(sizeof(Image));
-    if (image9 == NULL) {
-        printf("Error allocating space for image");
-        exit(0);
-    }
-    
-    if (!ImageLoad("Data/tower.bmp", image9)) {
-        exit(1);  
-    }
-    
+    char image_paths[][50]={
+        "Data/floor.ppm",
+        "Data/download.ppm",
+        "Data/grass.ppm",
+        "Data/sky.ppm",
+        "Data/images.ppm",
+        "Data/security.ppm",
+        "Data/comm.ppm",
+        "Data/laser_gun.ppm",
+        "Data/tower.ppm",
+    };
     // Create Textures  
-    glGenTextures(8, &texture[0]);
     
-    // nearest filtered texture
-    glBindTexture(GL_TEXTURE_2D, texture[0]);   // 2d texture (x and y size)
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST); // scale cheaply when image bigger than texture
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST); // scale cheaply when image smalled than texture
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, image3->sizeX, image3->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, image3->data);
+    glGenTextures(9, &texture[0]);
+    // Create a texture (OpenGL and RayGL variants).
+    for(int i=0;i<noTextures;i++)
+    {
+        
+        #ifdef RAYGL_ENABLE
+        
+        if (!imageLoad(image_paths[i], image[i])) exit(0);
+        #else
+        image[i]->data = PGM_FILE_READ(image_paths[i], &image[i]->sizeX, &image[i]->sizeY, &c); 
+        #endif
+        glBindTexture(GL_TEXTURE_2D, texture[i]);   // 2d texture (x and y size)
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
+        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image[i]->sizeX, image[i]->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image[i]->data);
+        
+        #ifndef RAYGL_ENABLE
+        free(image[i]->data);
+        free(image[i]);
+        #endif
+    }
     
-    free(image3);
-    
-    // linear filtered texture
-    glBindTexture(GL_TEXTURE_2D, texture[1]);   // 2d texture (x and y size)
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); // scale linearly when image smalled than texture
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, image1->sizeX, image1->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, image1->data);
-    
-    free(image1);
-    
-    // mipmapped texture
-    glBindTexture(GL_TEXTURE_2D, texture[2]);   // 2d texture (x and y size)
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image2->sizeX, image2->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image2->data);
-    
-    free(image2); 
-    
-    // mipmapped texture
-    glBindTexture(GL_TEXTURE_2D, texture[3]);   // 2d texture (x and y size)
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image4->sizeX, image4->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image4->data);
-    
-    free(image4); 
-    
-    // mipmapped texture
-    glBindTexture(GL_TEXTURE_2D, texture[4]);   // 2d texture (x and y size)
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image5->sizeX, image5->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image5->data);
-    
-    free(image5); 
-    
-    // mipmapped texture
-    glBindTexture(GL_TEXTURE_2D, texture[5]);   // 2d texture (x and y size)
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image6->sizeX, image6->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image6->data);
-    
-    free(image6); 
-    
-    // mipmapped texture
-    glBindTexture(GL_TEXTURE_2D, texture[6]);   // 2d texture (x and y size)
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image7->sizeX, image7->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image7->data);
-    
-    free(image7); 
-    
-    // mipmapped texture
-    glBindTexture(GL_TEXTURE_2D, texture[7]);   // 2d texture (x and y size)
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image8->sizeX, image8->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image8->data);
-    
-    free(image8); 
-    
-    // mipmapped texture
-    glBindTexture(GL_TEXTURE_2D, texture[8]);   // 2d texture (x and y size)
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image9->sizeX, image9->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image9->data);
-    
-    free(image9); 
 };
-
 
 
 /* The main drawing function. */
 GLvoid Background::DrawGLScene()
 {
     glEnable(GL_TEXTURE_2D);                    // Enable texture mapping.
-    
-    glMatrixMode(GL_MODELVIEW);
+
     glPushMatrix(); //Main push
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);         // Clear The Screen And The Depth Buffer
     //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);   // This Will Clear The Background Color To Black
     // glClearDepth(1.0);                          // Enables Clearing Of The Depth Buffer
     //glColor3f(1.0)
-    glLoadIdentity();
+
     glScalef(200.0f,200.0f,200.0f);
     //glTranslatef(pos_x, pos_y, pos_z);
     //   glMultMatrixf(glm::value_ptr(Model)); //load Model matrix
@@ -537,7 +365,9 @@ void Background::power(){
     
     glPushMatrix();
     glTranslatef(-20.0,1.2,3.75);
-    gluSphere(power,0.2,100,100);
+  
+     if(QuadTimer::GetProcessTime() >= 230){radius+=0.2;};
+    gluSphere(power,radius,100,100);
     glPopMatrix();
     
     gluDeleteQuadric(power);
@@ -684,6 +514,7 @@ void Background::security() {
     
     glPushMatrix();
     glTranslatef(0.0,0.6,2.0);
+   
     gluSphere(laser_gun,0.08,100,100);
     glPopMatrix();
     

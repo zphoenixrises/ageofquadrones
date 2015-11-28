@@ -19,6 +19,8 @@ class QuadTimer
 {
     double time;
     static double StartTime;
+    static double ProcessTime;
+    static int fps;
 public:
 
     QuadTimer();
@@ -27,6 +29,7 @@ public:
     // Usage: timeDifference = ti.getTimeDiffSec();
     double getTimeDiffSec();
     
+    static void updateProcessTime();
     // Gets the time since call to initTimer().
     // Used to keep track of the time since the program has been running.
     static double GetProcessTime();
@@ -34,7 +37,7 @@ public:
     // Gets the current system time in seconds since epoch
     static double GetCurrentSystemTime();
     
-    static void initializeTimer();
+    static void initializeTimer(double seconds = 0);
 };
 
 #endif
