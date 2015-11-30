@@ -574,7 +574,7 @@ GLvoid Background:: Draw_smoke(void) {
             
             
     }
-    
+    glPopMatrix();
     //glutSwapBuffers();
 }
 

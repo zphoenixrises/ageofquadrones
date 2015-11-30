@@ -60,6 +60,11 @@ void NeoQuad::drawBlade()
     glEnable(GL_CULL_FACE);
 
 }
+char* NeoQuad::getName()
+{
+    return "NEO";
+
+}
 
 void NeoQuad::drawPropellers(int rotorDirection)
 {
@@ -202,7 +207,7 @@ void NeoQuad::drawQuad()
         drawGuns();
  
     }
-    glPopMatrix();
+    //glPopMatrix();
     
     
 }

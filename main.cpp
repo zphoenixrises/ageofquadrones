@@ -2,9 +2,11 @@
  * Name: main.cpp
  * Purpose: main routines are defined here
  * 
- * Author: Akkas Uddin Haque
- * Email : akkasuddin@live.com
- *
+ * Authors: Akkas Uddin Haque
+ *          Ian Noedeng
+ *          Steve Buettner
+ *          Ahmed Jarjis Hasan
+ * 
  * Creation Date: 09/19/2015
  *******************************************************************/
 #include "Settings.h"
@@ -245,7 +247,7 @@ void drawHandler()
     glClearDepth(1.0);                          // Enables Clearing Of The Depth Buffer
     
     // glMatrixMode(GL_MODELVIEW);
-    glViewport(0, 0, window.size.x, window.size.y);
+   // glViewport(0, 0, window.size.x, window.size.y);
     
     
     /*   //Add ambient light
@@ -267,6 +269,9 @@ void drawHandler()
     //glLoadIdentity();
    // glm::mat4 model, view, projection;
     camera.Update();
+    glMatrixMode(GL_MODELVIEW);
+    //glPushMatrix(); //Main push
+    glLoadIdentity();
   //  camera.GetMatricies(projection, view, model);
     #if RAYGL == 1
     rayglFrameBegin("frames/frame");
@@ -398,14 +403,14 @@ int main(int argc, char** argv)
     //camera.SetCameraModeCircleMotion(vec3(0,60,0),vec3(0,60,300));
     
     //tempcode
-    z = 2500;
+    //z = 2500;
    // neoQuad->yawQuad(90);
     //quadrotor->rollQuad(20);
 //    quadrotor->pitchQuad(20);
     
     //Start the glut loop!
     //*/
-    QuadTimer::initializeTimer(0);
+    QuadTimer::initializeTimer(135 );
     glutMainLoop();
     
     return 0;

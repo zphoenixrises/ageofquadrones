@@ -34,8 +34,10 @@ private:
     void drawGun(float gunScale);
     void drawGuns();
     void rotateProps();
-    
+protected:
+    char* getName();
 public:
+    
   
     NeoQuad();
     void toggleAnimate();

@@ -13,7 +13,7 @@
 #include "QuadTimer.h"
 #include "Timeline.h"
 #include <cstdio>
-
+#include <vector>
 # include<GL/glu.h>
 
 #include <glm/matrix.hpp>
@@ -37,7 +37,7 @@ protected:
     QuadTimer quadTime;
     Timeline *timeline;
     
-    
+    char command[100];
     bool isExecuting;
     bool isMoving;
     bool readTimeline;
@@ -46,6 +46,10 @@ protected:
     double comOrientationTime;
     double comAngle;
     char delayedCommand[250];
+    Quadrotor *otherQuad;
+    virtual char* getName()=0;
+    
+
     
     //double com_posx,com_posy,com_posz;
     glm::vec3 comVect;
@@ -61,6 +65,8 @@ protected:
     GLfloat pos_x,pos_y,pos_z;
 
 public:
+    
+    static vector<Quadrotor*>quads;
 
 
     //Contructor
@@ -86,4 +92,5 @@ public:
     virtual void drawQuad() = 0;
     ~Quadrotor();
 };
+
 #endif

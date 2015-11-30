@@ -57,6 +57,11 @@ void Camera::Update() {
     {
         
     }
+    else if(cameraMode == CameraModes::LOOKATQUAD)
+    {
+        
+        SetLookAt(quadrotor->getQuadPosition());
+    }
     
     camera_direction = glm::normalize(camera_look_at - camera_position);
     //need to set the matrix state. this is only important because lighting doesn't work if this isn't done
@@ -71,7 +76,8 @@ void Camera::Update() {
         projection = glm::ortho(-1.5f * float(aspect), 1.5f * float(aspect), -1.5f, 1.5f, -10.0f, 10.f);
     } else if (camera_type == CameraType::FREE) {
         projection = glm::perspective(field_of_view, aspect, near_clip, far_clip);
-         //detmine axis for pitch rotation
+        gluPerspective(field_of_view, aspect, near_clip, far_clip);
+        //detmine axis for pitch rotation
         glm::vec3 axis = glm::cross(camera_direction, camera_up);
         //compute quaternion for pitch based on the camera pitch angle
         glm::quat pitch_quat = glm::angleAxis(camera_pitch, axis);
@@ -96,7 +102,6 @@ void Camera::Update() {
     //     model = glm::mat4(1.0f);
     //     MVP = projection * view * model;
     //     glLoadMatrixf(glm::value_ptr(MVP));
-    gluPerspective(field_of_view, aspect, near_clip, far_clip);
     
     gluLookAt(camera_position.x,camera_position.y,camera_position.z,
               camera_look_at.x,camera_look_at.y,camera_look_at.z,
@@ -359,6 +364,22 @@ void Camera::executeTimelineCommands()
                 SetLookAt(center);
                 
             }
+            else if(!strcmp(command,"LOOKATQUAD"))
+            {
+                glm::vec3 center;
+                char whichQuad[10];
+                sscanf(delayedCommand,"%lf %lf %s %s %f %f",&nextTime,&comTime,command, whichQuad);
+                camera_up = glm::vec3(0,1,0);
+                
+                if(!strcmp(whichQuad,"NEO"))
+                    quadrotor = neoQuad;
+                else if(!strcmp(whichQuad,"DRO"))
+                    quadrotor = dronedemort;
+                else if(!strcmp(whichQuad,"MAM"))
+                    quadrotor = mamaQuad;
+                SetLookAt(quadrotor->getQuadPosition());
+                cameraMode = CameraModes::LOOKATQUAD;      
+            }
             else if(!strcmp(command,"POS"))
             {
                 glm::vec3 center;
@@ -373,21 +394,10 @@ void Camera::executeTimelineCommands()
                 isExecuting = true;
                 cameraTime.getTimeDiffSec();
                 comOrientationTime = current_time + comOrientationTime;
-                /*
-                 *                if(orientationMode == QuadOrientationMode::FREE)
-                 *                {}
-                 *                else if(orientationMode == QuadOrientationMode::ANOTHERQUAD)
-                 *                { 
-                 *                     
-            }
-            else if(orientationMode == QuadOrientationMode::UPRIGHT)
-            {}
-            //*/
-            //Operations to align the quad with the direction of motion 
-            
-            comDirection = comVect-camera_position; // glm::vec3(comVect.x-camera_position.x,comVect.y-camera_position.y,comVect.z-camera_position.z);
-            //  comDirection = glm::normalize(comDirection);
-            
+
+                //Operations to align the quad with the direction of motion 
+                comDirection = comVect-camera_position; // glm::vec3(comVect.x-camera_position.x,comVect.y-camera_position.y,comVect.z-camera_position.z);
+                //  comDirection = glm::normalize(comDirection);
             
             }
             //isExecuting = false;

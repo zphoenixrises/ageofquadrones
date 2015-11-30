@@ -39,6 +39,7 @@ private:
 	unsigned char * data1;
 public:
 	Dronedemort();
+        char* getName();
 	void toggleAnimate();
 	GLvoid LoadGLTextures();
 	void drawQuad();

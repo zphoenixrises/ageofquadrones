@@ -51,6 +51,12 @@ Dronedemort::Dronedemort()
            LoadGLTextures();
 	}
 	
+char* Dronedemort::getName()
+{
+    return "DRO";
+
+}
+
 
 GLvoid Dronedemort::LoadGLTextures()
 {

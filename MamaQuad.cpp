@@ -30,6 +30,13 @@
      timeline = new Timeline("MAM");
  }
  
+char* MamaQuad::getName()
+{
+    return "MAM";
+
+}
+
+ 
  MamaQuad::~MamaQuad() {
      gluDeleteQuadric(quad);
  }
@@ -92,6 +99,7 @@
      
     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
      glMultMatrixf(glm::value_ptr(Model)); //load Model glLoadMatrixd
+     
      glScalef(4.0f,4.0f,4.0f);
    //  glPushMatrix();
      

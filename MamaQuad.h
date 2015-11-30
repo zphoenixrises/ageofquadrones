@@ -46,6 +46,7 @@ private:
     
 public:
     MamaQuad();
+    char* getName();
     void toggleAnimate();
     //TODO: Steve-> Please solve issues with the drawing of mamaquad
     void drawQuad();

@@ -36,7 +36,7 @@ namespace CameraType {
 namespace CameraModes
 {
     enum Enum{
-        FOLLOW_QUAD_UPRIGHT,FOLLOW_QUAD, FREEMODE, WORLD, CIRCLEMOTION
+        FOLLOW_QUAD_UPRIGHT,FOLLOW_QUAD, FREEMODE, WORLD, CIRCLEMOTION, LOOKATQUAD
     };
 }
 class Camera {
