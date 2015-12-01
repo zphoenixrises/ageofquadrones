@@ -1,9 +1,5 @@
 /**********************************************************************
- Timeline file for Quadworld defined here
- 
- Ammo Commands
- ================================
- FIR <fromQuad> <toQuad> <colorXYZ>
+ T im*eline file for Quadworld defined here
  
  Quadrotor commands 
  ================================
@@ -17,8 +13,8 @@
  
  Camera Commands
  ================================
- FOLLOW <Quadrotor>
- FOLLOWVERTICAL <Quadrotor> <distance from quad>
+ FOLLOW <Quadrotor> <distance from quadXYZ>
+ FOLLOWVERTICAL <Quadrotor> <distance from quadXYZ>
  WORLD
  CIRCLEMOTION <centerXYZ> <angle> 
  MOV <rotationtime> <destination positionXYZ> 
@@ -32,8 +28,9 @@
 TIM 0.00
 
 //*
-CAM POS -200 150 6300
-CAM LOOKAT -100 30 6200
+CAM POS 0 60 0
+CAM FOLLOWQUAD NEO
+//CAM LOOKATQUAD DRO
 NEO POS -100 30 6200 
 DRO POS -2700 60 750
 MAM POS 100 60 6000
@@ -41,7 +38,7 @@ MAM POS 100 60 6000
 //CAM FOLLOW MAM -100 20 0
 //NEO LOOKATQUAD MAM
 
-//*LOOKATQUAD test
+/*LOOKATQUAD test
 CAM LOOKATQUAD NEO
 NEO LOOKATQUAD MAM
 NEO MOV 0 -100 100 5950
@@ -75,7 +72,7 @@ NEO PAUSE
 //movetest*/
 
 
-/*
+//*
 TIM 15
 MAM MOV 2 350 60 5600
 
@@ -133,19 +130,19 @@ NEO MOV .3 0 60 500
 TIM 142.00
 NEO PAUSE
 
-TIM 143.00
+TIM 145.00
 NEO MOV 0.3 -400 60 350
 
 TIM 146.00
 NEO MOV 0.3 -1650 60 350
 
-TIM 150.00
+TIM 148.50
 NEO MOV 0.3 -1650 60 750
 
-TIM 153.00
+TIM 150.00
 NEO MOV 0.3 -2750 60 750
 
-TIM 155.00
+TIM 152.00
 DRO PAUSE
 NEO PAUSE
 //*/

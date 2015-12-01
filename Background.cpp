@@ -246,7 +246,11 @@ GLvoid Background::DrawGLScene()
         
     }
     glBindTexture(GL_TEXTURE_2D, texture[2]);
-    
+    #if RAYGL == 1
+    rayglScaleTexture(0.5, 0.5, 0.5);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(0);                       // Set texture type for PovRAY.
+    #endif
     numtriangles = sector2.numtriangles;
     
     for (loop=0; loop<numtriangles; loop++) {        // loop through all the triangles
@@ -280,49 +284,12 @@ GLvoid Background::DrawGLScene()
         glEnd();        
     }
     
-    /*
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
-    numtriangles = sector3.numtriangles;
-    
-    for (loop=0; loop<numtriangles; loop++) {        // loop through all the triangles
-        glBegin(GL_TRIANGLES);          
-        glNormal3f( 0.0f, 0.0f, 1.0f);
-        
-        x_m = sector3.triangle[loop].vertex[0].x;
-        y_m = sector3.triangle[loop].vertex[0].y;
-        z_m = sector3.triangle[loop].vertex[0].z;
-        u_m = sector3.triangle[loop].vertex[0].u;
-        v_m = sector3.triangle[loop].vertex[0].v;
-        glTexCoord2f(u_m,v_m); 
-        glVertex3f(x_m,y_m,z_m);
-        
-        x_m = sector3.triangle[loop].vertex[1].x;
-        y_m = sector3.triangle[loop].vertex[1].y;
-        z_m = sector3.triangle[loop].vertex[1].z;
-        u_m = sector3.triangle[loop].vertex[1].u;
-        v_m = sector3.triangle[loop].vertex[1].v;
-        glTexCoord2f(u_m,v_m); 
-        glVertex3f(x_m,y_m,z_m);
-        
-        x_m = sector3.triangle[loop].vertex[2].x;
-        y_m = sector3.triangle[loop].vertex[2].y;
-        z_m = sector3.triangle[loop].vertex[2].z;
-        u_m = sector3.triangle[loop].vertex[2].u;
-        v_m = sector3.triangle[loop].vertex[2].v;
-        glTexCoord2f(u_m,v_m); 
-        glVertex3f(x_m,y_m,z_m);        
-        
-        glEnd();
-        
-        
-    }
-  
-  */
+
     //*
     sky();
-    power();
+    power();  
     security();
-    Draw_smoke();
+   // Draw_smoke();
     //*/
     glDisable(GL_TEXTURE_2D);                    // Enable texture mapping.
     
@@ -509,9 +476,9 @@ void Background::security() {
     
     GLUquadric *laser_gun = gluNewQuadric(); 
     
-    gluQuadricTexture(laser_gun,GL_TRUE); 
+   // gluQuadricTexture(laser_gun,GL_TRUE); 
     
-    glBindTexture(GL_TEXTURE_2D,texture[7]);
+   // glBindTexture(GL_TEXTURE_2D,texture[7]);
     
     glPushMatrix();
     glTranslatef(0.0,0.6,2.0);

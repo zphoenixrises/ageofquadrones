@@ -79,9 +79,9 @@ float Quadrotor::getRoll()
 }
 
 float Quadrotor::getYaw()
-{
-    return 0;
-}
+{ 
+    return 0;      
+}   
 
 void Quadrotor::moveAbs(glm::vec3 position)
 {
@@ -90,13 +90,13 @@ void Quadrotor::moveAbs(glm::vec3 position)
     pos_z = position.z;
 
 }
-
+ 
 void Quadrotor::moveRel(glm::vec3 position)
 {
     pos_x += position.x;
-    pos_y += position.y;
+    pos_y += position.y; 
     pos_z += position.z;
-}
+}  
 
 glm::vec3 Quadrotor::getQuadPosition()
 {

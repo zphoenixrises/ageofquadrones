@@ -326,7 +326,6 @@ void Camera::executeTimelineCommands()
                 else if(!strcmp(whichQuad,"MAM"))
                     SetCameraModeFollow(*mamaQuad,-position);
                  
-                
             }
             else if(!strcmp(command,"FOLLOWVERTICAL"))
             {
@@ -459,5 +458,11 @@ void Camera::loadQuadrotors(NeoQuad* neoQuad, Dronedemort* dronedemort, MamaQuad
     this->dronedemort = dronedemort;
     this->mamaQuad = mamaQuad;
     
+}
+
+glm::vec3 Camera::GetCameraPosition()
+{
+    return camera_position;
+
 }
 

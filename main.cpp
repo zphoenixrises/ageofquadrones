@@ -159,16 +159,22 @@ void initializeRendering()
     glMatrixMode(GL_MODELVIEW);
     
     /*****************************************For Background***********************/ 
-    GLfloat LightAmbient[]  = {0.5f, 0.5f, 0.5f, 1.0f}; 
+    GLfloat LightAmbient[]  = {0.6f, 0.6f, 0.6f, 1.0f}; 
     GLfloat LightDiffuse[]  = {1.0f, 1.0f, 1.0f, 1.0f}; 
-    GLfloat LightPosition[] = {0.0f, 0.0f, 2.0f, 1.0f};
+    GLfloat LightPosition[] = {0.0f, 60.0f, 2.0f, 1.0f};
     
     //For smoke
+    //extra light for povray
+    const GLfloat ambientlight[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    const GLfloat diffuselight[]= { 1.0f, 1.0f, 1.0f, 1.0f };
+    const GLfloat positionlight[] = { 0.0f, 1000.0f, 6000.0f, 1.0f };
     
-    const GLfloat light_ambient[]  = { 0.0f, 0.0f, 0.0f, 1.0f };
+    
+    
+    const GLfloat light_ambient[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
     const GLfloat light_diffuse[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
     const GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    const GLfloat light_position[] = { 0.0f, 0.0f, 3.0f, 1.0f };
+    const GLfloat light_position[] = { 0.0f, 2000.0f, 6500.0f, 1.0f };
     //const GLfloat mat_ambient[]    = { 0.7f, 0.7f, 0.7f, 1.0f };
     //const GLfloat mat_diffuse[]    = { 0.8f, 0.8f, 0.8f, 1.0f };
     //const GLfloat mat_specular[]   = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -178,7 +184,7 @@ void initializeRendering()
     // set up lights.
     glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);
-    glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
+    glLightfv(GL_LIGHT1, GL_POSITION, LightPosition); 
     glEnable(GL_LIGHT1);
     
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
@@ -186,6 +192,12 @@ void initializeRendering()
     glLightfv(GL_LIGHT0, GL_POSITION, light_specular);
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     glEnable(GL_LIGHT0);
+    
+    
+    glLightfv(GL_LIGHT2, GL_AMBIENT, ambientlight);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, diffuselight);
+    glLightfv(GL_LIGHT2, GL_POSITION, positionlight);
+    glEnable(GL_LIGHT2);
     
     
     /*****************************************For Background***********************/
@@ -272,6 +284,10 @@ void drawHandler()
     //glLoadIdentity();
    // glm::mat4 model, view, projection;
     camera.Update();
+    glm::vec3 cameraPosition = camera.GetCameraPosition(); 
+    GLfloat LightPosition[4] = {cameraPosition.x,cameraPosition.y,cameraPosition.z,1.0};
+    glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
+    glEnable(GL_LIGHT1);
     glMatrixMode(GL_MODELVIEW);
     //glPushMatrix(); //Main push
     glLoadIdentity();
@@ -406,7 +422,7 @@ int main(int argc, char** argv)
     camera.SetCameraType(CameraType::FREE);
     camera.SetPosition(glm::vec3(0, 7000, 2502));
     camera.SetLookAt(glm::vec3(0, 60, 2500));
-    camera.SetClipping(.1, 10000);
+    camera.SetClipping(.1, 100000);
     camera.SetFOV(45);
    // camera.SetToFollow(*neoQuad,-glm::vec3 (100.0f,10.0f,0));
     
