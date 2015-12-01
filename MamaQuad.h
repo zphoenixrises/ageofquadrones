@@ -13,6 +13,7 @@
 #define MamaQuad_H
 #include "QuadTimer.h"
 #include "Quadrotor.h"
+#include <string>
 
 using namespace std;
 
@@ -46,12 +47,14 @@ private:
     
 public:
     MamaQuad();
-    char* getName();
+    string getName();
     void toggleAnimate();
     //TODO: Steve-> Please solve issues with the drawing of mamaquad
     void drawQuad();
     //TODO: Steve-> Please implement this function to change your propeller speed
     void changePropSpeed(float increment);
+    
+    void collided();
     ~MamaQuad();
  
 };

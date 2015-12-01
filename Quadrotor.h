@@ -14,7 +14,8 @@
 #include "Timeline.h"
 #include <cstdio>
 #include <vector>
-# include<GL/glu.h>
+#include <GL/glut.h>
+#include <string>
 
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
@@ -47,7 +48,7 @@ protected:
     double comAngle;
     char delayedCommand[250];
     Quadrotor *otherQuad;
-    virtual char* getName()=0;
+    virtual string getName()=0;
     
 
     
@@ -67,6 +68,7 @@ protected:
 public:
     
     static vector<Quadrotor*>quads;
+    static Quadrotor* getQuadFromName(string quadname);
 
 
     //Contructor
@@ -90,6 +92,7 @@ public:
     void draw();
     void executeTimeLineCommand();
     virtual void drawQuad() = 0;
+    virtual void collided() = 0;
     ~Quadrotor();
 };
 

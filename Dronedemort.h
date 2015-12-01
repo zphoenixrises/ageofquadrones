@@ -11,6 +11,7 @@
 #define Drondemort_H
 #include "QuadTimer.h"
 #include "Quadrotor.h"
+#include <string>
 
 using namespace std;
 
@@ -39,7 +40,7 @@ private:
 	unsigned char * data1;
 public:
 	Dronedemort();
-        char* getName();
+        string getName();
 	void toggleAnimate();
 	GLvoid LoadGLTextures();
 	void drawQuad();
@@ -48,6 +49,7 @@ public:
 	void pitchGun(float gunPitch);
 	void output(GLfloat x, GLfloat y, char const* text);
         
+        void collided();
 
 };
 

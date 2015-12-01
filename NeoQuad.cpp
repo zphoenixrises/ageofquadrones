@@ -60,7 +60,7 @@ void NeoQuad::drawBlade()
     glEnable(GL_CULL_FACE);
 
 }
-char* NeoQuad::getName()
+string NeoQuad::getName()
 {
     return "NEO";
 
@@ -81,7 +81,6 @@ void NeoQuad::drawPropellers(int rotorDirection)
         propScale -=0.015;
     }
     glScalef(propScale,propScale,propScale);
-    glColor4f(.75f, .75f, .75f, 0.25f);
     gluCylinder(quadricObj, 0.25f, 0.25f, 3.0f, 10.0f, 10.0f);
     glTranslatef(0.0f, 0.0f, 3.0f);
     #ifndef SOLID_RENDERING
@@ -170,7 +169,7 @@ void NeoQuad::drawQuad()
     //Draw Axes
     //drawAxes();
     glScalef(.5f,.5f,.5f);
-    glColor4f(.75f, .75f, .75f, 0.25f);
+    glColor4f(.75f, .75f, .75f, 1.0f);
     
     //draw body
     drawEllipsoid(20, 20, 15, 5, 5);
@@ -243,3 +242,7 @@ void NeoQuad::powerToggle()
         currentState = POWERINGDOWN;
 }
 
+void NeoQuad::collided()
+{
+
+}

@@ -30,7 +30,7 @@
      timeline = new Timeline("MAM");
  }
  
-char* MamaQuad::getName()
+string MamaQuad::getName()
 {
     return "MAM";
 
@@ -180,5 +180,9 @@ char* MamaQuad::getName()
  }
  
  
- 
+void MamaQuad::collided()
+{
+
+}
+
  

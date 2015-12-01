@@ -200,9 +200,7 @@ void Quadrotor::executeTimeLineCommand()
                 if(orientationMode == QuadOrientationMode::FREE)
                 {}
                 else if(orientationMode == QuadOrientationMode::ANOTHERQUAD)
-                {
-                    
-                }
+                {  }
                 else if(orientationMode == QuadOrientationMode::UPRIGHT)
                 {}
                 //Operations to align the quad with the direction of motion 
@@ -228,7 +226,7 @@ void Quadrotor::executeTimeLineCommand()
                 int i;
                 for(i=0;i<quads.size();i++)
                 {
-                    if(!strcmp(quadname,quads[i]->getName()))
+                    if(quads[i]->getName() == string(quadname))
                         break;
                 }
                 otherQuad = quads[i];
@@ -251,7 +249,7 @@ void Quadrotor::executeTimeLineCommand()
             comRotationAxis = glm::cross(current_axis,comDirection);
              
             double timediff =   quadTime.getTimeDiffSec();
-            if(timediff>delta_time)return;
+            if(timediff>delta_time) timediff = delta_time;
             float axisAngle = glm::angle(current_axis,comDirection);
         //    printf("\nX: %f",angle_axis);
             if(axisAngle>Pi)
@@ -310,7 +308,10 @@ void Quadrotor::executeTimeLineCommand()
                   //*/  
                 }
                  double delta_time = nextTime-current_time;
-                glm::vec3 dist2 = distance *(float) (quadTime.getTimeDiffSec()/ delta_time);
+                 double timediff = quadTime.getTimeDiffSec();
+                 if(delta_time < timediff)
+                     timediff=delta_time;
+                glm::vec3 dist2 = distance *(float) (timediff/ delta_time);
                 moveRel(dist2);
                 //     printf("\ndelta pos:%f %f %f",dist2.x,dist2.y,dist2.z);
             }
@@ -323,6 +324,15 @@ void Quadrotor::executeTimeLineCommand()
     //*/
 }
 
+Quadrotor* Quadrotor::getQuadFromName(string quadname)
+{
+    for(vector<Quadrotor*>::iterator it = quads.begin(); it!=quads.end(); ++it)
+    {
+        if((*it)->getName() == quadname)
+            return *it;
+    }
+
+}
 
 
 Quadrotor::~Quadrotor()

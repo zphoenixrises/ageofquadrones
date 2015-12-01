@@ -59,6 +59,7 @@ Background::Background()
     limits = .8;
     X=0, Y=0;
     currentParticle = 1;
+    radius= 0.2;
  
 }
 

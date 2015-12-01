@@ -62,7 +62,7 @@ private:
     float posX[MAX_PARTICLES], posY[MAX_PARTICLES];
     
     ////////for power release
-    float radius= 0.2;
+    float radius;
     
     
 public:

@@ -21,6 +21,7 @@
 #include "Dronedemort.h"
 #include "MamaQuad.h"
 #include "Background.h"
+#include "Ammo.h"
 #include <pthread.h>
 
 #include "raygl/raygl.h"
@@ -139,8 +140,10 @@ void initializeRendering()
 {
     background-> LoadGLTextures();                           // load the textures.
     glEnable(GL_TEXTURE_2D);                    // Enable texture mapping.
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);          // Set the blending function for translucency (note off at init time)
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);          // Set the blending function for translucency (note off at init time)
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);       // This Will Clear The Background Color To Black
     glClearDepth(1.0);                          // Enables Clearing Of The Depth Buffer
     glDepthFunc(GL_LESS);                       // type of depth test to do.
@@ -288,10 +291,14 @@ void drawHandler()
     background->DrawGLScene();
  
     glEnable(GL_CULL_FACE);
+    Ammo::drawAll();
+    
 
     neoQuad->draw();
     dronedemort->draw();
     mamaQuad->draw();
+    
+    
 
      glCullFace(GL_BACK);
      glFrontFace(GL_CCW);
@@ -349,6 +356,9 @@ void keypressHandler(unsigned char key, int x, int y)
         case 'g':
             gridEnabled = !gridEnabled;
             break;
+        case '[':
+            Ammo::fire(neoQuad->getQuadPosition(),"MAM",glm::vec4(1,0,0,.25),5,neoQuad);
+            break;
         case 13:
             exit(0);
             
@@ -361,7 +371,7 @@ void keypressHandler(unsigned char key, int x, int y)
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv); //initialize glut 
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA); //initialize display mode
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA| GLUT_MULTISAMPLE); //initialize display mode
     
     glutInitWindowSize(1024, 512);
     glutInitWindowPosition(0, 0);
@@ -410,7 +420,7 @@ int main(int argc, char** argv)
     
     //Start the glut loop!
     //*/
-    QuadTimer::initializeTimer(135 );
+    QuadTimer::initializeTimer(0 );
     glutMainLoop();
     
     return 0;

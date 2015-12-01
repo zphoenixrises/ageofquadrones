@@ -13,6 +13,7 @@
 #include "QuadTimer.h"
 #include "Quadrotor.h"
 #include "Timeline.h"
+#include <string>
 using namespace std;
 
 #define sqrt2 1.41421356237
@@ -35,8 +36,9 @@ private:
     void drawGuns();
     void rotateProps();
 protected:
-    char* getName();
+    string getName();
 public:
+    void collided();
     
   
     NeoQuad();

@@ -51,7 +51,7 @@ Dronedemort::Dronedemort()
            LoadGLTextures();
 	}
 	
-char* Dronedemort::getName()
+string Dronedemort::getName()
 {
     return "DRO";
 
@@ -437,3 +437,7 @@ void Dronedemort::changePropSpeed(float increment)
     glPopMatrix();
 }
   
+void Dronedemort::collided()
+{
+
+}
