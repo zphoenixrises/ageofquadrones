@@ -23,13 +23,19 @@ typedef struct {         // vertex coordinates - 3d and texture
     GLfloat u, v;        // texture coords.
 } VERTEX;
 
-typedef struct {         // triangle
-    VERTEX vertex[3];    // 3 vertices array
-} TRIANGLE;
+typedef struct {         // quad
+    GLfloat x, y, z;     // 3d coords.
+    
+} NORMAL;
+
+typedef struct {         // quad
+    VERTEX vertex[4];    // 4 vertices array
+    NORMAL normal;
+} QUADS;
  
 typedef struct {         // sector of a 3d environment
-    int numtriangles;    // number of triangles in the sector
-    TRIANGLE* triangle;  // pointer to array of triangles.
+    int numquads;    // number of quads in the sector
+    QUADS* quad;  // pointer to array of quads.
 } SECTOR;
 
 /* Image type - contains height, width, and data */
@@ -51,17 +57,17 @@ private:
     SECTOR sector1;
     SECTOR sector2;
     SECTOR sector3;
-    
-    GLuint loop;             // general loop variable
+     
+    GLuint loop;                // general loop variable
     GLuint filter;       // texture filtering method to use (nearest, linear, linear + mipmaps)
     
-    ////////for smoke
+    ////////for smoke 
     float limits;
     float X, Y;
     int currentParticle;
     float posX[MAX_PARTICLES], posY[MAX_PARTICLES];
     
-    ////////for power release
+    ////////for power release 
     float radius;
     
     

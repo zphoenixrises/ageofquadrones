@@ -67,8 +67,8 @@ Background::Background()
 void Background::SetupWorld()
 {
     SetupItem((const char*)"Data/world.txt",sector1);//world
-    SetupItem((const char*)"Data/grass.txt",sector2);//grass
-    SetupItem((const char*)"Data/floor.txt",sector3);//floor
+    //SetupItem((const char*)"Data/grass.txt",sector2);//grass
+    //SetupItem((const char*)"Data/floor.txt",sector3);//floor
     
     
 }
@@ -77,7 +77,7 @@ void Background::SetupItem(char* path,SECTOR &sector)
 {
     float x, y, z, u, v;
     int vert;
-    int numtriangles;
+    int numQuads;
     FILE *filein;        // file to load the world from
     char oneline[255];
     
@@ -87,24 +87,38 @@ void Background::SetupItem(char* path,SECTOR &sector)
         printf("file not found");
         fclose (filein);
     }
-    //printf("Successfully read:%s\n",path);
+    //printf("Successfully read:%s\n",path); 
     
     readstr(filein, oneline);
-    sscanf(oneline, "NUMPOLLIES %d\n", &numtriangles);
+    sscanf(oneline, "NUMPOLLIES %d\n", &numQuads);                             
+      
+    sector.numquads = numQuads;
+    sector.quad = (QUADS *) malloc(sizeof(QUADS)*numQuads);
     
-    sector.numtriangles = numtriangles;
-    sector.triangle = (TRIANGLE *) malloc(sizeof(TRIANGLE)*numtriangles);
-    
-    for (loop = 0; loop < numtriangles; loop++) {
-        for (vert = 0; vert < 3; vert++) {
+    for (loop = 0; loop < numQuads; loop++) {
+        readstr(filein,oneline);
+        char ch;
+        sscanf(oneline, "%c", &ch);
+        sector.quad[loop].normal.x = 0;
+        sector.quad[loop].normal.y = 0;
+        sector.quad[loop].normal.z = 0;
+        if(ch=='X')
+            sector.quad[loop].normal.x = 1;
+        else if(ch=='Y')
+            sector.quad[loop].normal.y = 1;
+        else if(ch=='Z')
+            sector.quad[loop].normal.z = 1;
+        
+        for (vert = 0; vert < 4; vert++) {
             readstr(filein,oneline);
             sscanf(oneline, "%f %f %f %f %f", &x, &y, &z, &u, &v);
-            sector.triangle[loop].vertex[vert].x = x;
-            sector.triangle[loop].vertex[vert].y = y;
-            sector.triangle[loop].vertex[vert].z = z;
-            sector.triangle[loop].vertex[vert].u = u;
-            sector.triangle[loop].vertex[vert].v = v;
+            sector.quad[loop].vertex[vert].x = x;
+            sector.quad[loop].vertex[vert].y = y;
+            sector.quad[loop].vertex[vert].z = z;
+            sector.quad[loop].vertex[vert].u = u;
+            sector.quad[loop].vertex[vert].v = v;
         }
+        
     }
     
     fclose(filein);
@@ -120,7 +134,7 @@ void Background::readstr(FILE *f, char *string)
         fgets(string, 255, f); // read the line
     } while ((string[0] == '/') || (string[0] == '\n'));
     return;
-}
+}  
 
 
 
@@ -176,11 +190,17 @@ GLvoid Background::LoadGLTextures()
         #else
         image[i]->data = PGM_FILE_READ(image_paths[i], &image[i]->sizeX, &image[i]->sizeY, &c); 
         #endif
-        glBindTexture(GL_TEXTURE_2D, texture[i]);   // 2d texture (x and y size)
+        
+        glBindTexture(GL_TEXTURE_2D, texture[i]);   // 2d texture (x and y size) 
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); // scale mipmap when image smalled than texture
-        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image[i]->sizeX, image[i]->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image[i]->data);
         
+        //glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE); 
+        //glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_R,GL_CLAMP_TO_EDGE); 
+        //glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE); 
+        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image[i]->sizeX, image[i]->sizeY, GL_RGB, GL_UNSIGNED_BYTE, image[i]->data);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, image[i]->sizeX, image[i]->sizeY, 
+        //             0, GL_RGB, GL_UNSIGNED_BYTE, image[i]->data);
         #ifndef RAYGL_ENABLE
         free(image[i]->data);
         free(image[i]);
@@ -207,83 +227,128 @@ GLvoid Background::DrawGLScene()
     
     GLfloat x_m, y_m, z_m, u_m, v_m;
     //GLfloat sceneroty;
-    int numtriangles;
-    
+    int numquads;
+    // Draw textured cube.
+   /* glBindTexture(GL_TEXTURE_2D, texture[1]);   
+    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    #if RAYGL == 1
+    rayglScaleTexture(2, 2, 1);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0.5, 0.5, 0);        // Translate texture for PovRAY.
+    rayglTextureType(0);                       // Set texture type for PovRAY.
+    #endif
+    glTranslatef(-4,0,3);
+    drawcube();
+    //*/
+    //* 
     glBindTexture(GL_TEXTURE_2D, texture[1]); // pick the texture.
     
-    
-    numtriangles = sector1.numtriangles;
-    
-    for (loop=0; loop<numtriangles; loop++) {        // loop through all the triangles
-        glBegin(GL_TRIANGLES);          
-        glNormal3f( 0.0f, 0.0f, 1.0f);
-        
-        x_m = sector1.triangle[loop].vertex[0].x;
-        y_m = sector1.triangle[loop].vertex[0].y;
-        z_m = sector1.triangle[loop].vertex[0].z;
-        u_m = sector1.triangle[loop].vertex[0].u;
-        v_m = sector1.triangle[loop].vertex[0].v;
-        glTexCoord2f(u_m,v_m); 
-        glVertex3f(x_m,y_m,z_m);
-        
-        x_m = sector1.triangle[loop].vertex[1].x;
-        y_m = sector1.triangle[loop].vertex[1].y;
-        z_m = sector1.triangle[loop].vertex[1].z;
-        u_m = sector1.triangle[loop].vertex[1].u;
-        v_m = sector1.triangle[loop].vertex[1].v;
-        glTexCoord2f(u_m,v_m); 
-        glVertex3f(x_m,y_m,z_m);
-        
-        x_m = sector1.triangle[loop].vertex[2].x;
-        y_m = sector1.triangle[loop].vertex[2].y;
-        z_m = sector1.triangle[loop].vertex[2].z;
-        u_m = sector1.triangle[loop].vertex[2].u;
-        v_m = sector1.triangle[loop].vertex[2].v;
-        glTexCoord2f(u_m,v_m); 
-        glVertex3f(x_m,y_m,z_m);        
-        
-        glEnd();        
-        
-    }
-    glBindTexture(GL_TEXTURE_2D, texture[2]);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
     #if RAYGL == 1
-    rayglScaleTexture(0.5, 0.5, 0.5);                // Scale texture for PovRAY.
+    rayglScaleTexture(1, 1, 1);                //undefined Scale texture for PovRAY.
     rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
     rayglTextureType(0);                       // Set texture type for PovRAY.
     #endif
-    numtriangles = sector2.numtriangles;
     
-    for (loop=0; loop<numtriangles; loop++) {        // loop through all the triangles
+    numquads = sector1.numquads;   
+            
+    for (loop=0; loop<numquads; loop++) {        // loop through all the quads
+        glBegin(GL_QUADS);          
+        glNormal3f( sector1.quad[loop].normal.x ,sector1.quad[loop].normal.y ,sector1.quad[loop].normal.z );
+        
+        x_m = sector1.quad[loop].vertex[0].x;
+        y_m = sector1.quad[loop].vertex[0].y;
+        z_m = sector1.quad[loop].vertex[0].z;
+        u_m = sector1.quad[loop].vertex[0].u;
+        v_m = sector1.quad[loop].vertex[0].v;
+        glTexCoord2f(u_m,v_m); 
+        glVertex3f(x_m,y_m,z_m);
+            
+        x_m = sector1.quad[loop].vertex[1].x;
+        y_m = sector1.quad[loop].vertex[1].y;
+        z_m = sector1.quad[loop].vertex[1].z;
+        u_m = sector1.quad[loop].vertex[1].u;
+        v_m = sector1.quad[loop].vertex[1].v;
+        glTexCoord2f(u_m,v_m); 
+        glVertex3f(x_m,y_m,z_m);
+        
+        x_m = sector1.quad[loop].vertex[2].x;
+        y_m = sector1.quad[loop].vertex[2].y;
+        z_m = sector1.quad[loop].vertex[2].z;
+        u_m = sector1.quad[loop].vertex[2].u;
+        v_m = sector1.quad[loop].vertex[2].v;
+        glTexCoord2f(u_m,v_m); 
+        glVertex3f(x_m,y_m,z_m);  
+        
+        x_m = sector1.quad[loop].vertex[3].x;
+        y_m = sector1.quad[loop].vertex[3].y;
+        z_m = sector1.quad[loop].vertex[3].z;
+        u_m = sector1.quad[loop].vertex[3].u;
+        v_m = sector1.quad[loop].vertex[3].v;
+        glTexCoord2f(u_m,v_m); 
+        glVertex3f(x_m,y_m,z_m);  
+        
+        
+        
+        glEnd();        
+        
+    }
+    //*/
+    glBindTexture(GL_TEXTURE_2D, texture[2]);
+    #if RAYGL == 1
+    rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(0);                       //undefined/ Set texture type for PovRAY.
+    #endif
+    //numquads = sector2.numquads;
+    
+    glBegin(GL_QUADS);
+    glTexCoord2f(0,0);
+    glVertex3f(-40.0,  -0.01, -40.0);
+    
+    glTexCoord2f(40,0);
+    glVertex3f(-40.0,  -0.01, 40.0);
+    
+    glTexCoord2f(40,40);
+    glVertex3f(40.0,  -0.01, 40.0);
+    
+    glTexCoord2f(0,40);
+    glNormal3f(0,1,0);
+    glVertex3f(40.0,  -0.01, -40.0);
+    
+    
+    glEnd();
+    /*
+    for (loop=0; loop<numquads; loop++) {        // loop through all the quads
         glBegin(GL_TRIANGLES);          
-        glNormal3f( 0.0f, 0.0f, 1.0f);
+        glNormal3f( 0.0f, 1.0f, 0.0f);
         
-        x_m = sector2.triangle[loop].vertex[0].x;
-        y_m = sector2.triangle[loop].vertex[0].y;
-        z_m = sector2.triangle[loop].vertex[0].z;
-        u_m = sector2.triangle[loop].vertex[0].u;
-        v_m = sector2.triangle[loop].vertex[0].v;
+        x_m = sector2.quad[loop].vertex[0].x;
+        y_m = sector2.quad[loop].vertex[0].y;
+        z_m = sector2.quad[loop].vertex[0].z;
+        u_m = sector2.quad[loop].vertex[0].u;
+        v_m = sector2.quad[loop].vertex[0].v;
         glTexCoord2f(u_m,v_m); 
         glVertex3f(x_m,y_m,z_m);
         
-        x_m = sector2.triangle[loop].vertex[1].x;
-        y_m = sector2.triangle[loop].vertex[1].y;
-        z_m = sector2.triangle[loop].vertex[1].z;
-        u_m = sector2.triangle[loop].vertex[1].u;
-        v_m = sector2.triangle[loop].vertex[1].v;
+        x_m = sector2.quad[loop].vertex[1].x;
+        y_m = sector2.quad[loop].vertex[1].y;
+        z_m = sector2.quad[loop].vertex[1].z;
+        u_m = sector2.quad[loop].vertex[1].u;
+        v_m = sector2.quad[loop].vertex[1].v;
         glTexCoord2f(u_m,v_m); 
         glVertex3f(x_m,y_m,z_m);
         
-        x_m = sector2.triangle[loop].vertex[2].x;
-        y_m = sector2.triangle[loop].vertex[2].y;
-        z_m = sector2.triangle[loop].vertex[2].z;
-        u_m = sector2.triangle[loop].vertex[2].u;
-        v_m = sector2.triangle[loop].vertex[2].v;
+        x_m = sector2.quad[loop].vertex[2].x;
+        y_m = sector2.quad[loop].vertex[2].y;
+        z_m = sector2.quad[loop].vertex[2].z;
+        u_m = sector2.quad[loop].vertex[2].u;
+        v_m = sector2.quad[loop].vertex[2].v;
         glTexCoord2f(u_m,v_m); 
         glVertex3f(x_m,y_m,z_m);        
         
         glEnd();        
     }
-    
+    */ 
 
     //*
     sky();
@@ -301,7 +366,7 @@ GLvoid Background::DrawGLScene()
 
 
 void Background::sky(){
-    
+     
     
     GLUquadric *sky = gluNewQuadric(); 
     
@@ -309,6 +374,14 @@ void Background::sky(){
     
     
     glBindTexture(GL_TEXTURE_2D,texture[3]);
+   
+    #if RAYGL == 1
+    rayglScaleTexture(1.0, 1.0, 1.0);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(1);                       // Set texture type for PovRAY.
+    //  rayglRotateTexture(0.0,0.0,90.0);
+    //rayglRotateTexture(0.0,0.0,45.0);
+    #endif
     
     glPushMatrix();
     glTranslatef(0.0,0.0,0.0);
@@ -331,6 +404,12 @@ void Background::power(){
     
     glBindTexture(GL_TEXTURE_2D,texture[4]);
     
+    #if RAYGL == 1
+    rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(1);                       //undefined/ Set texture type for PovRAY.
+    #endif
+    
     glPushMatrix();
     glTranslatef(-20.0,1.2,3.75);
   
@@ -348,6 +427,11 @@ void Background::power(){
     
     glBindTexture(GL_TEXTURE_2D,texture[8]);
     
+    #if RAYGL == 1
+    rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(2);                       //undefined/ Set texture type for PovRAY.
+    #endif
     glPushMatrix();
     
     glTranslatef(-20.0,0.0,3.75);
@@ -370,7 +454,12 @@ void Background::power(){
     
     
     glBindTexture(GL_TEXTURE_2D,texture[8]);
-    
+   
+    #if RAYGL == 1
+    rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(2);                       //undefined/ Set texture type for PovRAY.
+    #endif
     glPushMatrix();
     
     glTranslatef(-20.0,2.0,3.75);
@@ -392,6 +481,12 @@ void Background::power(){
     gluQuadricTexture(chip_tower,GL_TRUE); 
     
     glBindTexture(GL_TEXTURE_2D,texture[8]);
+   
+    #if RAYGL == 1
+    rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(2);                       //undefined/ Set texture type for PovRAY.
+    #endif
     
     glPushMatrix();
     
@@ -411,6 +506,11 @@ void Background::power(){
     
     glBindTexture(GL_TEXTURE_2D,texture[6]);
     
+    #if RAYGL == 1
+    rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(0);                       //undefined/ Set texture type for PovRAY.
+    #endif
     glPushMatrix();
     
     //glTranslatef(-20.0,0.0,3.0);
@@ -443,6 +543,11 @@ void Background::security() {
     
     glBindTexture(GL_TEXTURE_2D,texture[5]);
     
+    #if RAYGL == 1
+    rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(2);                       //undefined/ Set texture type for PovRAY.
+    #endif
     glPushMatrix();
     
     glTranslatef(0.0,0.0,2.0);
@@ -459,6 +564,12 @@ void Background::security() {
     gluDeleteQuadric(security); 
     
     glBindTexture(GL_TEXTURE_2D,texture[6]);
+    
+    #if RAYGL == 1
+    rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(0);                       //undefined/ Set texture type for PovRAY.
+    #endif
     glPushMatrix();
     glBegin(GL_QUADS);
     glNormal3f( 0.0f, 0.0f, 1.0f);
@@ -478,8 +589,12 @@ void Background::security() {
     
    // gluQuadricTexture(laser_gun,GL_TRUE); 
     
-   // glBindTexture(GL_TEXTURE_2D,texture[7]);
-    
+    glBindTexture(GL_TEXTURE_2D,texture[7]);
+    #if RAYGL == 1
+    rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(1);                       //undefined/ Set texture type for PovRAY.
+    #endif
     glPushMatrix();
     glTranslatef(0.0,0.6,2.0);
    
