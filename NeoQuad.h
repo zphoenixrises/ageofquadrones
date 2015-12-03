@@ -46,6 +46,8 @@ public:
     void drawQuad();
     void changePropSpeed(float increment);
     void powerToggle();
+    glm::vec3 getBarrelPosition();
+    void customCommandParser(string commandString);
     
 };
 

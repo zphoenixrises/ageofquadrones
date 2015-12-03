@@ -120,17 +120,17 @@ void Camera::SetCameraType(CameraType::Enum cam_mode) {
     rotation_quaternion = glm::quat(1, 0, 0, 0);
 }
 
-void Camera::SetCameraModeFollow(Quadrotor& quad, glm::vec3 distance)
+void Camera::SetCameraModeFollow(Quadrotor* quad, glm::vec3 distance)
 {
-    this->quadrotor = &quad;
+    this->quadrotor = quad;
     this->distance = distance;
     cameraMode = CameraModes::FOLLOW_QUAD;
     
 }
 
-void Camera::SetCameraModeFollowUpright(Quadrotor& quad, glm::vec3 distance)
+void Camera::SetCameraModeFollowUpright(Quadrotor* quad, glm::vec3 distance)
 {
-    this->quadrotor = &quad;
+    this->quadrotor = quad;
     this->distance = distance;
     cameraMode = CameraModes::FOLLOW_QUAD_UPRIGHT;
     
@@ -284,7 +284,21 @@ void Camera::GetMatricies(glm::mat4 &P, glm::mat4 &V, glm::mat4 &M) {
     M = model;
 }
 
-
+void Camera::lookAtQuad(string whichQuad)
+{
+    camera_up = glm::vec3(0,1,0);
+    /*
+     i f(!strcmp(whichQuad,"NEO"))           *
+     quadrotor = neoQuad;
+     else if(!strcmp(whichQuad,"DRO"))
+         quadrotor = dronedemort;
+     else if(!strcmp(whichQuad,"MAM"))
+         quadrotor = mamaQuad;
+     */
+    quadrotor = Quadrotor::getQuadFromName(whichQuad);
+    SetLookAt(quadrotor->getQuadPosition());
+    cameraMode = CameraModes::LOOKATQUAD;  
+}
 void Camera::executeTimelineCommands()
 {
     if(readTimeline)
@@ -319,25 +333,29 @@ void Camera::executeTimelineCommands()
                 char whichQuad[10];
                 glm::vec3 position;
                 sscanf(delayedCommand,"%lf %lf %s %s %f %f %f",&nextTime,&comTime,command, whichQuad, &position.x, &position.y, &position.z);
-                if(!strcmp(whichQuad,"NEO"))
+                /*if(!strcmp(whichQuad,"NEO"))
                     SetCameraModeFollow(*neoQuad,-position);
                 else if(!strcmp(whichQuad,"DRO"))
                     SetCameraModeFollow(*dronedemort,-position);
                 else if(!strcmp(whichQuad,"MAM"))
                     SetCameraModeFollow(*mamaQuad,-position);
-                 
+                */
+                SetCameraModeFollowUpright(Quadrotor::getQuadFromName(whichQuad),-position);
+                
             }
             else if(!strcmp(command,"FOLLOWVERTICAL"))
             {
                 char whichQuad[10];
                 glm::vec3 position;
                 sscanf(delayedCommand,"%lf %lf %s %s %f %f %f",&nextTime,&comTime,command, whichQuad, &position.x, &position.y, &position.z);
-                if(!strcmp(whichQuad,"NEO"))
+                /*if(!strcmp(whichQuad,"NEO"))
                     SetCameraModeFollowUpright(*neoQuad,-position);
                 else if(!strcmp(whichQuad,"DRO"))
                     SetCameraModeFollowUpright(*dronedemort,-position);
                 else if(!strcmp(whichQuad,"MAM"))
-                    SetCameraModeFollowUpright(*mamaQuad,-position);
+                    SetCameraModeFollowUpright(*mamaQuad,-position);*/
+                SetCameraModeFollowUpright(Quadrotor::getQuadFromName(whichQuad),-position);
+                
                 
             }
             else if(!strcmp(command,"WORLD"))
@@ -368,16 +386,7 @@ void Camera::executeTimelineCommands()
                 glm::vec3 center;
                 char whichQuad[10];
                 sscanf(delayedCommand,"%lf %lf %s %s %f %f",&nextTime,&comTime,command, whichQuad);
-                camera_up = glm::vec3(0,1,0);
-                
-                if(!strcmp(whichQuad,"NEO"))
-                    quadrotor = neoQuad;
-                else if(!strcmp(whichQuad,"DRO"))
-                    quadrotor = dronedemort;
-                else if(!strcmp(whichQuad,"MAM"))
-                    quadrotor = mamaQuad;
-                SetLookAt(quadrotor->getQuadPosition());
-                cameraMode = CameraModes::LOOKATQUAD;      
+                lookAtQuad(whichQuad);    
             }
             else if(!strcmp(command,"POS"))
             {
@@ -451,7 +460,7 @@ void Camera::executeTimelineCommands()
     }
     
 }
-
+/*
 void Camera::loadQuadrotors(NeoQuad* neoQuad, Dronedemort* dronedemort, MamaQuad* mamaQuad)
 {
     this->neoQuad = neoQuad;
@@ -459,7 +468,7 @@ void Camera::loadQuadrotors(NeoQuad* neoQuad, Dronedemort* dronedemort, MamaQuad
     this->mamaQuad = mamaQuad;
     
 }
-
+*/
 glm::vec3 Camera::GetCameraPosition()
 {
     return camera_position;

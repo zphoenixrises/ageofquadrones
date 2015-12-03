@@ -16,6 +16,8 @@
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 
 #include <glm/gtc/type_ptr.hpp>
+
+#include <glm/gtx/vector_angle.hpp>
 //#include "pgmIO.h"
 using namespace std;
 
@@ -40,16 +42,18 @@ GLuint texture[noTextures];
 #define ENABLETEXTURES
 
 Dronedemort::Dronedemort()
-	{
-	    gunPitch = 60.0;
-	    gunAngle=0.0;
-	    propAngle = 0.0;
-	    propSpeed = 2;
-	    animate = true;
-            
-            timeline = new Timeline("DRO");
-           LoadGLTextures();
-	}
+{
+    gunPitch = 0.0;
+    gunAngle=0.0;
+    propAngle = 0.0;
+    propSpeed = 2;
+    animate = true;
+    barrelOrientationMatrix = glm::mat4(1);
+    pointBarrelFlag = 0;
+    
+    timeline = new Timeline("DRO");
+    LoadGLTextures();
+}
 	
 string Dronedemort::getName()
 {
@@ -210,7 +214,8 @@ void Dronedemort::drawProparms(int rotorDirection)
 
 void Dronedemort::drawQuad()
 {
-	
+	if(pointBarrelFlag == 1) 
+            pointBarrel();
 	rotateProps();
 //        glRotatef(270,0.0f,1.0f,0.0);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -239,6 +244,7 @@ void Dronedemort::drawQuad()
 // 	drawButton(40,-60,50,-55);
 // 	glEnable(GL_LIGHTING);
 // 	
+        glPushMatrix();
 	glMultMatrixf(glm::value_ptr(Model)); //load Model glLoadMatrixd	
 	//drawAxes();
 // 	gluQuadricDrawStyle(quadricObj,GLU_FILL);
@@ -314,37 +320,17 @@ void Dronedemort::drawQuad()
         
  	gluCylinder(quadricObj,2.0f,2.0f,10.0f,10.0f,10.0f);
  	glTranslatef(0.0f,0.5f,8.0f);
- 	
+        
+        gluSphere(quadricObj, 5.0f, 10.0f, 10.0f);
+        //glTranslatef(0.0f,-25.0f,0.0f);
  	//rotateGun(angleInc);
-	glRotatef(gunAngle,0.0f,0.0f,1.0f);
-	gluSphere(quadricObj, 5.0f, 10.0f, 10.0f);
+        glPopMatrix();//pop for gun
+        
+        
+        
+        
+        
 	
-
-	//
-	
-	glRotatef(gunPitch,1.0f,0.0f,0.0f);
-	gluCylinder(quadricObj,2.0f,2.0f,15.0f,15.0f,10.0f);
-	glTranslatef(0.0f,0.0f,15.0f);
-        
-	glDisable(GL_TEXTURE_2D);
-        
-	glColor3f(1.0f, 0.0f, 0.0f);
-        
-	gluDisk(quadricObj,0,1.5,15,5);
-        
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, body);
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        #if RAYGL == 1
-        rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
-        rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
-        rayglTextureType(1);                       // Set texture type for PovRAY.
-        #endif
-        
-	glColor3f(0.2f, 0.2f, 0.2f);
-        
-	gluDisk(quadricObj,1.5,2.0,15,5);
-	glPopMatrix();//pop for gun
 	
 	//Draw rotor arms
 	glPushMatrix(); //Push arm1
@@ -371,6 +357,40 @@ void Dronedemort::drawQuad()
 
 	glPopMatrix();//pop arm 4
 	
+        
+        glPopMatrix();
+        
+        
+        glPushMatrix();//DRAW BARREL
+        glm::vec3 axisVector = glm::vec3( Model*glm::vec4(0.0f,-33.0f,0.0f,1.0f));
+        glTranslatef(axisVector.x,axisVector.y,axisVector.z);
+
+        
+        glMultMatrixf(glm::value_ptr(barrelOrientationMatrix)); //load Model glLoadMatrixd        
+
+        gluCylinder(quadricObj,2.0f,2.0f,15.0f,15.0f,10.0f);
+        glTranslatef(0.0f,0.0f,15.0f);
+        
+        glDisable(GL_TEXTURE_2D);
+        
+        glColor3f(1.0f, 0.0f, 0.0f);
+        
+        gluDisk(quadricObj,0,1.5,15,5);
+        
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, body);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        #if RAYGL == 1
+        rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+        rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+        rayglTextureType(1);                       // Set texture type for PovRAY.
+        #endif
+        
+        glColor3f(0.2f, 0.2f, 0.2f);
+        
+        gluDisk(quadricObj,1.5,2.0,15,5);
+        glPopMatrix();// DRAW BARREL
+        
 	glPopMatrix(); //Main pop
 }
 	
@@ -399,6 +419,7 @@ void Dronedemort::pitchGun(float pitchinc)
   
   
 }
+
 
 
 void Dronedemort::toggleAnimate()
@@ -439,5 +460,43 @@ void Dronedemort::changePropSpeed(float increment)
   
 void Dronedemort::collided()
 {
+
+}
+
+glm::vec3 Dronedemort::getBarrelPosition()
+{
+
+    return getQuadPosition() + glm::vec3( Model*glm::vec4(0.0f,-33.0f,0.0f,1.0f));
+    
+}
+
+void Dronedemort::pointBarrel()
+{
+    Quadrotor* quad =  Quadrotor::getQuadFromName(whichQuad);
+    barrelOrientationMatrix = glm::mat4(1);
+    
+    glm::vec3 direction =  quad->getQuadPosition()-getQuadPosition();
+    
+    direction = glm::normalize(direction);
+    glm::vec3 current_axis = glm::vec3(glm::vec4(0,0,1,1));//glm::vec3( barrelOrientationMatrix* glm::vec4(0,0,1,1));
+    current_axis = glm::normalize(current_axis);
+    glm::vec3 comRotationAxis = glm::cross(current_axis,direction);
+    float axisAngle = glm::angle(current_axis,direction);
+
+    barrelOrientationMatrix = glm::rotate(barrelOrientationMatrix,axisAngle,comRotationAxis);
+   
+}
+
+void Dronedemort::customCommandParser(string commandString)
+{
+    if(!strcmp(command,"POINTBARREL"))
+    {
+        char quadname[10];
+        
+        sscanf(delayedCommand,"%lf %lf %s %s %d",&nextTime,&comTime,command, quadname, &pointBarrelFlag);
+        whichQuad = string(quadname);
+        
+        
+    }
 
 }

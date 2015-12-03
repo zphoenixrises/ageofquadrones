@@ -91,8 +91,11 @@ public:
     
     void draw();
     void executeTimeLineCommand();
+    void lookAtQuad();
     virtual void drawQuad() = 0;
     virtual void collided() = 0;
+    virtual glm::vec3 getBarrelPosition() = 0; 
+    virtual void customCommandParser(string commandstring) = 0;
     ~Quadrotor();
 };
 

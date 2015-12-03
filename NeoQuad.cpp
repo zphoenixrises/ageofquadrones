@@ -155,7 +155,7 @@ void NeoQuad::drawGuns()
     glTranslatef(-7.0f,0.0f,-6.0f);
     drawGun(gunScale);
     glPopMatrix();
-    
+     
 }
 
 
@@ -230,7 +230,7 @@ void NeoQuad::toggleAnimate()
 
 void NeoQuad::changePropSpeed(float increment)
 {
-    propSpeed+=increment;
+    propSpeed+=increment; 
 }
 
 
@@ -243,6 +243,20 @@ void NeoQuad::powerToggle()
 }
 
 void NeoQuad::collided()
+{
+
+}
+
+glm::vec3 NeoQuad::getBarrelPosition()
+{
+    static int whichBarrel = 3.0;
+    whichBarrel*=-1;
+    
+    return getQuadPosition() + glm::vec3( Model*glm::vec4(14.0f,0.0f,whichBarrel,1.0f));
+
+}
+
+void NeoQuad::customCommandParser(string commandString)
 {
 
 }

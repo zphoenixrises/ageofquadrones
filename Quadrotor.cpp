@@ -16,6 +16,7 @@
 
 #include "raygl/raygl.h"
 #include "raygl/raygldefs.h"
+#include "Ammo.h"
 vector<Quadrotor*>Quadrotor::quads;
 
 Quadrotor::Quadrotor()
@@ -120,6 +121,7 @@ void Quadrotor::getOrientation(glm::vec3 &axisVector, glm::vec3 &upVector,glm::v
 
 void Quadrotor::draw()
 {
+    lookAtQuad();
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix(); //Main push
     //glLoadIdentity();
@@ -147,6 +149,7 @@ glm::mat4 getOrientationMatrix(glm::vec3 &eye,glm::vec3 &center,glm::vec3 &up)
 
 void Quadrotor::executeTimeLineCommand()
 {
+   
     //*
    //return;
     if(readTimeline)
@@ -223,15 +226,26 @@ void Quadrotor::executeTimeLineCommand()
             {
                 char quadname[10];
                 sscanf(delayedCommand,"%lf %lf %s %s",&nextTime,&comTime,command, quadname);
-                int i;
-                for(i=0;i<quads.size();i++)
-                {
-                    if(quads[i]->getName() == string(quadname))
-                        break;
-                }
-                otherQuad = quads[i];
+                               
+                otherQuad = Quadrotor::getQuadFromName(quadname);
                 orientationMode = QuadOrientationMode::ANOTHERQUAD;
             }
+            else if(!strcmp(command,"FREE"))
+            {
+                
+            }
+            else if(!strcmp(command,"FIREAT"))
+            {
+                float r,g,b,a;
+                char ammotype[20];
+                char quadname[10];
+                sscanf(delayedCommand,"%lf %lf %s %s %f %f %f %f %s",&nextTime,&comTime,command, quadname,&r,&g,&b,&a,ammotype);
+                
+                Ammo::fire(getBarrelPosition(),string(quadname),glm::vec4(r,g,b,a),5,this,AMMOTYPE::getAmmotypeFromString(ammotype));
+                
+            }
+            
+            customCommandParser(string(delayedCommand));
                 //Operations to align the quad with the direction of motion
             isMoving = true;
             //   printf("\nGot command:%f %f %f %f",com_time,com_posx,com_posy,com_posz);
@@ -278,7 +292,7 @@ void Quadrotor::executeTimeLineCommand()
             if(!strcmp(command,"MOV"))
             {
                 glm::vec3 distance = glm::vec3(comVect.x-pos_x,comVect.y-pos_y,comVect.z-pos_z);
-                
+                /*
                 if(orientationMode == QuadOrientationMode::ANOTHERQUAD)
                 {  
                     glm::vec3 otherQuadPosition = otherQuad->getQuadPosition();
@@ -294,8 +308,8 @@ void Quadrotor::executeTimeLineCommand()
                     Model = glm::rotate(Model,-glm::half_pi<float>(),glm::vec3(0,1,0));
                     
                     
-                }
-                else 
+                }*/
+                if(orientationMode != QuadOrientationMode::ANOTHERQUAD)
                 {
                  //*     
                    glm::vec3 eye = glm::vec3(0,0,0),
@@ -322,6 +336,27 @@ void Quadrotor::executeTimeLineCommand()
         //   printf("\ncurrent pos:%f %f %f",pos_x, pos_y,pos_z);
     }
     //*/
+}
+
+
+void Quadrotor::lookAtQuad()
+{
+    if(orientationMode == QuadOrientationMode::ANOTHERQUAD)
+    {  
+        glm::vec3 otherQuadPosition = otherQuad->getQuadPosition();
+        glm::vec3 otherDirectionRelative = otherQuadPosition - getQuadPosition();
+        
+        
+        glm::vec3 upVector,tempVector; 
+        //getOrientation();
+        glm::vec3 eye = glm::vec3(0,0,0),center = otherDirectionRelative,up = glm::vec3(0,1,0);
+        
+        Model = getOrientationMatrix(eye,center,up);
+        Model = glm::rotate(Model,-glm::half_pi<float>(),glm::vec3(0,1,0));
+        
+        
+    }
+    
 }
 
 Quadrotor* Quadrotor::getQuadFromName(string quadname)

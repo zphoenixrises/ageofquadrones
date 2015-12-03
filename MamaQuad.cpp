@@ -170,19 +170,27 @@ string MamaQuad::getName()
      motor();
      propeller();
      
-     glPopMatrix();
+     glPopMatrix(); 
      
-     rotPropeller+=15.0;
+     rotPropeller+=15.0; 
   //   glPopMatrix();
      
     
      
  }
  
- 
+  
 void MamaQuad::collided()
+{
+
+} 
+
+glm::vec3 MamaQuad::getBarrelPosition()
 {
 
 }
 
- 
+void MamaQuad::customCommandParser(string commandString)
+{
+
+}

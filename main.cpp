@@ -95,13 +95,16 @@ void CameraKeyboardFunc(unsigned char c, int x, int y) {
             camera.Move(UP);
             break;
         case 'c':    
-            camera.SetCameraModeFollow(*neoQuad,-glm::vec3 (-100.0f,10.0f,0));
+            //camera.SetCameraModeFollow(*neoQuad,-glm::vec3 (-100.0f,10.0f,0));
+            camera.lookAtQuad("NEO");
             break;
         case 'v':    
-            camera.SetCameraModeFollow(*mamaQuad,-glm::vec3 (-100.0f,10.0f,0));
+            //camera.SetCameraModeFollow(*mamaQuad,-glm::vec3 (-100.0f,10.0f,0));
+            camera.lookAtQuad("MAM");
             break;
         case 'b':    
-            camera.SetCameraModeFollow(*dronedemort,-glm::vec3 (-100.0f,10.0f,0));
+            //camera.SetCameraModeFollow(*dronedemort,-glm::vec3 (-100.0f,10.0f,0));
+            camera.lookAtQuad("DRO");
             break;
         case 'n':
             camera.SetCameraModeWorld();
@@ -174,7 +177,7 @@ void initializeRendering()
     const GLfloat light_ambient[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
     const GLfloat light_diffuse[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
     const GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    const GLfloat light_position[] = { 0.0f, 2000.0f, 6500.0f, 1.0f };
+    const GLfloat light_position[] = { 4000.0f, 3000.0f, 5000.0f, 1.0f };
     //const GLfloat mat_ambient[]    = { 0.7f, 0.7f, 0.7f, 1.0f };
     //const GLfloat mat_diffuse[]    = { 0.8f, 0.8f, 0.8f, 1.0f };
     //const GLfloat mat_specular[]   = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -189,16 +192,16 @@ void initializeRendering()
     
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_specular);
+    //glLightfv(GL_LIGHT0, GL_POSITION, light_specular);
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     glEnable(GL_LIGHT0);
     
     
-    glLightfv(GL_LIGHT2, GL_AMBIENT, ambientlight);
+   /* glLightfv(GL_LIGHT2, GL_AMBIENT, ambientlight);
     glLightfv(GL_LIGHT2, GL_DIFFUSE, diffuselight);
     glLightfv(GL_LIGHT2, GL_POSITION, positionlight);
     glEnable(GL_LIGHT2);
-    
+    */
     
     /*****************************************For Background***********************/
     
@@ -281,8 +284,9 @@ void drawHandler()
     GLfloat lightPos1[] = {-1.0f, 0.5f, 0.5f, 0.0f};
     glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
     glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);//*/
-    //glLoadIdentity();
+    //glLoadIdentity(); 
    // glm::mat4 model, view, projection;
+    //glRotatef(90,1,0,0); 
     camera.Update();
     glm::vec3 cameraPosition = camera.GetCameraPosition(); 
     GLfloat LightPosition[4] = {cameraPosition.x,cameraPosition.y,cameraPosition.z,1.0};
@@ -294,11 +298,12 @@ void drawHandler()
   //  camera.GetMatricies(projection, view, model);
     #if RAYGL == 1
     rayglFrameBegin("frames/frame");
-    setFadeDistance(1000.0);
-    setFadePower(2.0);
+    setFadeDistance(7000.0);
+    //setFadePower(2.0);
     #endif    
   //  glm::mat4 mvp = projection* view * model;       //Compute the mvp matrix
   //  glLoadMatrixf(glm::value_ptr(mvp));
+    
     glColor3f(1.0f,1.0f,1.0f);
     glDisable(GL_CULL_FACE); //had to disable culling as it is not done in background
     //
@@ -373,13 +378,13 @@ void keypressHandler(unsigned char key, int x, int y)
             gridEnabled = !gridEnabled;
             break;
         case '[':
-            Ammo::fire(neoQuad->getQuadPosition(),"MAM",glm::vec4(1,0,0,.25),5,neoQuad);
+            Ammo::fire(neoQuad->getBarrelPosition(),"DRO",glm::vec4(0,1,0,.25),5,neoQuad,AMMOTYPE::BLASTER);
             break;
         case 13:
             exit(0);
             
     };
-    CameraKeyboardFunc(key,x,y);
+    CameraKeyboardFunc(key,x,y); 
     //glutPostRedisplay();
 }
 
@@ -411,14 +416,14 @@ int main(int argc, char** argv)
     quadrotor = dronedemort;
   //  neoQuad->moveAbs(10,60,0);
   //  dronedemort->moveAbs(-50, 60 ,0);
-    
+     
   //  mamaQuad-> moveAbs(60,60,0);
     
     background = new Background();
     background->SetupWorld();
     initializeRendering();//Setup camera
     
-    camera.loadQuadrotors(neoQuad,dronedemort,mamaQuad);
+  //  camera.loadQuadrotors(neoQuad,dronedemort,mamaQuad);
     camera.SetCameraType(CameraType::FREE);
     camera.SetPosition(glm::vec3(0, 7000, 2502));
     camera.SetLookAt(glm::vec3(0, 60, 2500));
@@ -432,7 +437,7 @@ int main(int argc, char** argv)
     //z = 2500;
    // neoQuad->yawQuad(90);
     //quadrotor->rollQuad(20);
-//    quadrotor->pitchQuad(20);
+//    quadrotor->pitchQuad(20); 
     
     //Start the glut loop!
     //*/

@@ -17,6 +17,15 @@
 
 using namespace std;
 #define COLLISIONRADIUS 20
+
+namespace AMMOTYPE{
+    enum ENUM{
+        CANNONBALL,LASER,BLASTER
+    };
+    ENUM getAmmotypeFromString(string ammoType);
+
+}
+
 class Ammo
 {
 private:
@@ -30,18 +39,19 @@ private:
     GLUquadric *quadricObj;
     QuadTimer time;
     Quadrotor*owner;
+    AMMOTYPE::ENUM ammoType;
+    
 public:
-    Ammo(glm::vec3 startPosition, glm::vec3 direction,glm::vec4 color/*,void (*collidedEvent)(string)*/,float lifetime,Quadrotor*owner = NULL);
+    Ammo(glm::vec3 startPosition, glm::vec3 direction,glm::vec4 color/*,void (*collidedEvent)(string)*/,float lifetime,Quadrotor*owner,AMMOTYPE::ENUM ammoType);
   //  Ammo(glm::vec3 &startPosition, string &quadname,glm::vec4 &color/*,void (*collidedEvent)(string)*/,float lifetime);
     
-    static void fire(glm::vec3 startPosition, glm::vec3 direction,glm::vec4 color/*,void (*collidedEvent)(string)*/,float lifetime);
-    static void fire(glm::vec3 startPosition, string quadname,glm::vec4 color/*,void (*collidedEvent)(string)*/,float lifetime,Quadrotor* owner);
+    static void fire(glm::vec3 startPosition, glm::vec3 direction,glm::vec4 color/*,void (*collidedEvent)(string)*/,float lifetime,Quadrotor* owner, AMMOTYPE::ENUM ammoType);
+    static void fire(glm::vec3 startPosition, string quadname,glm::vec4 color/*,void (*collidedEvent)(string)*/,float lifetime,Quadrotor* owner, AMMOTYPE::ENUM ammoType);
     
     void draw();
     static void drawAll();
     
     //button click event callee
-    void (*quadCollisionEvent)(string);
     Quadrotor* hasCollided();
     ~Ammo();
 

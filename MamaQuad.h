@@ -55,6 +55,9 @@ public:
     void changePropSpeed(float increment);
     
     void collided();
+    glm::vec3 getBarrelPosition();
+    void customCommandParser(string commandString);
+    
     ~MamaQuad();
  
 };

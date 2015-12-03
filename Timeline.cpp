@@ -12,7 +12,7 @@ Timeline::Timeline(char* tag)
     FILE* fin = fopen("Data/Timeline.txt","rt");
     if(fin==NULL)
     {
-        printf("Data/Timeline.txt not found");
+        printf("Data/Timeline.txt not found"); 
         exit(0);   
     }
     int i;

@@ -43,9 +43,9 @@ class Camera {
 private:
     //FOLLOW mode variables
     Quadrotor *quadrotor; 
-    NeoQuad *neoQuad;
-    Dronedemort *dronedemort;
-    MamaQuad *mamaQuad;
+    //NeoQuad *neoQuad;
+    //Dronedemort *dronedemort;
+    //MamaQuad *mamaQuad;
     
     glm::vec3 distance;
     CameraModes::Enum cameraMode;
@@ -110,8 +110,8 @@ private:
     
 public:
     
-    void loadQuadrotors(NeoQuad *neoQuad, Dronedemort *dronedemort, MamaQuad *mamaQuad);
-    
+    //void loadQuadrotors(NeoQuad *neoQuad, Dronedemort *dronedemort, MamaQuad *mamaQuad);
+    void lookAtQuad(string whichQuad);
     
     
     Camera();
@@ -138,16 +138,16 @@ public:
     //Setting Functions
     //Changes the camera mode, only three valid modes, Ortho, Free, and Spherical
     void SetCameraType(CameraType::Enum cam_mode);
-    
+     
     //Set camera modes
     //
-    void SetCameraModeFollow(Quadrotor& quad, glm::vec3 distance);
+    void SetCameraModeFollow(Quadrotor* quad, glm::vec3 distance);
     //Follow a Quadcopter with the upvector aligned with the world y 
-    void SetCameraModeFollowUpright(Quadrotor& quad, glm::vec3 distance);
+    void SetCameraModeFollowUpright(Quadrotor* quad, glm::vec3 distance);
     //Set Camera mode to World 
     void SetCameraModeWorld();
     void SetCameraModeCircleMotion(glm::vec3 point, glm::vec3 position = glm::vec3(0.0f,-1000.0f,0.0f));
-    
+     
     
     //Set the position of the camera
     void SetPosition(glm::vec3 pos);

@@ -38,8 +38,11 @@ private:
 	GLuint eye;
         unsigned char * data;
 	unsigned char * data1;
+        glm::mat4  barrelOrientationMatrix;
+        int pointBarrelFlag;
+        string whichQuad;
 public:
-	Dronedemort();
+	Dronedemort(); 
         string getName();
 	void toggleAnimate();
 	GLvoid LoadGLTextures();
@@ -50,6 +53,10 @@ public:
 	void output(GLfloat x, GLfloat y, char const* text);
         
         void collided();
+        glm::vec3 getBarrelPosition();
+        void pointBarrel();
+        void customCommandParser(string commandString);
+        
 
 };
 
