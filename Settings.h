@@ -1,4 +1,4 @@
 //Settings file
 
 #define RAYGL 0
-#define RAYGL_EhNABLE 
+#define RAYGL_EdNABLE 

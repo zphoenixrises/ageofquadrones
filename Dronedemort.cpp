@@ -315,13 +315,24 @@ void Dronedemort::drawQuad()
         #if RAYGL == 1
         rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
         rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
-        rayglTextureType(1);                       // Set texture type for PovRAY.
+        rayglTextureType(2);                       // Set texture type for PovRAY.
         #endif
         
  	gluCylinder(quadricObj,2.0f,2.0f,10.0f,10.0f,10.0f);
- 	glTranslatef(0.0f,0.5f,8.0f);
+        glDisable(GL_TEXTURE_2D);
+        glTranslatef(0.0f,0.5f,8.0f);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, body);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        #if RAYGL == 1
+        rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+        rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+        rayglTextureType(1);                       // Set texture type for PovRAY.
+        #endif
         
         gluSphere(quadricObj, 5.0f, 10.0f, 10.0f);
+        glDisable(GL_TEXTURE_2D);
+        
         //glTranslatef(0.0f,-25.0f,0.0f);
  	//rotateGun(angleInc);
         glPopMatrix();//pop for gun
@@ -331,7 +342,14 @@ void Dronedemort::drawQuad()
         
         
 	
-	
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, body);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        #if RAYGL == 1
+        rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+        rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+        rayglTextureType(2);                       // Set texture type for PovRAY.
+        #endif
 	//Draw rotor arms
 	glPushMatrix(); //Push arm1
 	glRotatef(45.0f,0.0f,1.0f,0.0f);
@@ -357,17 +375,26 @@ void Dronedemort::drawQuad()
 
 	glPopMatrix();//pop arm 4
 	
+
         
         glPopMatrix();
         
         
         glPushMatrix();//DRAW BARREL
+        
         glm::vec3 axisVector = glm::vec3( Model*glm::vec4(0.0f,-33.0f,0.0f,1.0f));
         glTranslatef(axisVector.x,axisVector.y,axisVector.z);
 
         
         glMultMatrixf(glm::value_ptr(barrelOrientationMatrix)); //load Model glLoadMatrixd        
-
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, body);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        #if RAYGL == 1
+        rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+        rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+        rayglTextureType(2);                       // Set texture type for PovRAY.
+        #endif
         gluCylinder(quadricObj,2.0f,2.0f,15.0f,15.0f,10.0f);
         glTranslatef(0.0f,0.0f,15.0f);
         
@@ -383,12 +410,13 @@ void Dronedemort::drawQuad()
         #if RAYGL == 1
         rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
         rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
-        rayglTextureType(1);                       // Set texture type for PovRAY.
+        rayglTextureType(0);                       // Set texture type for PovRAY.
         #endif
         
         glColor3f(0.2f, 0.2f, 0.2f);
         
         gluDisk(quadricObj,1.5,2.0,15,5);
+        
         glPopMatrix();// DRAW BARREL
         
 	glPopMatrix(); //Main pop
