@@ -380,7 +380,7 @@ void Dronedemort::drawQuad()
         glPopMatrix();
         
         
-        glPushMatrix();//DRAW BARREL
+        glPushMatrix();//DRAW BARREL 
         
         glm::vec3 axisVector = glm::vec3( Model*glm::vec4(0.0f,-33.0f,0.0f,1.0f));
         glTranslatef(axisVector.x,axisVector.y,axisVector.z);
@@ -416,6 +416,8 @@ void Dronedemort::drawQuad()
         glColor3f(0.2f, 0.2f, 0.2f);
         
         gluDisk(quadricObj,1.5,2.0,15,5);
+        
+        glDisable(GL_TEXTURE_2D);
         
         glPopMatrix();// DRAW BARREL
         
