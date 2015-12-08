@@ -3,17 +3,12 @@
  
  Quadrotor commands 
  ================================
- MOV <rotationtime> <destination position> //Move the Quad
+ MOV <rotationtime> <destination position> 
  ROT <> TODO
- POS <position>                       //Position The Quad  
- PAUSE                                //pause the quad
- LOOKATQUAD <Quadrotor>               //Look at another quad
- FIREAT <Quadrotor> <ColorRGBA> <AMMOTYPE> // FIRE!!! 
- FREE                                 //Free the quad to look in any direction
- 
- Dronedemort "Special" Commands
- ================================
- POINTBARREL <Quadrotor> <on/off:(1/0)>
+ POS <position> 
+ MOVECIRCLE <center> <angle> TODO
+ PAUSE->pause the quad
+ LOOKATQUAD <Quadrotor> TODO
  
  
  Camera Commands
@@ -36,32 +31,29 @@ TIM 0.00
 CAM POS 0 60 1000
 CAM LOOKAT -200 100 0
 //CAM LOOKATQUAD DRO
+//CAM WORLD
+//CAM MOV 1 -4000 1000 3000
+
 NEO POS -100 30 4200 
 DRO POS -2700 60 750
 MAM POS 100 60 6000
-DRO POINTBARREL NEO 0
-CAM FOLLOW MAM 400 20 0
-CAM LOOKATQUAD MAM
 //CAM FOLLOW NEO -50 20 0
 //CAM FOLLOW MAM -100 20 0
 //NEO LOOKATQUAD MAM
 
 /*LOOKATQUAD test
-
-DRO POS 100 60 6000
-CAM LOOKATQUAD DRO
-NEO LOOKATQUAD DRO
+CAM LOOKATQUAD NEO
+NEO LOOKATQUAD MAM
 NEO MOV 0 -100 100 5950
 
-TIM 5
+TIM 2
 NEO MOV 0 150 100 5950
-TIM 10
+TIM 4
 NEO MOV 0 150 100 6200
-DRO POINTBARREL NEO 0
-TIM 15
+TIM 6
 NEO MOV 0 -100 100 6200
 
-TIM 20
+TIM 8
 NEO PAUSE
 //LOOKATQUAD test*/
 
@@ -83,10 +75,9 @@ NEO PAUSE
 //movetest*/
 
 
-/*
+//*
 TIM 15
 MAM MOV 2 350 60 5600
-DRO LOOKATQUAD MAM
 
 TIM 18
 MAM MOV 1 0 60 550
@@ -136,8 +127,7 @@ DRO MOV .5 -2700 60 1250
 
 TIM 90.00
 DRO MOV 0.5 -3200 60 750
-*/
-/*
+
 TIM 95.00
 DRO PAUSE
 
@@ -151,14 +141,13 @@ TIM 119.00
 DRO POS 0 60 -100
 
 TIM 120.00
-//DRO MOV 0.5 0 60 350
+DRO MOV 0.5 0 60 350
 
 
 TIM 125.00
 DRO PAUSE
 
 TIM 135.00
-
 DRO POS -3150 60 750
 NEO MOV 0.5 0 60 6300
 
@@ -172,13 +161,12 @@ TIM 139.99
 NEO PAUSE
 
 TIM 140.00
-DRO MOV 0.5 -3100 60 850
+DRO MOV 0.5 -3100 60 750
 NEO POS 0 60 1200
 NEO MOV .3 0 60 500
 
 TIM 142.00
 NEO PAUSE
-DRO PAUSE
 
 TIM 145.00
 NEO MOV 0.3 -400 60 350
@@ -189,13 +177,10 @@ NEO MOV 0.3 -1650 60 350
 TIM 148.50
 NEO MOV 0.3 -1650 60 750
 
-
 TIM 150.00
 NEO MOV 0.3 -2750 60 750
 
 TIM 152.00
-NEO FIREAT DRO 0 1 0 .5 BLASTER
-DRO FIREAT NEO 1 0 0 .5 CANNONBALL
 DRO PAUSE
 NEO PAUSE
 //*/

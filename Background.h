@@ -46,7 +46,7 @@ typedef struct {
 } MyImage;
 
 const  int MAX_PARTICLES = 1000;
-const  int MIN_PARTICLES = 10;
+const  int MIN_PARTICLES = 100;
 #define  noTextures 9
 
 class Background

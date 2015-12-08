@@ -56,7 +56,7 @@ static unsigned int getshort(FILE *fp)
 Background::Background()
 {
     filter = 0; 
-    limits = .8;
+    limits = 3;
     X=0, Y=0;
     currentParticle = 1;
     radius= 0.2;
@@ -174,7 +174,7 @@ GLvoid Background::LoadGLTextures()
         "Data/images.ppm",
         "Data/security.ppm",
         "Data/comm.ppm",
-        "Data/laser_gun.ppm",
+        "Data/red.ppm",
         "Data/tower.ppm",
     };
     // Create Textures  
@@ -351,10 +351,15 @@ GLvoid Background::DrawGLScene()
     */ 
 
     //*
+    
     sky();
+    
+    Draw_smoke();
     power();  
+    
+    if(QuadTimer::GetProcessTime() >= 2 && QuadTimer::GetProcessTime() <= 7 ){
     security();
-   // Draw_smoke();
+    }
     //*/
     glDisable(GL_TEXTURE_2D);                    // Enable texture mapping.
     
@@ -541,7 +546,7 @@ void Background::security() {
     gluQuadricTexture(security,GL_TRUE); 
     
     
-    glBindTexture(GL_TEXTURE_2D,texture[5]);
+    glBindTexture(GL_TEXTURE_2D,texture[7]);
     
     #if RAYGL == 1
     rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
@@ -550,18 +555,32 @@ void Background::security() {
     #endif
     glPushMatrix();
     
-    glTranslatef(0.0,0.0,2.0);
-    glRotatef(-90,1,0,0);
+    glTranslatef(2.0,0.0,2.0);
+    glRotatef(-90,0,1,0);
     gluCylinder(    security,
-                    0.05,
-                    0.05,
-                    0.5,
+                    0.005,
+                    0.005,
+                    4.0,
+                    50,
+                    50);
+ int i=0;   
+for(i=0;i<9;i++){
+    
+    glTranslatef(0.0,0.1,0.0);
+    
+    gluCylinder(    security,
+                    0.005,
+                    0.005,
+                    4.0,
                     50,
                     50);
     
+    }
     glPopMatrix();
     
     gluDeleteQuadric(security); 
+    
+    
     
     glBindTexture(GL_TEXTURE_2D,texture[6]);
     
@@ -585,30 +604,13 @@ void Background::security() {
     glPopMatrix();  
     
     
-    GLUquadric *laser_gun = gluNewQuadric(); 
-    
-   // gluQuadricTexture(laser_gun,GL_TRUE); 
-    
-    glBindTexture(GL_TEXTURE_2D,texture[7]);
-    #if RAYGL == 1
-    rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
-    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
-    rayglTextureType(1);                       //undefined/ Set texture type for PovRAY.
-    #endif
-    glPushMatrix();
-    glTranslatef(0.0,0.6,2.0);
    
-    gluSphere(laser_gun,0.08,100,100);
-    glPopMatrix();
-    
-    gluDeleteQuadric(laser_gun);
     
 }
 
 
 GLvoid Background:: Draw_smoke(void) {
     
-    int thingy = 1;
     bool check = false;
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
@@ -624,41 +626,36 @@ GLvoid Background:: Draw_smoke(void) {
     if (check == false) {
         float R, G, B;
         glPushMatrix();
-        glBegin(GL_TRIANGLES);
         for (int i = 0; i < MAX_PARTICLES; i++) {
-            //R = rand() % 100 + 1;
-            //G = rand() % 100 + 1;
-            //B = rand() % 100 + 1;
-            //glColor3d(R*.01, G*.01, B*.01);
-            glColor3f(1.0, 1.0, 1.0);
-            //glColor3d(10, 10, 0);
+           // R = rand() % 100 + 1;
+           // G = rand() % 100 + 1;
+           // B = rand() % 100 + 1;
+           // glColor3d(R*.01, G*.01, B*.01);
+            
+            glBegin(GL_QUADS);
+            glColor4d(1.0, 0.0, 0.0, 1);
+            //glColor3d(10, 10, 0)
             //glColor3d(0, 0+posY[i], 0);
-            glVertex3f(X-.01, Y, -2);
-            glVertex3f(X+.01, Y, -2);
-            glVertex3f(X, Y+.02, -2);
+            glVertex3f(X-.1, Y, -2);
+            glVertex3f(X+.1, Y, -2);
+            glVertex3f(X, Y+.2, -2);
+            glVertex3f(X, Y+.2, -2);
+            
+            glEnd();
             X = posX[i];
             Y = posY[i];
         }
-        glEnd();
         glPopMatrix();
         check = true;
     }
-    switch(thingy){
-        case 1:
-            //Sleep(1);
-            moveParticles(currentParticle);
-            if (currentParticle != MAX_PARTICLES) {
-                currentParticle++;
-            }
-            
-             // glutPostRedisplay();
-            break;
-            
-            
-            
+
+    moveParticles(currentParticle);
+    if (currentParticle != MAX_PARTICLES) {
+        currentParticle++;
     }
+    
+
     glPopMatrix();
-    //glutSwapBuffers();
 }
 
 
@@ -671,15 +668,15 @@ void Background::moveParticles(int amount_of_particles) {
         if(myX==1 && posX[i]<=limits ){
             int mytemp = rand() % 100 + 1;
             int temp = rand() % 5 + 1;
-            posX[i]+=temp*.001;
-            posY[i]+=mytemp*.0004;
+            posX[i]+=temp*.015;
+            posY[i]+=mytemp*.01;
         }
         if(myX==2){posX[i]+=.00;posY[i]+=.01;}
         if(myX==3 && posX[i]>=-limits){
             int temp = rand() % 5 + 1;
             int mytemp = rand() % 100 + 1;
-            posX[i]-=temp*.001;
-            posY[i]+=mytemp*.0004;
+            posX[i]-=temp*.015;
+            posY[i]+=mytemp*.01;
         }
         ///////////////////////////////////////////
         if(posY[i]>=limits){    
