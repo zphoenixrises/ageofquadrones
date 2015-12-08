@@ -18,7 +18,7 @@
 //#include "./pgmIO.h"
 
 #include "NeoQuad.h"
-#include "Dronedemort.h"
+#include "Dronedemort.h" 
 #include "MamaQuad.h"
 #include "Background.h"
 #include "Ammo.h"
@@ -107,17 +107,17 @@ void CameraKeyboardFunc(unsigned char c, int x, int y) {
             camera.lookAtQuad("DRO");
             break;
         case 'n':
-            camera.SetCameraModeWorld();
+            camera.SetCameraFree();
             break;
         case 'x':
         case 27:
-            exit(0);
+            exit(0);        
             return;
         default:
             break;
     }
-}
-
+} 
+ 
 void SpecialFunc(int c, int x, int y) {}
 void CallBackPassiveFunc(int x, int y) {}
 //Used when person clicks mouse
@@ -378,7 +378,7 @@ void keypressHandler(unsigned char key, int x, int y)
             gridEnabled = !gridEnabled;
             break;
         case '[':
-            Ammo::fire(neoQuad->getBarrelPosition(),"DRO",glm::vec4(0,1,0,.25),5,neoQuad,AMMOTYPE::BLASTER);
+            Ammo::fire(dronedemort->getBarrelPosition(),"NEO",glm::vec4(0,1,0,.25),5,neoQuad,AMMOTYPE::LASER);
             break;
         case 13:
             exit(0);
@@ -407,7 +407,7 @@ int main(int argc, char** argv)
     glutMouseFunc(CallBackMouseFunc);
     glutMotionFunc(CallBackMotionFunc);
     glutPassiveMotionFunc(CallBackPassiveFunc);
-    glutTimerFunc(window.interval, TimerFunc, 0);
+    glutTimerFunc(window.interval, TimerFunc, 0);    
     
     
     neoQuad = new NeoQuad();
@@ -432,20 +432,20 @@ int main(int argc, char** argv)
    // camera.SetToFollow(*neoQuad,-glm::vec3 (100.0f,10.0f,0));
     
     //camera.SetCameraModeCircleMotion(vec3(0,60,0),vec3(0,60,300));
-    
-    //tempcode
-    //z = 2500;
-   // neoQuad->yawQuad(90);
-    //quadrotor->rollQuad(20);
+     
+    //tempcode     
+    //z = 2500; 
+   // neoQuad->yawQuad(90);  
+    //quadrotor->rollQuad(20);  
 //    quadrotor->pitchQuad(20); 
-    
-    //Start the glut loop!
-    //*/
-    QuadTimer::initializeTimer(0 );
-    glutMainLoop();
-    
-    return 0;
-    
-    
-}
-
+          
+    //Start the g lut loop!
+    //*/     
+    QuadTimer::initializeTimer(140 );      
+    glutMainLoop(); 
+     
+    return 0; 
+      
+       
+}   
+ 

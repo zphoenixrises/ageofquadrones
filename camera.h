@@ -36,7 +36,7 @@ namespace CameraType {
 namespace CameraModes
 {
     enum Enum{
-        FOLLOW_QUAD_UPRIGHT,FOLLOW_QUAD, FREEMODE, WORLD, CIRCLEMOTION, LOOKATQUAD
+        FOLLOW_QUAD_UPRIGHT,FOLLOW_QUAD, FREEMODE, WORLD, CIRCLEMOTION, LOOKATPOINT,LOOKATQUAD
     };
 }
 class Camera {
@@ -99,6 +99,8 @@ private:
     glm::vec3 comVect;
     glm::vec3 comDirection;
     glm::vec3 comRotationAxis;
+    glm::vec3 lookatPosition;
+    
     char command[100];
     
     char delayedCommand[250];
@@ -147,7 +149,7 @@ public:
     //Set Camera mode to World 
     void SetCameraModeWorld();
     void SetCameraModeCircleMotion(glm::vec3 point, glm::vec3 position = glm::vec3(0.0f,-1000.0f,0.0f));
-     
+    void SetCameraFree(); 
     
     //Set the position of the camera
     void SetPosition(glm::vec3 pos);

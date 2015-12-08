@@ -376,7 +376,8 @@ void Dronedemort::drawQuad()
 	glPopMatrix();//pop arm 4
 	
 
-        
+        if(pointBarrelFlag==1)
+        {
         glPopMatrix();
         
         
@@ -387,6 +388,11 @@ void Dronedemort::drawQuad()
 
         
         glMultMatrixf(glm::value_ptr(barrelOrientationMatrix)); //load Model glLoadMatrixd        
+        }
+        else
+        {
+            glTranslatef(0.0f,-33.0f,0.0f);
+        }
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, body);
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);

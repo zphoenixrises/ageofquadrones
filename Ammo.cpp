@@ -15,6 +15,7 @@ ENUM getAmmotypeFromString(string ammoType)
         return LASER;
     if(ammoType == "BLASTER")
         return BLASTER;
+
 }
 }
 
@@ -121,7 +122,7 @@ void Ammo::draw()
     }
     glPopMatrix();
     
-    position += direction*(float)(100*time.getTimeDiffSec());
+    position += direction*(float)(500*time.getTimeDiffSec());
 
 
 }
@@ -138,7 +139,7 @@ Quadrotor* Ammo::hasCollided()
 }
 
 
-Ammo::~Ammo()
+Ammo::~Ammo() 
 {
     gluDeleteQuadric( quadricObj);
 

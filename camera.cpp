@@ -50,7 +50,7 @@ void Camera::Update() {
     }
     else if(cameraMode == CameraModes::WORLD)
     {
-        
+         
         
     }
     else if(cameraMode == CameraModes::CIRCLEMOTION)
@@ -144,7 +144,11 @@ void Camera::SetCameraModeWorld()
     cameraMode = CameraModes::WORLD;
     
 }
-
+void Camera::SetCameraFree()
+{
+    cameraMode = CameraModes::WORLD;
+    
+}
 
 
 
@@ -342,7 +346,7 @@ void Camera::executeTimelineCommands()
                 */
                 SetCameraModeFollowUpright(Quadrotor::getQuadFromName(whichQuad),-position);
                 
-            }
+            } 
             else if(!strcmp(command,"FOLLOWVERTICAL"))
             {
                 char whichQuad[10];
@@ -355,7 +359,7 @@ void Camera::executeTimelineCommands()
                 else if(!strcmp(whichQuad,"MAM"))
                     SetCameraModeFollowUpright(*mamaQuad,-position);*/
                 SetCameraModeFollowUpright(Quadrotor::getQuadFromName(whichQuad),-position);
-                
+                 
                 
             }
             else if(!strcmp(command,"WORLD"))
@@ -364,7 +368,7 @@ void Camera::executeTimelineCommands()
             } 
             else if(!strcmp(command,"FREE"))
             {
-                cameraMode = CameraModes::WORLD;  
+                cameraMode = CameraModes::FREEMODE;  
             } 
             
             else if(!strcmp(command,"CIRCLEMOTION"))
@@ -374,12 +378,13 @@ void Camera::executeTimelineCommands()
                 SetCameraModeCircleMotion(center,camera_position);
                 
             }
-            else if(!strcmp(command,"LOOKAT"))
+            else if(!strcmp(command,"LOOKATPOINT"))
             {
                 glm::vec3 center;
                 sscanf(delayedCommand,"%lf %lf %s %f %f %f",&nextTime,&comTime,command, &center.x, &center.y, &center.z);
                 SetLookAt(center);
-                
+                cameraMode = CameraModes::LOOKATPOINT; 
+                lookatPosition = center;
             }
             else if(!strcmp(command,"LOOKATQUAD"))
             {
@@ -392,7 +397,7 @@ void Camera::executeTimelineCommands()
             {
                 glm::vec3 center;
                 sscanf(delayedCommand,"%lf %lf %s %f %f %f",&nextTime,&comTime,command, &center.x, &center.y, &center.z);
-                SetPosition(center);
+                SetPosition(center); 
                 
             }
             else if(!strcmp(command,"MOV"))
@@ -413,7 +418,8 @@ void Camera::executeTimelineCommands()
         }
         else if(current_time<=comOrientationTime) //dont have to worry about modes other than MOV
         { 
-            
+            if(cameraMode == CameraModes::LOOKATPOINT || cameraMode == CameraModes::LOOKATQUAD)
+                return;
             glm::vec3 cam_direction, current_up;
             double delta_time = comOrientationTime-current_time;
             
@@ -442,12 +448,20 @@ void Camera::executeTimelineCommands()
         { isExecuting = false;isMoving=false;}
         else if(current_time>=comTime)
         {
+            if(cameraMode == CameraModes::LOOKATQUAD)
+                SetLookAt(quadrotor->getQuadPosition());
+            else if(cameraMode == CameraModes::LOOKATPOINT)
+                SetLookAt(lookatPosition);
+            
             
             if(!strcmp(command,"MOV"))
             {
+                if(!(cameraMode == CameraModes::LOOKATQUAD||cameraMode == CameraModes::LOOKATPOINT))
+                    SetLookAt(comVect+comDirection);
+                
                 //SetLookAt(comVect);
                 glm::vec3 distance = comVect-camera_position;
-                SetLookAt(comVect+comDirection);
+                //SetLookAt(comVect+comDirection);
                 double delta_time = nextTime-current_time;
                 glm::vec3 dist2 = distance *(float) (cameraTime.getTimeDiffSec()/ delta_time);
                 camera_position+=dist2;

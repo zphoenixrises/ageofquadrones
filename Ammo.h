@@ -13,6 +13,7 @@
 #include <GL/glut.h>
 #include <glm/glm.hpp>
 #include "Quadrotor.h"
+//#include <string.h>
 #include <string>
 
 using namespace std;

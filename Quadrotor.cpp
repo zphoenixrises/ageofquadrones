@@ -221,15 +221,30 @@ void Quadrotor::executeTimeLineCommand()
                  *        Model = glm::rotate(glm::mat4(1.0f), -angle, rotation_axis);
                  */
             }    
-            
+             
             else if(!strcmp(command,"LOOKATQUAD"))
             {
                 char quadname[10];
                 sscanf(delayedCommand,"%lf %lf %s %s",&nextTime,&comTime,command, quadname);
-                               
+                                
                 otherQuad = Quadrotor::getQuadFromName(quadname);
                 orientationMode = QuadOrientationMode::ANOTHERQUAD;
             }
+            else if(!strcmp(command,"LOOKATPOINT"))
+            {
+                glm::vec3 position;
+                sscanf(delayedCommand,"%lf %lf %s %s",&nextTime,&comTime,command, &position.x,&position.y,&position.z);
+
+                orientationMode = QuadOrientationMode::FREE;
+                glm::vec3 eye = glm::vec3(0,0,0),
+                center = glm::normalize(position-getQuadPosition()),
+                up = glm::vec3(0,1,0);
+                
+                glm::mat4 mm = getOrientationMatrix(eye,center,up);
+                Model = mm;
+                Model = glm::rotate(Model,-glm::half_pi<float>(),glm::vec3(0,1,0));
+                
+            } 
             else if(!strcmp(command,"FREE"))
             {
                 
@@ -240,8 +255,8 @@ void Quadrotor::executeTimeLineCommand()
                 char ammotype[20];
                 char quadname[10];
                 sscanf(delayedCommand,"%lf %lf %s %s %f %f %f %f %s",&nextTime,&comTime,command, quadname,&r,&g,&b,&a,ammotype);
-                
-                Ammo::fire(getBarrelPosition(),string(quadname),glm::vec4(r,g,b,a),5,this,AMMOTYPE::getAmmotypeFromString(ammotype));
+                AMMOTYPE::ENUM ammo_type = AMMOTYPE::getAmmotypeFromString(string(ammotype));
+                Ammo::fire(getBarrelPosition(),string(quadname),glm::vec4(r,g,b,a),5,this,ammo_type);
                 
             }
             
@@ -266,12 +281,12 @@ void Quadrotor::executeTimeLineCommand()
             if(timediff>delta_time) timediff = delta_time;
             float axisAngle = glm::angle(current_axis,comDirection);
         //    printf("\nX: %f",angle_axis);
-            if(axisAngle>Pi)
+            /*if(axisAngle>Pi)
             {
                 printf("\n%f",axisAngle);
                 axisAngle = (2*Pi-axisAngle);
                 
-            }
+            }*/
             axisAngle = axisAngle*(float) (timediff/ delta_time);
             Model = glm::rotate(Model,axisAngle,comRotationAxis);
             //*
