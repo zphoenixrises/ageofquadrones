@@ -255,6 +255,26 @@ void drawGrid()
     glColor3f(1.0f,1.0f,1.0f);
     glPopMatrix();
 }
+
+void drawText(GLfloat left,GLfloat bottom, GLfloat size, char* label)
+{
+    glPushMatrix();
+//      glTranslatef(0,0,-.1);
+
+    glLineWidth(1);
+    
+    glColor3f(1.0f,1.0f,1.0f);
+    glTranslatef(left, bottom, 0);
+    float scale =  (size)/100.0; 
+    glScalef( scale,scale,scale);
+    for( char* p =label; *p; p++)
+    {
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
+    }
+    glPopMatrix();
+}
+
+
 bool gridEnabled = false; 
 void drawHandler()
 {
@@ -326,11 +346,47 @@ void drawHandler()
      #if RAYGL == 1
      rayglFrameEnd();
      #endif
-    glutSwapBuffers();
-    
-}
+     
+     //should always be at the end
+     //reset projection matrix
+     glMatrixMode(GL_PROJECTION);
+     glLoadIdentity();
+     glOrtho(0.0f, window.size.x, 0.0f,window.size.y, 0.0f, 100.0f);
+     
+     //reset Modelview matrix 
+     glMatrixMode(GL_MODELVIEW);
+     glLoadIdentity();
+     //draw all buttons 
+     char buff[100];
+     sprintf(buff,"Time: %lf",QuadTimer::GetProcessTime());
+     drawText(10,60,10,buff);
+     glm::vec3 position = Quadrotor::getQuadFromName("NEO")->getQuadPosition();
+     sprintf(buff,"NEO: %5.0lf,%5.0lf,%5.0lf",position.x,position.y,position.z);
+     drawText(10,45,10,buff);
+     
+     position = Quadrotor::getQuadFromName("DRO")->getQuadPosition();
+     sprintf(buff,"DRO: %5.0lf,%5.0lf,%5.0lf",position.x,position.y,position.z);
+     drawText(10,30,10,buff);
+     
+     position =  Quadrotor::getQuadFromName("MAM")->getQuadPosition();
+     sprintf(buff,"MAM: %5.0lf,%5.0lf,%5.0lf",position.x,position.y,position.z);
+     drawText(10,15,10,buff);
 
-
+     position =  camera.GetCameraPosition();
+     glm::vec3 lookat = camera.GetLookAt();
+     sprintf(buff,"CAM: %5.0lf,%5.0lf,%5.0lf,%5.0lf,%5.0lf,%5.0lf",position.x,position.y,position.z
+         ,lookat.x,lookat.y,lookat.z 
+    );
+     drawText(10,0,10,buff);
+      
+     //Button::drawButtons();
+          
+                
+    glutSwapBuffers(); 
+      
+} 
+ 
+ 
 void keypressHandler(unsigned char key, int x, int y)
 {
     switch (key)
@@ -420,8 +476,8 @@ int main(int argc, char** argv)
   //  mamaQuad-> moveAbs(60,60,0);
     
     background = new Background();
-    background->SetupWorld();
-    initializeRendering();//Setup camera
+    background->SetupWorld();  
+    initializeRendering();//Setup camera 
     
   //  camera.loadQuadrotors(neoQuad,dronedemort,mamaQuad);
     camera.SetCameraType(CameraType::FREE);
@@ -433,19 +489,19 @@ int main(int argc, char** argv)
     
     //camera.SetCameraModeCircleMotion(vec3(0,60,0),vec3(0,60,300));
      
-    //tempcode     
-    //z = 2500; 
-   // neoQuad->yawQuad(90);  
-    //quadrotor->rollQuad(20);  
-//    quadrotor->pitchQuad(20); 
+    //tempcode       
+    //z = 2500;  
+   // neoQuad->yawQuad(90);   
+    //quadrotor->rollQuad(20);    
+//    quadrotor->pitchQuad(20);  
           
     //Start the g lut loop!
     //*/     
-    QuadTimer::initializeTimer(140 );      
+    QuadTimer::initializeTimer(153 );      
     glutMainLoop(); 
      
-    return 0; 
-      
-       
-}   
+    return 0;    
+         
+        
+}    
  

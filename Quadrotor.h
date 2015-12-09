@@ -46,6 +46,7 @@ protected:
     double nextTime;
     double comOrientationTime;
     double comAngle;
+    double moveTime;
     char delayedCommand[250];
     Quadrotor *otherQuad;
     virtual string getName()=0;

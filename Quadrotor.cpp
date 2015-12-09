@@ -317,25 +317,25 @@ void Quadrotor::executeTimeLineCommand()
                     glm::vec3 upVector,tempVector; 
                     //getOrientation();
                     glm::vec3 eye = glm::vec3(0,0,0),center = otherDirectionRelative,up = glm::vec3(0,1,0);
-                    
+                     
                     glm::mat4 mm = getOrientationMatrix(eye,center,up);
                     Model = mm;
                     Model = glm::rotate(Model,-glm::half_pi<float>(),glm::vec3(0,1,0));
                     
-                    
-                }*/
+                        
+                }*/ 
                 if(orientationMode != QuadOrientationMode::ANOTHERQUAD)
                 {
                  //*     
                    glm::vec3 eye = glm::vec3(0,0,0),
                     center = comDirection,
                     up = glm::vec3(0,1,0);
-                    
+                     
                     glm::mat4 mm = getOrientationMatrix(eye,center,up);
                     Model = mm;
                     Model = glm::rotate(Model,-glm::half_pi<float>(),glm::vec3(0,1,0));
                   //*/  
-                }
+                } 
                  double delta_time = nextTime-current_time;
                  double timediff = quadTime.getTimeDiffSec();
                  if(delta_time < timediff)

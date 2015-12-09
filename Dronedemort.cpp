@@ -276,7 +276,7 @@ void Dronedemort::drawQuad()
 	gluSphere(quadricObj, 25.0f, 20.0f, 20.0f);
 	
        glDisable(GL_TEXTURE_2D);
-        
+          
 // 	//Draw eye
         
  	glColor3f(0.75f, 0.0f, 0.0f);
@@ -291,8 +291,8 @@ void Dronedemort::drawQuad()
         rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
         rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
         rayglTextureType(1);                       // Set texture type for PovRAY.
-        #endif
-        
+        #endif 
+          
  	drawEllipsoid(20.0f,20.0f,10.0f,3.0f,3.0f);
 // 	gluQuadricNormals(quadricObj, GLU_SMOOTH);
 

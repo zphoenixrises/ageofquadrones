@@ -489,3 +489,9 @@ glm::vec3 Camera::GetCameraPosition()
 
 }
 
+glm::vec3 Camera::GetLookAt()
+{
+    return camera_look_at;
+
+}
+

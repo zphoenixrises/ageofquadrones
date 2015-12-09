@@ -19,6 +19,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/vector_angle.hpp>
+#include <glm/gtx/simd_vec4.hpp>
 
 
 #include "Quadrotor.h"
@@ -170,7 +171,7 @@ public:
     void GetViewport(int &loc_x, int &loc_y, int &width, int &height);
     void GetMatricies(glm::mat4 &P, glm::mat4 &V, glm::mat4 &M);
     glm::vec3 GetCameraPosition();
-    
+    glm::vec3 GetLookAt();
 
     
 };
