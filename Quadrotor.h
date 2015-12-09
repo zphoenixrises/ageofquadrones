@@ -26,7 +26,7 @@ using namespace std;
 #endif
 
 namespace QuadOrientationMode{
-    enum Enum{FREE,ANOTHERQUAD,UPRIGHT};
+    enum Enum{FREE,ANOTHERQUAD,UPRIGHT,POINT};
 }
 
 // Virtual Class for use by all quadrotors.
@@ -51,6 +51,7 @@ protected:
     Quadrotor *otherQuad;
     virtual string getName()=0;
     
+    glm::vec3 lookAtPoint;
 
     
     //double com_posx,com_posy,com_posz;

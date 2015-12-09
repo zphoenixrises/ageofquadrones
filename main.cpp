@@ -318,7 +318,7 @@ void drawHandler()
   //  camera.GetMatricies(projection, view, model);
     #if RAYGL == 1
     rayglFrameBegin("frames/frame");
-    setFadeDistance(7000.0);
+    setFadeDistance(7000.0); 
     //setFadePower(2.0);
     #endif    
   //  glm::mat4 mvp = projection* view * model;       //Compute the mvp matrix
@@ -328,23 +328,23 @@ void drawHandler()
     glDisable(GL_CULL_FACE); //had to disable culling as it is not done in background
     //
     if(gridEnabled)
-        drawGrid();
-    background->DrawGLScene();
+        drawGrid();  
+    background->DrawGLScene();  
  
     glEnable(GL_CULL_FACE);
-    Ammo::drawAll();
-    
-
-    neoQuad->draw();
+    Ammo::drawAll();  
+      
+ 
+    neoQuad->draw(); 
     dronedemort->draw();
     mamaQuad->draw();
-    
-    
-
-     glCullFace(GL_BACK);
-     glFrontFace(GL_CCW);
-     #if RAYGL == 1
-     rayglFrameEnd();
+     
+       
+   
+     glCullFace(GL_BACK); 
+     glFrontFace(GL_CCW);   
+     #if RAYGL == 1  
+     rayglFrameEnd(); 
      #endif
      
      //should always be at the end
@@ -356,7 +356,7 @@ void drawHandler()
      //reset Modelview matrix 
      glMatrixMode(GL_MODELVIEW);
      glLoadIdentity();
-     //draw all buttons 
+     //draw all buttons  
      char buff[100];
      sprintf(buff,"Time: %lf",QuadTimer::GetProcessTime());
      drawText(10,60,10,buff);

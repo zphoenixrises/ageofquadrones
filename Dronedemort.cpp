@@ -534,5 +534,9 @@ void Dronedemort::customCommandParser(string commandString)
         
         
     }
-
+    
+    else if(!strcmp(command,"DIE"))
+    {
+        animate= false;
+    }
 }

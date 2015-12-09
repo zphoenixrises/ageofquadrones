@@ -233,21 +233,15 @@ void Quadrotor::executeTimeLineCommand()
             else if(!strcmp(command,"LOOKATPOINT"))
             {
                 glm::vec3 position;
-                sscanf(delayedCommand,"%lf %lf %s %s",&nextTime,&comTime,command, &position.x,&position.y,&position.z);
+                sscanf(delayedCommand,"%lf %lf %s %lf %lf %lf",&nextTime,&comTime,command, &position.x,&position.y,&position.z);
 
-                orientationMode = QuadOrientationMode::FREE;
-                glm::vec3 eye = glm::vec3(0,0,0),
-                center = glm::normalize(position-getQuadPosition()),
-                up = glm::vec3(0,1,0);
-                
-                glm::mat4 mm = getOrientationMatrix(eye,center,up);
-                Model = mm;
-                Model = glm::rotate(Model,-glm::half_pi<float>(),glm::vec3(0,1,0));
+                lookAtPoint = position;
+                orientationMode = QuadOrientationMode::POINT;
                 
             } 
             else if(!strcmp(command,"FREE"))
             {
-                
+                orientationMode = QuadOrientationMode::FREE;
             }
             else if(!strcmp(command,"FIREAT"))
             {
@@ -324,7 +318,7 @@ void Quadrotor::executeTimeLineCommand()
                     
                         
                 }*/ 
-                if(orientationMode != QuadOrientationMode::ANOTHERQUAD)
+                if(orientationMode != QuadOrientationMode::ANOTHERQUAD && orientationMode != QuadOrientationMode::POINT)
                 {
                  //*     
                    glm::vec3 eye = glm::vec3(0,0,0),
@@ -336,6 +330,7 @@ void Quadrotor::executeTimeLineCommand()
                     Model = glm::rotate(Model,-glm::half_pi<float>(),glm::vec3(0,1,0));
                   //*/  
                 } 
+                
                  double delta_time = nextTime-current_time;
                  double timediff = quadTime.getTimeDiffSec();
                  if(delta_time < timediff)
@@ -360,6 +355,21 @@ void Quadrotor::lookAtQuad()
     {  
         glm::vec3 otherQuadPosition = otherQuad->getQuadPosition();
         glm::vec3 otherDirectionRelative = otherQuadPosition - getQuadPosition();
+        
+        
+        glm::vec3 upVector,tempVector; 
+        //getOrientation();
+        glm::vec3 eye = glm::vec3(0,0,0),center = otherDirectionRelative,up = glm::vec3(0,1,0);
+        
+        Model = getOrientationMatrix(eye,center,up);
+        Model = glm::rotate(Model,-glm::half_pi<float>(),glm::vec3(0,1,0));
+        
+        
+    }
+    else if(orientationMode == QuadOrientationMode::POINT)
+    {  
+        
+        glm::vec3 otherDirectionRelative = lookAtPoint - getQuadPosition();
         
         
         glm::vec3 upVector,tempVector; 
