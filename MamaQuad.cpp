@@ -79,9 +79,7 @@ string MamaQuad::getName()
      gluDeleteQuadric(sphere);
      
      
-     //pickup for chip of destiny
-     glTranslatef(8.5f,0.0f,4.5f);
-     gluCylinder(quad,1.0f,1.0f,5.0f,5.0f,5.0f);   
+
      
  }
  
