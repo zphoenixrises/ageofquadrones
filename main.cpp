@@ -491,17 +491,17 @@ int main(int argc, char** argv)
      
     //tempcode           
     //z = 2500;        
-   // neoQuad->yawQuad(90);   
+   // neoQuad->yawQuad(90);    
     //quadrotor->rollQuad(20);       
 //    quadrotor->pitchQuad(20);   
             
     //Start the g lut loop!
     //*/     
-    QuadTimer::initializeTimer(80);      
+    QuadTimer::initializeTimer(200);      
     glutMainLoop(); 
-             
-    return 0;         
-                  
-               
-}       
+              
+    return 0;            
+                     
+                   
+}          
  

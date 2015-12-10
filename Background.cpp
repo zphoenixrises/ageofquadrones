@@ -542,7 +542,7 @@ void Background::power(){
     
     gluDeleteQuadric(chip_tower); 
     
-    if(QuadTimer::GetProcessTime() >= 0 && QuadTimer::GetProcessTime() <= 94 ){
+    if(QuadTimer::GetProcessTime() >= 0 && QuadTimer::GetProcessTime() <= 118 ){
         
     glBindTexture(GL_TEXTURE_2D,texture[6]);
     

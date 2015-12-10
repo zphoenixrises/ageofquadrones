@@ -144,7 +144,7 @@ public:
      
     //Set camera modes
     //
-    void SetCameraModeFollow(Quadrotor* quad, glm::vec3 distance);
+    void SetCameraModeFollowFront(Quadrotor* quad, glm::vec3 distance);
     //Follow a Quadcopter with the upvector aligned with the world y 
     void SetCameraModeFollowUpright(Quadrotor* quad, glm::vec3 distance);
     //Set Camera mode to World 

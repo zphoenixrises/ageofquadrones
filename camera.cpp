@@ -34,11 +34,14 @@ void Camera::Update() {
     executeTimelineCommands();
     if(cameraMode == CameraModes::FOLLOW_QUAD)
     {
-        SetLookAt(quadrotor->getQuadPosition());
+        
         glm::vec3 axisVector,upVector;
         quadrotor->getOrientation(axisVector,upVector,distance);
+        
+        SetLookAt(quadrotor->getQuadPosition()+glm::vec3(0.0f,20.0f,0.0f));
         SetPosition(quadrotor->getQuadPosition()-axisVector);
-        camera_up = upVector;
+        camera_up = glm::vec3(0.0f,1.0f,0.0f);
+        
     }
     else if(cameraMode == CameraModes::FOLLOW_QUAD_UPRIGHT)
     {
@@ -120,7 +123,7 @@ void Camera::SetCameraType(CameraType::Enum cam_mode) {
     rotation_quaternion = glm::quat(1, 0, 0, 0);
 }
 
-void Camera::SetCameraModeFollow(Quadrotor* quad, glm::vec3 distance)
+void Camera::SetCameraModeFollowFront(Quadrotor* quad, glm::vec3 distance)
 {
     this->quadrotor = quad;
     this->distance = distance;
@@ -334,7 +337,7 @@ void Camera::executeTimelineCommands()
             //printf("\n%s",delayedCommand);
             if(!strcmp(command,"FOLLOW"))
             {
-                char whichQuad[10];
+                char whichQuad[10]; 
                 glm::vec3 position;
                 sscanf(delayedCommand,"%lf %lf %s %s %f %f %f",&nextTime,&comTime,command, whichQuad, &position.x, &position.y, &position.z);
                 /*if(!strcmp(whichQuad,"NEO"))
@@ -345,7 +348,7 @@ void Camera::executeTimelineCommands()
                     SetCameraModeFollow(*mamaQuad,-position);
                 */
                 SetCameraModeFollowUpright(Quadrotor::getQuadFromName(whichQuad),-position);
-                
+                 
             } 
             else if(!strcmp(command,"FOLLOWVERTICAL"))
             {
@@ -358,7 +361,7 @@ void Camera::executeTimelineCommands()
                     SetCameraModeFollowUpright(*dronedemort,-position);
                 else if(!strcmp(whichQuad,"MAM"))
                     SetCameraModeFollowUpright(*mamaQuad,-position);*/
-                SetCameraModeFollowUpright(Quadrotor::getQuadFromName(whichQuad),-position);
+                SetCameraModeFollowFront(Quadrotor::getQuadFromName(whichQuad),-position);
                  
                 
             }
