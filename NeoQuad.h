@@ -35,12 +35,16 @@ private:
     void drawGun(float gunScale);
     void drawGuns();
     void rotateProps();
+    
+    unsigned char * data;
 protected:
     string getName();
 public:
     void collided();
     
   
+    GLuint EarthMap;
+    GLuint propTex;
     NeoQuad();
     void toggleAnimate();
     void drawQuad();
@@ -48,6 +52,7 @@ public:
     void powerToggle();
     glm::vec3 getBarrelPosition();
     void customCommandParser(string commandString);
+    void LoadGLTextures();
     
 };
 

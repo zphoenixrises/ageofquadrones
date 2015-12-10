@@ -76,9 +76,11 @@ void Ammo::drawAll()
 
 }
 
-void Ammo::fire(glm::vec3 startPosition, glm::vec3 direction,glm::vec4 color/*,void (*collidedEvent)(string)*/,float lifetime,Quadrotor* owner,AMMOTYPE::ENUM ammoType)
+void Ammo::fire(glm::vec3 startPosition, glm::vec3 position,glm::vec4 color/*,void (*collidedEvent)(string)*/,float lifetime,Quadrotor* owner,AMMOTYPE::ENUM ammoType)
 {
-    Ammo *ammo = new Ammo(startPosition, direction,color,lifetime,owner,ammoType);
+    glm::vec3 direction = position-startPosition;
+    
+    Ammo *ammo = new Ammo(startPosition, position,color,lifetime,owner,ammoType);
     
 }
 
@@ -106,11 +108,11 @@ void Ammo::draw()
     else if(ammoType == AMMOTYPE::LASER)
     {
         gluCylinder(quadricObj,1.0,1.0,30.0,5,5);
-        glRotatef(90,1,0,0);
+        glRotatef(180,1,0,0);
         gluDisk(quadricObj,0.0f,1.0f,5,3);
-        glRotatef(90,1,0,0);
-        glTranslatef(0,0,30);
-        
+        //glRotatef(90,1,0,0);
+        glTranslatef(0,0,-30);
+        glRotatef(180,1,0,0);
         gluDisk(quadricObj,0.0f,1.0f,5,3);
     }
     else if(ammoType == AMMOTYPE::BLASTER)

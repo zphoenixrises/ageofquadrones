@@ -253,6 +253,16 @@ void Quadrotor::executeTimeLineCommand()
                 Ammo::fire(getBarrelPosition(),string(quadname),glm::vec4(r,g,b,a),5,this,ammo_type);
                 
             }
+            else if(!strcmp(command,"FIREATPOINT"))
+            {
+                float r,g,b,a;
+                char ammotype[20];
+                glm::vec3 position;
+                sscanf(delayedCommand,"%lf %lf %s %f %f %f %f %f %f %f %s",&nextTime,&comTime,command, &position.x, &position.y, &position.z,&r,&g,&b,&a,ammotype);
+                AMMOTYPE::ENUM ammo_type = AMMOTYPE::getAmmotypeFromString(string(ammotype));
+                Ammo::fire(getBarrelPosition(),position,glm::vec4(r,g,b,a),5,this,ammo_type);
+                
+            }
             
             customCommandParser(string(delayedCommand));
                 //Operations to align the quad with the direction of motion

@@ -494,10 +494,10 @@ int main(int argc, char** argv)
    // neoQuad->yawQuad(90);   
     //quadrotor->rollQuad(20);    
 //    quadrotor->pitchQuad(20);  
-          
+            
     //Start the g lut loop!
     //*/     
-    QuadTimer::initializeTimer(153 );      
+    QuadTimer::initializeTimer(43);      
     glutMainLoop(); 
      
     return 0;    
