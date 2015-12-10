@@ -167,7 +167,7 @@ GLvoid Background::LoadGLTextures()
     
     
     char image_paths[][50]={
-        "Data/floor.ppm",
+        "Data/flame.ppm",
         "Data/download.ppm",
         "Data/grass.ppm",
         "Data/sky.ppm",
@@ -214,7 +214,9 @@ GLvoid Background::LoadGLTextures()
 GLvoid Background::DrawGLScene()
 {
     glEnable(GL_TEXTURE_2D);                    // Enable texture mapping.
-
+   
+        
+ 
     glPushMatrix(); //Main push
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);         // Clear The Screen And The Depth Buffer
     //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);   // This Will Clear The Background Color To Black
@@ -240,6 +242,38 @@ GLvoid Background::DrawGLScene()
     drawcube();
     //*/
     //* 
+    
+    /////EXTRA BOX
+    glPushMatrix();
+    glTranslatef(30.0,0.0,0.0);                 
+    
+    glBindTexture(GL_TEXTURE_2D, texture[1]); // pick the texture.
+    glutSolidCube (4.0);
+    glNormal3f(0,1,0);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    #if RAYGL == 1
+    rayglScaleTexture(1, 1, 1);                //undefined Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(0);                       // Set texture type for PovRAY.
+    #endif
+    glPopMatrix();
+    
+    
+    glPushMatrix();
+    glTranslatef(-30.0,0.0,30.0); 
+    
+    glBindTexture(GL_TEXTURE_2D, texture[1]); // pick the texture.
+    glutSolidCube (4.0);
+    glNormal3f(0,1,0);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    #if RAYGL == 1
+    rayglScaleTexture(1, 1, 1);                //undefined Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(0);                       // Set texture type for PovRAY.
+    #endif
+    glPopMatrix();
+    ///////////////////
+    
     glBindTexture(GL_TEXTURE_2D, texture[1]); // pick the texture.
     
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
@@ -303,18 +337,18 @@ GLvoid Background::DrawGLScene()
     
     glBegin(GL_QUADS);
     glTexCoord2f(0,0);
-    glVertex3f(-40.0,  -0.01, -40.0);
+    glVertex3f(-80.0,  -0.01, -80.0);
     
-    glTexCoord2f(40,0);
-    glVertex3f(-40.0,  -0.01, 40.0);
+    glTexCoord2f(80,0);
+    glVertex3f(-80.0,  -0.01, 80.0);
     
-    glTexCoord2f(40,40);
-    glVertex3f(40.0,  -0.01, 40.0);
+    glTexCoord2f(80,80);
+    glVertex3f(80.0,  -0.01, 80.0);
     
-    glTexCoord2f(0,40);
+    glTexCoord2f(0,80);
     glNormal3f(0,1,0);
-    glVertex3f(40.0,  -0.01, -40.0);
-    
+    glVertex3f(80.0,  -0.01, -80.0);
+                              
     
     glEnd();
     /*
@@ -345,17 +379,17 @@ GLvoid Background::DrawGLScene()
         v_m = sector2.quad[loop].vertex[2].v;
         glTexCoord2f(u_m,v_m); 
         glVertex3f(x_m,y_m,z_m);        
-        
+         
         glEnd();        
     }
-    */ 
+    */                
 
     //*
     
     sky();
     
     Draw_smoke();
-    power();  
+    power();    
     
     if(QuadTimer::GetProcessTime() >= 2 && QuadTimer::GetProcessTime() <= 7 ){
     security();
@@ -367,8 +401,8 @@ GLvoid Background::DrawGLScene()
     // since this is double buffered, swap the buffers to display what just got drawn.
     // glutSwapBuffers();
 }
-
-
+ 
+     
 
 void Background::sky(){
      
@@ -377,7 +411,7 @@ void Background::sky(){
     
     gluQuadricTexture(sky,GL_TRUE); 
     
-    
+                       
     glBindTexture(GL_TEXTURE_2D,texture[3]);
    
     #if RAYGL == 1
@@ -390,7 +424,7 @@ void Background::sky(){
     
     glPushMatrix();
     glTranslatef(0.0,0.0,0.0);
-    gluSphere(sky,40.0,100,100);
+    gluSphere(sky,80.0,100,100);
     glPopMatrix();
     
     gluDeleteQuadric(sky);      
@@ -418,7 +452,7 @@ void Background::power(){
     glPushMatrix();
     glTranslatef(-20.0,1.2,3.75);
   
-     if(QuadTimer::GetProcessTime() >= 230){radius+=0.2;};
+     if(QuadTimer::GetProcessTime() >= 230){radius+=0.1;};
     gluSphere(power,radius,100,100);
     glPopMatrix();
     
@@ -508,7 +542,8 @@ void Background::power(){
     
     gluDeleteQuadric(chip_tower); 
     
-    
+    if(QuadTimer::GetProcessTime() >= 0 && QuadTimer::GetProcessTime() <= 94 ){
+        
     glBindTexture(GL_TEXTURE_2D,texture[6]);
     
     #if RAYGL == 1
@@ -534,7 +569,7 @@ void Background::power(){
     
     glPopMatrix();
     
-    
+    }
 }
 
 
@@ -605,8 +640,8 @@ for(i=0;i<9;i++){
     
     
    
-    
-}
+     
+} 
 
 
 GLvoid Background:: Draw_smoke(void) {
@@ -615,6 +650,13 @@ GLvoid Background:: Draw_smoke(void) {
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
     glTranslatef(-20.0,5.5,5.75);
+    glBindTexture(GL_TEXTURE_2D,texture[0]);
+    
+    #if RAYGL == 1
+    rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
+    rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
+    rayglTextureType(0);                       //undefined/ Set texture type for PovRAY.
+    #endif
     
     /*
      *       

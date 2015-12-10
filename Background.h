@@ -45,8 +45,8 @@ typedef struct {
     unsigned char *data;
 } MyImage;
 
-const  int MAX_PARTICLES = 1000;
-const  int MIN_PARTICLES = 100;
+const  int MAX_PARTICLES = 10000;
+const  int MIN_PARTICLES = 1000;
 #define  noTextures 9
 
 class Background
