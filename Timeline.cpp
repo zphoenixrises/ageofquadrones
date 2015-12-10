@@ -3,7 +3,7 @@
 
 
 
-Timeline::Timeline(char* tag)
+Timeline::Timeline(string tag)
 {
   
     numCommands = 0;
@@ -48,7 +48,7 @@ Timeline::Timeline(char* tag)
             sscanf(templine,"TIM %lf",&time);
             
         }
-        if(strstr(templine,tag)==templine)
+        if(strstr(templine,tag.c_str())==templine)
         {
             sprintf(commands[numCommands++],"%lf %s",time,templine+4);
           //  printf(commands[numCommands-1]);
@@ -56,7 +56,7 @@ Timeline::Timeline(char* tag)
         }
     }
     fclose(fin);
-    printf("Displaying %s:\n",tag);
+    printf("Displaying %s:\n",tag.c_str());
     displayLines();
     printf("\n");
 }

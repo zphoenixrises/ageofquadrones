@@ -472,13 +472,13 @@ int main(int argc, char** argv)
     quadrotor = dronedemort;
   //  neoQuad->moveAbs(10,60,0);
   //  dronedemort->moveAbs(-50, 60 ,0);
-     
+       
   //  mamaQuad-> moveAbs(60,60,0);
     
     background = new Background();
-    background->SetupWorld();  
+    background->SetupWorld();   
     initializeRendering();//Setup camera 
-    
+      
   //  camera.loadQuadrotors(neoQuad,dronedemort,mamaQuad);
     camera.SetCameraType(CameraType::FREE);
     camera.SetPosition(glm::vec3(0, 7000, 2502));
@@ -489,19 +489,19 @@ int main(int argc, char** argv)
     
     //camera.SetCameraModeCircleMotion(vec3(0,60,0),vec3(0,60,300));
      
-    //tempcode       
-    //z = 2500;  
+    //tempcode           
+    //z = 2500;        
    // neoQuad->yawQuad(90);   
-    //quadrotor->rollQuad(20);    
-//    quadrotor->pitchQuad(20);  
+    //quadrotor->rollQuad(20);       
+//    quadrotor->pitchQuad(20);   
             
     //Start the g lut loop!
     //*/     
-    QuadTimer::initializeTimer(43);      
+    QuadTimer::initializeTimer(80);      
     glutMainLoop(); 
-     
-    return 0;    
-         
-        
-}    
+             
+    return 0;         
+                  
+               
+}       
  

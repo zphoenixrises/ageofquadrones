@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 
 using namespace std;
 
@@ -20,12 +21,12 @@ class Timeline
 {
     //string tags;
     private:
-        char commands[100][256];
+        char commands[500][256];
     
     public:
         int currentCommand;
         int numCommands;
-        Timeline(char* tag);
+        Timeline(string tag);
         char* readNextCommand(double &peektime);
         void displayLines();
         ~Timeline();

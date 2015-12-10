@@ -233,14 +233,14 @@ void Quadrotor::executeTimeLineCommand()
             else if(!strcmp(command,"LOOKATPOINT"))
             {
                 glm::vec3 position;
-                sscanf(delayedCommand,"%lf %lf %s %lf %lf %lf",&nextTime,&comTime,command, &position.x,&position.y,&position.z);
+                sscanf(delayedCommand,"%lf %lf %s %f %f %f",&nextTime,&comTime,command, &position.x,&position.y,&position.z);
 
                 lookAtPoint = position;
                 orientationMode = QuadOrientationMode::POINT;
                 
             } 
             else if(!strcmp(command,"FREE"))
-            {
+            { 
                 orientationMode = QuadOrientationMode::FREE;
             }
             else if(!strcmp(command,"FIREAT"))

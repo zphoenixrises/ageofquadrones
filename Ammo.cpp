@@ -80,7 +80,7 @@ void Ammo::fire(glm::vec3 startPosition, glm::vec3 position,glm::vec4 color/*,vo
 {
     glm::vec3 direction = position-startPosition;
     
-    Ammo *ammo = new Ammo(startPosition, position,color,lifetime,owner,ammoType);
+    Ammo *ammo = new Ammo(startPosition, direction,color,lifetime,owner,ammoType);
     
 }
 
