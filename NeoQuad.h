@@ -23,7 +23,9 @@ class NeoQuad:public Quadrotor
 {
 private:
     QuadTimer propTime;
-
+    
+    int numTextures;
+    
     float propAngle;
     float propSpeed;
     bool animate;

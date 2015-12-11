@@ -10,19 +10,8 @@
 #include "raygl/raygldefs.h"
 
  MamaQuad::MamaQuad() {
-        
-     /* rotUp=20;
-      * rotDown=0;
-      * rotLeft=0;
-      * rotRight=0;
-      * rotIn=0;
-      * rotOut=0;
-      */
-     //speed=1.0;
-     //red = true;
-    // grey = false;
+     animate = true;
      rotPropeller=0;
-     rotPropellerLeft=0;
      quad = gluNewQuadric();
      gluQuadricDrawStyle(quad,GLU_FILL);
      gluQuadricNormals(quad,GLU_SMOOTH);
@@ -169,8 +158,8 @@ string MamaQuad::getName()
      propeller();
      
      glPopMatrix(); 
-     
-     rotPropeller+=15.0; 
+     if(animate)
+        rotPropeller+=15.0; 
   //   glPopMatrix();
      
     
@@ -190,5 +179,7 @@ glm::vec3 MamaQuad::getBarrelPosition()
 
 void MamaQuad::customCommandParser(string commandString)
 {
+    if(!strcmp(command,"DIE"))
+        animate = false;
 
 }

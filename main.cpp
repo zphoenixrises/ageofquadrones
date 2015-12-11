@@ -13,7 +13,7 @@
 #include<iostream>
 #include<cmath>
 #include<GL/glut.h>
-#include<QuadTimer.h>
+#include "QuadTimer.h"
 #include "camera.h"
 //#include "./pgmIO.h"
 
@@ -48,7 +48,7 @@ void blahblah()
 class Wind {
 public:
     Wind() {
-        this->interval = 1000 / 22;             //60 FPS
+        this->interval = 1000 / 20;             //60 FPS
         this->window_handle = -1;
     }
     int window_handle, interval;
@@ -170,21 +170,21 @@ void initializeRendering()
     //extra light for povray
     const GLfloat ambientlight[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     const GLfloat diffuselight[]= { 1.0f, 1.0f, 1.0f, 1.0f };
-    const GLfloat positionlight[] = { 0.0f, 1000.0f, 6000.0f, 1.0f };
+    const GLfloat positionlight[] = { 0.0f, 1000.0f, 10000.0f, 1.0f };
     
     
     
     const GLfloat light_ambient[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
     const GLfloat light_diffuse[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
     const GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    const GLfloat light_position[] = { 4000.0f, 3000.0f, 5000.0f, 1.0f };
+    const GLfloat light_position[] = { 4000.0f, 3000.0f, 1000.0f, 1.0f };
     //const GLfloat mat_ambient[]    = { 0.7f, 0.7f, 0.7f, 1.0f };
     //const GLfloat mat_diffuse[]    = { 0.8f, 0.8f, 0.8f, 1.0f };
     //const GLfloat mat_specular[]   = { 1.0f, 1.0f, 1.0f, 1.0f };
     //const GLfloat high_shininess[] = { 100.0f };
     //////////////////////////
     
-    // set up lights.
+    // sCamera Light
     glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);
     glLightfv(GL_LIGHT1, GL_POSITION, LightPosition); 
@@ -274,11 +274,14 @@ void drawText(GLfloat left,GLfloat bottom, GLfloat size, char* label)
     glPopMatrix();
 }
 
-
+int framenumber = 0;
 bool gridEnabled = false; 
 void drawHandler()
 {
     QuadTimer::updateProcessTime();
+    if(QuadTimer::GetProcessTime()>246.5)
+      exit(0);
+    printf("%.1lf\n",QuadTimer::GetProcessTime());
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -287,23 +290,6 @@ void drawHandler()
     // glMatrixMode(GL_MODELVIEW);
    // glViewport(0, 0, window.size.x, window.size.y);
     
-    
-    /*   //Add ambient light
-    GLfloat ambientColor[] = {0.2f, 0.2f, 0.2f, 1.0f}; //Color (0.2, 0.2, 0.2)
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
-    
-    //Add positioned light
-    GLfloat lightColor0[] = {0.5f, 0.5f, 0.5f, 1.0f}; //Color (0.5, 0.5, 0.5)
-    GLfloat lightPos0[] = {4.0f, 0.0f, 8.0f, 1.0f}; //Positioned at (4, 0, 8)
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
-    
-    //Add directed light
-    GLfloat lightColor1[] = {0.5f, 0.5f, 0.5f, 1.0f}; //Color (0.5, 0.2, 0.2)
-    //Coming from the direction (-1, 0.5, 0.5)
-    GLfloat lightPos1[] = {-1.0f, 0.5f, 0.5f, 0.0f};
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
-    glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);//*/
     //glLoadIdentity(); 
    // glm::mat4 model, view, projection;
     //glRotatef(90,1,0,0); 
@@ -319,7 +305,7 @@ void drawHandler()
     #if RAYGL == 1
     rayglFrameBegin("frames/frame");
     setFadeDistance(7000.0); 
-    //setFadePower(2.0);
+    setFadePower(2.0);
     #endif    
   //  glm::mat4 mvp = projection* view * model;       //Compute the mvp matrix
   //  glLoadMatrixf(glm::value_ptr(mvp));
@@ -358,6 +344,9 @@ void drawHandler()
      glLoadIdentity();
      //draw all buttons  
      char buff[100];
+     
+     sprintf(buff,"Frame number: %d",framenumber++);
+     drawText(10,75,10,buff);
      sprintf(buff,"Time: %lf",QuadTimer::GetProcessTime());
      drawText(10,60,10,buff);
      glm::vec3 position = Quadrotor::getQuadFromName("NEO")->getQuadPosition();
@@ -383,6 +372,7 @@ void drawHandler()
           
                 
     glutSwapBuffers(); 
+    
       
 } 
  
@@ -450,7 +440,7 @@ int main(int argc, char** argv)
     glutInit(&argc, argv); //initialize glut 
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA| GLUT_MULTISAMPLE); //initialize display mode
     
-    glutInitWindowSize(1024, 512);
+    glutInitWindowSize(960, 540);
     glutInitWindowPosition(0, 0);
     window.window_handle = glutCreateWindow("Age of Quadrones"); //create window
     
@@ -490,15 +480,15 @@ int main(int argc, char** argv)
     //camera.SetCameraModeCircleMotion(vec3(0,60,0),vec3(0,60,300));
      
     //tempcode           
-    //z = 2500;        
-   // neoQuad->yawQuad(90);    
-    //quadrotor->rollQuad(20);       
-//    quadrotor->pitchQuad(20);   
+    //z = 2500;         
+   // neoQuad->yawQuad(90);     
+    //quadrotor->rollQuad(20);        
+//    quadrotor->pitchQuad(20);     
             
     //Start the g lut loop!
-    //*/     
-    QuadTimer::initializeTimer(200);      
-    glutMainLoop(); 
+    //*/      
+    QuadTimer::initializeTimer(0);      
+    glutMainLoop();  
               
     return 0;            
                      

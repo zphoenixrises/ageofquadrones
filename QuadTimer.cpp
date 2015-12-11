@@ -1,9 +1,9 @@
 
-#include <QuadTimer.h>
+#include "QuadTimer.h"
 
 
 double QuadTimer::StartTime = GetCurrentSystemTime();
-int QuadTimer::fps = 22;
+int QuadTimer::fps = 20;
 double QuadTimer::ProcessTime = 0;
 
 

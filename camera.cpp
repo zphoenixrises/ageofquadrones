@@ -324,7 +324,7 @@ void Camera::executeTimelineCommands()
             
             
             sprintf(delayedCommand,"%lf %s",peektime,commandstr);
-            printf(delayedCommand);
+           // printf(delayedCommand);
             //printf("\n%s",commandstr);
             isExecuting = true;
         }

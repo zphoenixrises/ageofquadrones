@@ -22,25 +22,13 @@ class MamaQuad:public Quadrotor
 private:
     
     QuadTimer time;
-    float propAngle;
-    float propSpeed;
     bool animate;
-    
-    void drawBlade();
-    void drawProparms(int rotorDirection);
-    void rotateProps();
-    
-    
+  
     
     int rotPropeller;
-    int rotPropellerLeft;
     GLUquadric *quad;
     void mamaBody(void);
     void motor();
-    void upRightPropeller();
-    void upLeftPropeller();
-    void lowLeftPropeller();
-    void lowRightPropeller();
     void arm();
     void propeller();
     void newBody();

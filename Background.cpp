@@ -56,9 +56,9 @@ static unsigned int getshort(FILE *fp)
 Background::Background()
 {
     filter = 0; 
-    limits = 3;
+    limits = 4;
     X=0, Y=0;
-    currentParticle = 1;
+    currentParticle = 100;
     radius= 0.2;
  
 }
@@ -351,38 +351,7 @@ GLvoid Background::DrawGLScene()
                               
     
     glEnd();
-    /*
-    for (loop=0; loop<numquads; loop++) {        // loop through all the quads
-        glBegin(GL_TRIANGLES);          
-        glNormal3f( 0.0f, 1.0f, 0.0f);
-        
-        x_m = sector2.quad[loop].vertex[0].x;
-        y_m = sector2.quad[loop].vertex[0].y;
-        z_m = sector2.quad[loop].vertex[0].z;
-        u_m = sector2.quad[loop].vertex[0].u;
-        v_m = sector2.quad[loop].vertex[0].v;
-        glTexCoord2f(u_m,v_m); 
-        glVertex3f(x_m,y_m,z_m);
-        
-        x_m = sector2.quad[loop].vertex[1].x;
-        y_m = sector2.quad[loop].vertex[1].y;
-        z_m = sector2.quad[loop].vertex[1].z;
-        u_m = sector2.quad[loop].vertex[1].u;
-        v_m = sector2.quad[loop].vertex[1].v;
-        glTexCoord2f(u_m,v_m); 
-        glVertex3f(x_m,y_m,z_m);
-        
-        x_m = sector2.quad[loop].vertex[2].x;
-        y_m = sector2.quad[loop].vertex[2].y;
-        z_m = sector2.quad[loop].vertex[2].z;
-        u_m = sector2.quad[loop].vertex[2].u;
-        v_m = sector2.quad[loop].vertex[2].v;
-        glTexCoord2f(u_m,v_m); 
-        glVertex3f(x_m,y_m,z_m);        
-         
-        glEnd();        
-    }
-    */                
+            
 
     //*
     
@@ -390,8 +359,8 @@ GLvoid Background::DrawGLScene()
     
     Draw_smoke();
     power();    
-    
-    if(QuadTimer::GetProcessTime() >= 2 && QuadTimer::GetProcessTime() <= 7 ){
+    double processtime = QuadTimer::GetProcessTime();
+    if((processtime >= 147 && processtime <= 186 ) ||(processtime >= 0 && processtime <= 71 )  ){
     security();
     }
     //*/
@@ -452,7 +421,7 @@ void Background::power(){
     glPushMatrix();
     glTranslatef(-20.0,1.2,3.75);
   
-     if(QuadTimer::GetProcessTime() >= 230){radius+=0.1;};
+     if(QuadTimer::GetProcessTime() >= 243.5){radius+=0.5;};
     gluSphere(power,radius,100,100);
     glPopMatrix();
     
@@ -663,12 +632,12 @@ GLvoid Background:: Draw_smoke(void) {
      *       glColor3d(.3, .1, 0);
      *       
      *       glutSolidCube(.3);
-     *       glPopMatrix();
+     *       glPopMa trix();
      */
     if (check == false) {
         float R, G, B;
         glPushMatrix();
-        for (int i = 0; i < MAX_PARTICLES; i++) {
+        for (int i = 0; i < currentParticle; i++) {
            // R = rand() % 100 + 1;
            // G = rand() % 100 + 1;
            // B = rand() % 100 + 1;
@@ -692,7 +661,7 @@ GLvoid Background:: Draw_smoke(void) {
     }
 
     moveParticles(currentParticle);
-    if (currentParticle != MAX_PARTICLES) {
+    if (currentParticle < MAX_PARTICLES) {
         currentParticle++;
     }
     
@@ -710,14 +679,18 @@ void Background::moveParticles(int amount_of_particles) {
         if(myX==1 && posX[i]<=limits ){
             int mytemp = rand() % 100 + 1;
             int temp = rand() % 5 + 1;
-            posX[i]+=temp*.015;
+            if(posX[i]<=2)
+                posX[i]+=temp*.015;
+            else posX[i]=0;
             posY[i]+=mytemp*.01;
         }
         if(myX==2){posX[i]+=.00;posY[i]+=.01;}
         if(myX==3 && posX[i]>=-limits){
             int temp = rand() % 5 + 1;
             int mytemp = rand() % 100 + 1;
-            posX[i]-=temp*.015;
+            if(posX[i]>=-2)
+                posX[i]-=temp*.015;
+            else posX[i]=0;
             posY[i]+=mytemp*.01;
         }
         ///////////////////////////////////////////

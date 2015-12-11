@@ -26,8 +26,9 @@ using namespace std;
 
 NeoQuad::NeoQuad()
 {
+    numTextures = 2;
     propAngle = 0.0;
-    propSpeed = 2;
+    propSpeed = 2.5;
     animate = true;
     currentState = NEUTRAL;
     timeline = new Timeline("NEO");
@@ -249,8 +250,8 @@ void NeoQuad::LoadGLTextures()
     int w, h, c;
     glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
     #if RAYGL == 1
-    Image *image[noTextures];
-    for (c = 0; c < noTextures; c++) {
+    Image *image[numTextures];
+    for (c = 0; c < numTextures; c++) {
         image[c] = (Image *) malloc(sizeof(Image));
         if (image[c] == NULL) exit(0);
     }
@@ -466,6 +467,6 @@ void NeoQuad::customCommandParser(string commandString)
     if(!strcmp(command,"POWERUP"))
     {
         powerToggle();
+        propSpeed = 10.2;
     }
-
 }
