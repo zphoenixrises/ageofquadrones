@@ -17,7 +17,7 @@
 
 
 #include <stdio.h>      // Header file for standard file i/o.
-
+#include <cmath>
 #include "raygl/raygl.h"
 #include "raygl/raygldefs.h"
 
@@ -493,7 +493,7 @@ void Background::power(){
     #if RAYGL == 1
     rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
     rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
-    rayglTextureType(2);                       //undefined/ Set texture type for PovRAY.
+    rayglTextureType(1);                       //undefined/ Set texture type for PovRAY.
     #endif
     
     glPushMatrix();
@@ -555,7 +555,7 @@ void Background::security() {
     #if RAYGL == 1
     rayglScaleTexture(1, 1, 1);                // Scale texture for PovRAY.
     rayglTranslateTexture(0, 0, 0);            // Translate texture for PovRAY.
-    rayglTextureType(2);                       //undefined/ Set texture type for PovRAY.
+    rayglTextureType(1);                       //undefined/ Set texture type for PovRAY.
     #endif
     glPushMatrix();
     
@@ -679,22 +679,35 @@ void Background::moveParticles(int amount_of_particles) {
         if(myX==1 && posX[i]<=limits ){
             int mytemp = rand() % 100 + 1;
             int temp = rand() % 5 + 1;
-            if(posX[i]<=2)
+            if(posX[i]<=2 && posX[i]>=-2 )
                 posX[i]+=temp*.015;
-            else posX[i]=0;
-            posY[i]+=mytemp*.01;
+            else 
+                posX[i]=0;
+            if(posY[i]<=2 && posY[i]>=0)    
+                posY[i]+=mytemp*.01;
+            else
+            {posY[i] = 0;posX[i]=0;}
         }
-        if(myX==2){posX[i]+=.00;posY[i]+=.01;}
-        if(myX==3 && posX[i]>=-limits){
+        else if(myX==2){posX[i]+=.00;posY[i]+=.01;}
+        else if(myX==3 && posX[i]>=-limits){
             int temp = rand() % 5 + 1;
             int mytemp = rand() % 100 + 1;
-            if(posX[i]>=-2)
+            if(posX[i]<=2 && posX[i]>=-2 )
                 posX[i]-=temp*.015;
-            else posX[i]=0;
-            posY[i]+=mytemp*.01;
+            else 
+                posX[i]=0;
+            if(posY[i]<=2 && posY[i]>=0)    
+                posY[i]+=mytemp*.01;
+            else
+            {posY[i] = 0;posX[i]=0;}
         }
         ///////////////////////////////////////////
         if(posY[i]>=limits){    
+            posY[i]=0;
+            posX[i]=0;
+        }
+        if(isnan(posX[i])||isnan(posY[i]))
+        {
             posY[i]=0;
             posX[i]=0;
         }

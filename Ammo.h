@@ -41,6 +41,7 @@ private:
     QuadTimer time;
     Quadrotor*owner;
     AMMOTYPE::ENUM ammoType;
+    static GLuint EarthMap;
     
 public:
     Ammo(glm::vec3 startPosition, glm::vec3 direction,glm::vec4 color/*,void (*collidedEvent)(string)*/,float lifetime,Quadrotor*owner,AMMOTYPE::ENUM ammoType);
@@ -54,6 +55,7 @@ public:
     
     //button click event callee
     Quadrotor* hasCollided();
+    static void LoadGLTextures();
     ~Ammo();
 
     

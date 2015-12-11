@@ -482,7 +482,7 @@ int main(int argc, char** argv)
     //tempcode           
     //z = 2500;         
    // neoQuad->yawQuad(90);     
-    //quadrotor->rollQuad(20);        
+    //quadrotor->rollQuad(20);         
 //    quadrotor->pitchQuad(20);     
             
     //Start the g lut loop!
