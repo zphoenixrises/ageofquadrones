@@ -21,8 +21,10 @@ LDFLAGS += $(foreach library,$(program_LIBRARIES),-l$(library))
 all: $(program_NAME)
 
 $(program_NAME): $(program_OBJS)
-	$(CXX)  -o $(program_NAME) $(program_OBJS) $(LDFLAGS) -pthread
+	$(CXX) -g -o $(program_NAME) $(program_OBJS) $(LDFLAGS) -pthread
 
+%.o: %.cpp
+	$(CXX) $(CPPFLAGS) -g -Wall -c -o $@ $^
 clean:
 	@- $(RM) $(program_NAME)
 	@- $(RM) $(program_OBJS)

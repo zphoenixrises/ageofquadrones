@@ -57,7 +57,11 @@ void Ammo::LoadGLTextures()
         image[c] = (Image *) malloc(sizeof(Image));
         if (image[c] == NULL) exit(0);
     }
+    #else
+    uchar*data;
+
     #endif
+
     #if RAYGL == 1
     if (!imageLoad("Data/red.ppm", image[0])) exit(0);
     #else

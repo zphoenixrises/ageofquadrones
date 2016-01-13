@@ -1,4 +1,4 @@
 //Settings file
 
-#define RAYGL 1
-#define RAYGL_ENABLE  
+#define RAYGL 0
+#define RAYGL_DISABLE  
